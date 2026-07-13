@@ -12,6 +12,7 @@ import CommandPalette from './CommandPalette';
 import FloatingChatButton from './FloatingChatButton';
 import GradientText from './GradientText';
 import Particles from './Particles';
+import AnimatedContent from './AnimatedContent';
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -327,20 +328,23 @@ const Layout = ({ children }) => {
           </div>
         </header>
 
-        {/* Page Content with simple scale-up transition */}
         <main className="flex-1 min-h-0 relative z-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              className="h-full"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          <AnimatedContent
+            key={location.pathname}
+            distance={50}
+            direction="vertical"
+            reverse={false}
+            duration={0.7}
+            ease="power3.out"
+            initialOpacity={0}
+            animateOpacity
+            scale={0.98}
+            threshold={0.05}
+            delay={0.05}
+            className="h-full"
+          >
+            {children}
+          </AnimatedContent>
         </main>
       </div>
 

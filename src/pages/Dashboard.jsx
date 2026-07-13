@@ -89,7 +89,7 @@ const Dashboard = () => {
   const stats = [
     { 
       label: 'Net Balance', 
-      value: currentBalance, 
+      value: currentBalance ?? 0, 
       desc: 'All-time Income minus Expenses', 
       icon: Wallet,
       color: 'text-indigo-500',
@@ -97,7 +97,7 @@ const Dashboard = () => {
     },
     { 
       label: "Month's Income", 
-      value: monthlyIncome, 
+      value: monthlyIncome ?? 0, 
       desc: 'Total earned this calendar month', 
       icon: TrendingUp,
       color: 'text-emerald-500',
@@ -105,15 +105,15 @@ const Dashboard = () => {
     },
     { 
       label: "Month's Expenses", 
-      value: monthlyExpense, 
-      desc: `Budget: ${currencySymbol}${budgetProgress?.budget}`, 
+      value: monthlyExpense ?? 0, 
+      desc: `Budget: ${currencySymbol}${budgetProgress?.budget ?? 2000}`, 
       icon: TrendingDown,
       color: 'text-rose-500',
       bg: 'bg-rose-500/10'
     },
     { 
       label: 'Total Savings', 
-      value: totalSavings, 
+      value: totalSavings ?? 0, 
       desc: 'Current goals allocations', 
       icon: PiggyBank,
       color: 'text-pink-500',
@@ -121,7 +121,7 @@ const Dashboard = () => {
     },
     { 
       label: 'Money to Pay', 
-      value: moneyToPay, 
+      value: moneyToPay ?? 0, 
       desc: 'Outstanding borrow list', 
       icon: HandCoins,
       color: 'text-amber-500',
@@ -129,7 +129,7 @@ const Dashboard = () => {
     },
     { 
       label: 'Money to Receive', 
-      value: moneyToReceive, 
+      value: moneyToReceive ?? 0, 
       desc: 'Outstanding lend list', 
       icon: HandCoins,
       color: 'text-teal-500',
@@ -276,7 +276,7 @@ const Dashboard = () => {
       <MagicBento 
         cardData={stats.map(stat => ({
           label: stat.label,
-          title: `${currencySymbol}${stat.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          title: `${currencySymbol}${(stat.value ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
           description: stat.desc,
           icon: stat.icon,
           iconColor: stat.color,
@@ -352,35 +352,35 @@ const Dashboard = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold">
                 <span>Monthly Budget</span>
-                <span className={budgetProgress?.percentage > 90 ? 'text-rose-500' : 'text-brand-500'}>
-                  {budgetProgress?.percentage}% Used
+                <span className={(budgetProgress?.percentage ?? 0) > 90 ? 'text-rose-500' : 'text-brand-500'}>
+                  {budgetProgress?.percentage ?? 0}% Used
                 </span>
               </div>
               <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-dark-900 overflow-hidden border border-slate-200/20 dark:border-dark-800">
                 <motion.div 
                   initial={{ width: 0 }}
-                  animate={{ width: `${budgetProgress?.percentage}%` }}
+                  animate={{ width: `${budgetProgress?.percentage ?? 0}%` }}
                   transition={{ duration: 1, ease: 'easeOut' }}
                   className={`h-full rounded-full ${
-                    budgetProgress?.percentage >= 100 
+                    (budgetProgress?.percentage ?? 0) >= 100 
                       ? 'bg-rose-500 shadow-lg shadow-rose-500/20' 
-                      : budgetProgress?.percentage >= 80
+                      : (budgetProgress?.percentage ?? 0) >= 80
                         ? 'bg-amber-500 shadow-lg shadow-amber-500/20'
                         : 'bg-brand-600 shadow-lg shadow-brand-500/20'
                   }`}
                 />
               </div>
               <div className="flex justify-between items-center text-[10px] text-slate-400 dark:text-dark-500 font-bold">
-                <span>Spent: {currencySymbol}{budgetProgress?.spent?.toLocaleString()}</span>
-                <span>Limit: {currencySymbol}{budgetProgress?.budget?.toLocaleString()}</span>
+                <span>Spent: {currencySymbol}${(budgetProgress?.spent ?? 0).toLocaleString()}</span>
+                <span>Limit: {currencySymbol}${(budgetProgress?.budget ?? 2000).toLocaleString()}</span>
               </div>
             </div>
 
-            {budgetProgress?.spent > budgetProgress?.budget && (
+            {(budgetProgress?.spent ?? 0) > (budgetProgress?.budget ?? 2000) && (
               <div className="mt-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 flex gap-2 text-rose-500">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span className="text-[10px] font-bold leading-normal">
-                  Alert: You have exceeded this month's budget ceiling by {currencySymbol}{(budgetProgress.spent - budgetProgress.budget).toFixed(2)}. Consider cutting non-essential spending.
+                  Alert: You have exceeded this month's budget ceiling by {currencySymbol}{((budgetProgress?.spent ?? 0) - (budgetProgress?.budget ?? 2000)).toFixed(2)}. Consider cutting non-essential spending.
                 </span>
               </div>
             )}

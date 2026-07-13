@@ -500,8 +500,8 @@ const MagicBento = ({
             --glow-intensity: 0;
             --glow-radius: 200px;
             --glow-color: ${glowColor};
-            --border-color: rgba(255, 255, 255, 0.08);
-            --background-dark: rgba(15, 23, 42, 0.3);
+            --border-color: rgba(0, 0, 0, 0.05);
+            --background-dark: #ffffff;
             --white: hsl(0, 0%, 100%);
             --purple-primary: rgba(132, 0, 255, 1);
             --purple-glow: rgba(132, 0, 255, 0.2);

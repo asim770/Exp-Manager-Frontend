@@ -25,10 +25,10 @@ const ProfileSettings = () => {
 
   useEffect(() => {
     if (profile) {
-      setName(profile.name);
-      setCurrency(profile.currency);
-      setMonthlyBudget(profile.monthlyBudget.toString());
-      setAlertPercent(profile.budgetAlertPercentage.toString());
+      setName(profile.name || '');
+      setCurrency(profile.currency || '$');
+      setMonthlyBudget(profile.monthlyBudget !== undefined && profile.monthlyBudget !== null ? profile.monthlyBudget.toString() : '2000');
+      setAlertPercent(profile.budgetAlertPercentage !== undefined && profile.budgetAlertPercentage !== null ? profile.budgetAlertPercentage.toString() : '80');
     }
   }, [profile]);
 
@@ -45,7 +45,6 @@ const ProfileSettings = () => {
       });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
-      refreshAll();
     } catch (err) {
       console.error('Failed to save profile changes:', err);
     }
