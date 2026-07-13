@@ -10,6 +10,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useFinance } from '../context/FinanceContext';
 import CommandPalette from './CommandPalette';
 import FloatingChatButton from './FloatingChatButton';
+import GradientText from './GradientText';
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -116,9 +117,14 @@ const Layout = ({ children }) => {
             <Wallet className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
+            <GradientText
+              colors={["#5227FF", "#FF9FFC", "#B497CF"]}
+              animationSpeed={8}
+              showBorder={false}
+              className="text-xl font-extrabold tracking-tight"
+            >
               MyExpManager
-            </h1>
+            </GradientText>
             <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">Personal Finance Manager</p>
           </div>
         </div>
@@ -348,9 +354,14 @@ const Layout = ({ children }) => {
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-brand-500/25">
                     <Wallet className="w-5 h-5" />
                   </div>
-                  <h1 className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
+                  <GradientText
+                    colors={["#5227FF", "#FF9FFC", "#B497CF"]}
+                    animationSpeed={8}
+                    showBorder={false}
+                    className="text-lg font-extrabold tracking-tight"
+                  >
                     MyExpManager
-                  </h1>
+                  </GradientText>
                 </div>
                 <button 
                   onClick={() => setIsMobileMenuOpen(false)}

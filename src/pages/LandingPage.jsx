@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import Particles from '../components/Particles';
+import GradientText from '../components/GradientText';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -58,9 +59,14 @@ const LandingPage = () => {
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-extrabold shadow-lg shadow-brand-500/20">
             P
           </div>
-          <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
+          <GradientText
+            colors={["#5227FF", "#FF9FFC", "#B497CF"]}
+            animationSpeed={8}
+            showBorder={false}
+            className="text-xl font-extrabold tracking-tight"
+          >
             MyExpManager
-          </span>
+          </GradientText>
         </div>
 
         <div className="flex items-center gap-4">
