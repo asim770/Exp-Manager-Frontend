@@ -137,7 +137,7 @@ const Reports = () => {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.setTextColor(139, 92, 246); // Brand Color
-    doc.text("Antigravity Pay", 14, 20);
+    doc.text("MyExpManager", 14, 20);
     
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12);

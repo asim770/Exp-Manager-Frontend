@@ -72,7 +72,7 @@ const Layout = ({ children }) => {
           </div>
           <div>
             <h1 className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
-              Antigravity Pay
+              MyExpManager
             </h1>
             <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">Personal Finance Manager</p>
           </div>
@@ -304,7 +304,7 @@ const Layout = ({ children }) => {
                     <Wallet className="w-5 h-5" />
                   </div>
                   <h1 className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
-                    Antigravity Pay
+                    MyExpManager
                   </h1>
                 </div>
                 <button 
