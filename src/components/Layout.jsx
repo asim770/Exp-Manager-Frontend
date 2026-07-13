@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, ArrowDownUp, HandCoins, PiggyBank, 
   BarChart3, Calendar as CalendarIcon, User, Bell, Sun, 
-  Moon, Search, Menu, X, Check, Trash2, Wallet
+  Moon, Search, Menu, X, Check, Trash2, Wallet, Sparkles
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useFinance } from '../context/FinanceContext';
 import CommandPalette from './CommandPalette';
+import FloatingChatButton from './FloatingChatButton';
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -45,6 +46,7 @@ const Layout = ({ children }) => {
     { name: 'Analytics & Reports', path: '/reports', icon: BarChart3 },
     { name: 'Calendar', path: '/calendar', icon: CalendarIcon },
     { name: 'Profile & Settings', path: '/profile', icon: User },
+    { name: 'AI Assistant', path: '/ai-assistant', icon: Sparkles },
   ];
 
   const unreadNotifications = notifications.filter(n => !n.read);
@@ -359,6 +361,9 @@ const Layout = ({ children }) => {
 
       {/* Global Command Palette dialog */}
       <CommandPalette isOpen={isCmdPaletteOpen} setIsOpen={setIsCmdPaletteOpen} />
+
+      {/* Floating Action AI Coach Button */}
+      <FloatingChatButton />
     </div>
   );
 };

@@ -1,23 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, TrendingDown, PiggyBank, HandCoins, ArrowDownUp, 
   Calendar as CalendarIcon, ArrowUpRight, Plus, AlertCircle, 
-  Wallet, ChevronRight, Award
+  Wallet, ChevronRight, Award, Sparkles, Brain, ShieldAlert
 } from 'lucide-react';
 import { 
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, 
   PieChart, Pie, Cell 
 } from 'recharts';
 import { useFinance } from '../context/FinanceContext';
+import axios from 'axios';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { dashboardData, loading, error, currencySymbol, refreshAll } = useFinance();
+  const { dashboardData, loading, error, currencySymbol, refreshAll, apiUrl } = useFinance();
+  
+  const [aiInsights, setAiInsights] = useState(null);
+  const [loadingInsights, setLoadingInsights] = useState(false);
 
   useEffect(() => {
     refreshAll();
+    
+    // Fetch AI insights
+    const fetchInsights = async () => {
+      setLoadingInsights(true);
+      try {
+        const res = await axios.get(`${apiUrl}/ai/insights`);
+        setAiInsights(res.data);
+      } catch (err) {
+        console.error('Failed to load AI Insights:', err);
+      } finally {
+        setLoadingInsights(false);
+      }
+    };
+    fetchInsights();
   }, []);
 
   if (loading) {
@@ -142,6 +160,116 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
+
+      {/* AI Insights & Coaching Section */}
+      <AnimatePresence>
+        {(aiInsights || loadingInsights) && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-panel border border-slate-200/60 dark:border-dark-800/40 rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-brand-500/5 to-indigo-500/5 dark:from-brand-500/10 dark:to-indigo-500/10 shadow-lg"
+          >
+            {/* Background ambient glow */}
+            <div className="absolute top-[-30%] right-[-20%] w-72 h-72 rounded-full bg-brand-500/10 dark:bg-brand-500/15 filter blur-3xl pointer-events-none"></div>
+            
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200/50 dark:border-dark-850/80 mb-5">
+              <div className="flex items-center gap-2">
+                <Brain className="w-5 h-5 text-brand-600 dark:text-brand-400 animate-pulse" />
+                <h3 className="font-extrabold text-sm tracking-tight flex items-center gap-1.5">
+                  Gemini Financial Coach Insights
+                  <Sparkles className="w-3.5 h-3.5 text-brand-500" />
+                </h3>
+              </div>
+              <button 
+                onClick={() => navigate('/ai-assistant')}
+                className="text-[10px] font-bold text-brand-600 dark:text-brand-400 hover:underline uppercase tracking-wider"
+              >
+                Ask Coach Details &rarr;
+              </button>
+            </div>
+
+            {loadingInsights ? (
+              <div className="py-6 flex items-center justify-center gap-2">
+                <div className="spinner w-4 h-4 border-2"></div>
+                <span className="text-[10px] text-slate-400 font-semibold">Consulting with AI Advisor...</span>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                
+                {/* 1. Daily Safe Spend */}
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Daily Spending Limit</span>
+                  <p className="text-base font-black text-slate-800 dark:text-white">
+                    {aiInsights?.dailyLimitAdvice || 'Calculating...'}
+                  </p>
+                  <span className="text-[9px] text-slate-400 font-semibold block leading-relaxed">Safety target to avoid overspending this month.</span>
+                </div>
+
+                {/* 2. End of Month Prediction */}
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">EOM Balance Forecast</span>
+                  <p className="text-xs font-bold text-slate-700 dark:text-dark-200">
+                    {aiInsights?.monthlyPrediction || 'No prediction available'}
+                  </p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-[9px] text-slate-400 font-semibold">Cash Flow:</span>
+                    <span className="text-[9px] font-bold text-emerald-500">{aiInsights?.cashFlowStatus || 'Positive'}</span>
+                  </div>
+                </div>
+
+                {/* 3. Budget & Savings Score */}
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Health Scores</span>
+                  <div className="flex items-center gap-4 pt-0.5">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-extrabold text-brand-600 dark:text-brand-400">{aiInsights?.budgetHealthScore || 100}%</span>
+                      <span className="text-[9px] text-slate-450 dark:text-dark-500 font-bold uppercase tracking-wider">Budget Health</span>
+                    </div>
+                    <div className="flex flex-col border-l border-slate-200 dark:border-dark-800 pl-4">
+                      <span className="text-xs font-extrabold text-pink-500">{aiInsights?.savingsScore || 50}%</span>
+                      <span className="text-[9px] text-slate-450 dark:text-dark-500 font-bold uppercase tracking-wider">Savings Goal</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Risk Level & Overspending Alert */}
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Account Risk Level</span>
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${
+                      aiInsights?.riskLevel === 'High' 
+                        ? 'bg-rose-500/10 border-rose-500/25 text-rose-500' 
+                        : aiInsights?.riskLevel === 'Medium'
+                          ? 'bg-amber-500/10 border-amber-500/20 text-amber-555'
+                          : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
+                    }`}>
+                      {aiInsights?.riskLevel || 'Low'} Risk
+                    </span>
+                  </div>
+                  {aiInsights?.overspendingCategory && aiInsights.overspendingCategory !== 'None' && (
+                    <span className="text-[9px] text-rose-500 font-semibold block mt-1 flex items-center gap-1">
+                      <ShieldAlert className="w-3 h-3" /> Alert: Overspending on {aiInsights.overspendingCategory}
+                    </span>
+                  )}
+                </div>
+
+              </div>
+            )}
+
+            {/* Tip Banner */}
+            {aiInsights?.financialTip && (
+              <div className="mt-4 p-3.5 rounded-2xl bg-white/40 dark:bg-dark-900/40 border border-slate-200/50 dark:border-dark-850/80 text-[10px] font-bold text-slate-655 dark:text-dark-300 leading-normal flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-brand-555 shrink-0 mt-0.5" />
+                <div>
+                  <span className="text-slate-400 uppercase tracking-wider block mb-0.5 text-[8.5px] font-bold">Today's AI Advisory Tip</span>
+                  {aiInsights.financialTip}
+                </div>
+              </div>
+            )}
+
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Grid of Core Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
