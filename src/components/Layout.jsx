@@ -38,6 +38,51 @@ const Layout = ({ children }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Global mousemove tracking for .glass-panel border glow effects
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const panels = document.querySelectorAll('.glass-panel');
+      panels.forEach(panel => {
+        // Skip Bento cards since they handle their own internal GSAP spotlights
+        if (panel.classList.contains('card')) return;
+
+        const rect = panel.getBoundingClientRect();
+        const pad = 150; // padding active range
+
+        if (
+          e.clientX >= rect.left - pad &&
+          e.clientX <= rect.right + pad &&
+          e.clientY >= rect.top - pad &&
+          e.clientY <= rect.bottom + pad
+        ) {
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+          const maxDim = Math.max(rect.width, rect.height);
+
+          let intensity = 0;
+          if (distance < maxDim) {
+            intensity = 0.85;
+          } else if (distance < maxDim + pad) {
+            intensity = 0.85 * (1 - (distance - maxDim) / pad);
+          }
+
+          panel.style.setProperty('--glow-x', `${x}%`);
+          panel.style.setProperty('--glow-y', `${y}%`);
+          panel.style.setProperty('--glow-intensity', intensity.toString());
+        } else {
+          panel.style.setProperty('--glow-intensity', '0');
+        }
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [location.pathname]);
+
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Transactions', path: '/transactions', icon: ArrowDownUp },

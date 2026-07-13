@@ -78,11 +78,13 @@
 
 /* Glassmorphism utility classes */
 .glass-panel {
+  position: relative;
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+  --glow-color: 139, 92, 246; /* Purple color */
 }
 
 .dark .glass-panel {
@@ -91,6 +93,34 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --glow-color: 139, 92, 246;
+}
+
+/* Global Thick Border Glow Effect */
+.glass-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 6px; /* Thick 6px border */
+  background: radial-gradient(
+    var(--glow-radius, 250px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color), calc(var(--glow-intensity, 0) * 0.85)) 0%,
+    rgba(var(--glow-color), calc(var(--glow-intensity, 0) * 0.35)) 40%,
+    transparent 70%
+  );
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.glass-panel:hover {
+  box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.08), 0 0 35px 0 rgba(139, 92, 246, 0.05);
 }
 
 .glass-nav {

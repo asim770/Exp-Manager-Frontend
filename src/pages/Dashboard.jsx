@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
+import MagicBento from '../components/MagicBento';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -272,32 +273,27 @@ const Dashboard = () => {
       </AnimatePresence>
 
       {/* Grid of Core Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {stats.map((stat, idx) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              key={idx}
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.2 }}
-              className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6 relative overflow-hidden"
-            >
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-xs font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider">{stat.label}</span>
-                <div className={`w-9 h-9 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
-                  <Icon className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold tracking-tight">
-                  {currencySymbol}{stat.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-400 dark:text-dark-500 font-semibold mt-1.5 leading-relaxed">{stat.desc}</p>
-            </motion.div>
-          );
-        })}
-      </div>
+      <MagicBento 
+        cardData={stats.map(stat => ({
+          label: stat.label,
+          title: `${currencySymbol}${stat.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+          description: stat.desc,
+          icon: stat.icon,
+          iconColor: stat.color,
+          iconBg: stat.bg
+        }))}
+        textAutoHide={true}
+        enableStars
+        enableSpotlight
+        enableBorderGlow={true}
+        enableTilt={false}
+        enableMagnetism={false}
+        clickEffect
+        spotlightRadius={400}
+        particleCount={12}
+        glowColor="132, 0, 255"
+        disableAnimations={false}
+      />
 
       {/* Cash Flow Chart & Category / Budget Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
