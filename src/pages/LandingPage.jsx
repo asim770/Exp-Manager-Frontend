@@ -5,7 +5,7 @@ import {
   ArrowRight, ShieldCheck
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import Particles from '../components/Particles';
+import LiquidEther from '../components/LiquidEther';
 import GradientText from '../components/GradientText';
 
 const LandingPage = () => {
@@ -38,18 +38,24 @@ const LandingPage = () => {
       <div className="absolute top-[-20%] left-[-10%] ambient-glow bg-brand-500/25 dark:bg-brand-500/10"></div>
       <div className="absolute bottom-[-10%] right-[-10%] ambient-glow bg-blue-500/20 dark:bg-blue-500/10"></div>
 
-      {/* Particles Background */}
-      <div className="absolute inset-0 w-full h-full z-0 opacity-60 dark:opacity-40 pointer-events-none">
-        <Particles
-          particleColors={theme === 'dark' ? ["#ffffff"] : ["#8b5cf6"]}
-          particleCount={200}
-          particleSpread={10}
-          speed={0.1}
-          particleBaseSize={100}
-          moveParticlesOnHover
-          alphaParticles={false}
-          disableRotation={false}
-          pixelRatio={1}
+      {/* LiquidEther Background */}
+      <div className="absolute inset-0 w-full h-full z-0 opacity-60 dark:opacity-40">
+        <LiquidEther
+          colors={[ '#5227FF', '#FF9FFC', '#B497CF' ]}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
         />
       </div>
 

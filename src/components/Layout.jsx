@@ -11,6 +11,7 @@ import { useFinance } from '../context/FinanceContext';
 import CommandPalette from './CommandPalette';
 import FloatingChatButton from './FloatingChatButton';
 import GradientText from './GradientText';
+import Particles from './Particles';
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -108,6 +109,21 @@ const Layout = ({ children }) => {
       {/* Background ambient glows */}
       <div className="absolute top-[-10%] left-[-10%] ambient-glow bg-brand-500/20 dark:bg-brand-500/10"></div>
       <div className="absolute bottom-[-10%] right-[-10%] ambient-glow bg-blue-500/20 dark:bg-blue-500/10"></div>
+
+      {/* Particles Background */}
+      <div className="absolute inset-0 w-full h-full z-0 opacity-40 dark:opacity-30 pointer-events-none">
+        <Particles
+          particleColors={theme === 'dark' ? ["#ffffff"] : ["#8b5cf6"]}
+          particleCount={150}
+          particleSpread={12}
+          speed={0.08}
+          particleBaseSize={80}
+          moveParticlesOnHover
+          alphaParticles={false}
+          disableRotation={false}
+          pixelRatio={1}
+        />
+      </div>
 
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-72 glass-panel border-r border-slate-200 dark:border-dark-800/50 m-4 mr-0 rounded-3xl z-30 relative overflow-hidden">
