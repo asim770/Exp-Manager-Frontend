@@ -13,6 +13,7 @@ import FloatingChatButton from './FloatingChatButton';
 import GradientText from './GradientText';
 import Particles from './Particles';
 import AnimatedContent from './AnimatedContent';
+import Ribbons from './Ribbons';
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -123,6 +124,18 @@ const Layout = ({ children }) => {
           alphaParticles={false}
           disableRotation={false}
           pixelRatio={1}
+        />
+      </div>
+
+      {/* Ribbons mouse cursor overlay for the entire project except landing page */}
+      <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+        <Ribbons
+          baseThickness={30}
+          colors={["#5227FF"]}
+          speedMultiplier={0.5}
+          maxAge={500}
+          enableFade={false}
+          enableShaderEffect={false}
         />
       </div>
 
