@@ -13,7 +13,6 @@ import BudgetsSavings from './pages/BudgetsSavings';
 import Reports from './pages/Reports';
 import CalendarView from './pages/CalendarView';
 import ProfileSettings from './pages/ProfileSettings';
-import AiAssistant from './pages/AiAssistant';
 
 function App() {
   return (
@@ -21,10 +20,9 @@ function App() {
       <FinanceProvider>
         <Router>
           <Routes>
-            {/* Landing page (No layout) */}
+
             <Route path="/" element={<LandingPage />} />
 
-            {/* App routes (With premium layout wrapping) */}
             <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
             <Route path="/transactions" element={<Layout><Transactions /></Layout>} />
             <Route path="/borrow-lend" element={<Layout><BorrowLend /></Layout>} />
@@ -32,7 +30,6 @@ function App() {
             <Route path="/reports" element={<Layout><Reports /></Layout>} />
             <Route path="/calendar" element={<Layout><CalendarView /></Layout>} />
             <Route path="/profile" element={<Layout><ProfileSettings /></Layout>} />
-            <Route path="/ai-assistant" element={<Layout><AiAssistant /></Layout>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -361,11 +361,11 @@ const Layout = ({ children }) => {
         </main>
       </div>
 
-      {/* Mobile Menu Drawer */}
+  
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            {/* Backdrop */}
+            
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}

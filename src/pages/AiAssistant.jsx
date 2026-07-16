@@ -17,7 +17,7 @@ const SUGGESTED_PROMPTS = [
   "Predict my end-of-month balance"
 ];
 
-// Helper to parse basic markdown to styled React elements
+
 const renderMarkdown = (text) => {
   if (!text) return null;
   
@@ -25,13 +25,12 @@ const renderMarkdown = (text) => {
   return lines.map((line, idx) => {
     let cleanLine = line;
     
-    // Check if it's a bullet point
+
     const isBullet = cleanLine.startsWith('- ') || cleanLine.startsWith('* ');
     if (isBullet) {
       cleanLine = cleanLine.substring(2);
     }
     
-    // Check if it's a header
     const isHeader = cleanLine.startsWith('### ') || cleanLine.startsWith('## ') || cleanLine.startsWith('# ');
     let headerLevel = 0;
     if (cleanLine.startsWith('### ')) {
@@ -45,7 +44,7 @@ const renderMarkdown = (text) => {
       cleanLine = cleanLine.substring(2);
     }
 
-    // Process inline bold text (**text**) and code (`text`)
+    
     const parts = [];
     let currentText = cleanLine;
     const regex = /(\*\*.*?\*\*|`.*?`)/g;
@@ -54,21 +53,21 @@ const renderMarkdown = (text) => {
 
     while ((match = regex.exec(currentText)) !== null) {
       const matchIndex = match.index;
-      // Add text before match
+      
       if (matchIndex > lastIndex) {
         parts.push(currentText.substring(lastIndex, matchIndex));
       }
       
       const matchedString = match[0];
       if (matchedString.startsWith('**') && matchedString.endsWith('**')) {
-        // Bold
+      
         parts.push(
           <strong key={matchIndex} className="font-extrabold text-slate-900 dark:text-white">
             {matchedString.substring(2, matchedString.length - 2)}
           </strong>
         );
       } else if (matchedString.startsWith('`') && matchedString.endsWith('`')) {
-        // Inline code
+
         parts.push(
           <code key={matchIndex} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-dark-900 text-brand-500 font-mono text-[11px] border border-slate-200/50 dark:border-dark-800">
             {matchedString.substring(1, matchedString.length - 1)}
@@ -82,7 +81,7 @@ const renderMarkdown = (text) => {
       parts.push(currentText.substring(lastIndex));
     }
 
-    // Return element based on markdown type
+
     if (isHeader) {
       if (headerLevel === 1) return <h1 key={idx} className="text-lg font-black tracking-tight mt-3 mb-2">{parts}</h1>;
       if (headerLevel === 2) return <h2 key={idx} className="text-base font-black tracking-tight mt-3 mb-2">{parts}</h2>;
@@ -121,7 +120,7 @@ const AiAssistant = () => {
   
   const chatEndRef = useRef(null);
 
-  // Auto scroll to bottom
+
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -145,7 +144,7 @@ const AiAssistant = () => {
     setError(null);
 
     try {
-      // Build conversation history (exclude date/metadata to match API expectations)
+      
       const chatHistory = messages.map(msg => ({
         sender: msg.sender,
         text: msg.text
@@ -181,7 +180,6 @@ const AiAssistant = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-130px)] lg:h-[calc(100vh-160px)]">
       
-      {/* Upper banner */}
       <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200/50 dark:border-dark-800/50 shrink-0">
         <div>
           <h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
@@ -195,10 +193,10 @@ const AiAssistant = () => {
         </div>
       </div>
 
-      {/* Main Chat Area */}
+  
       <div className="flex-1 min-h-0 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-4 md:p-6 flex flex-col justify-between overflow-hidden shadow-xl">
         
-        {/* Messages List */}
+       
         <div className="flex-1 overflow-y-auto pr-1 space-y-4">
           <AnimatePresence initial={false}>
             {messages.map((msg, idx) => {
@@ -220,7 +218,6 @@ const AiAssistant = () => {
                     {isAi ? 'AI' : <User className="w-4 h-4" />}
                   </div>
 
-                  {/* Bubble wrapper */}
                   <div className="space-y-1">
                     <div className={`px-4.5 py-3 rounded-2xl text-xs border leading-relaxed shadow-sm ${
                       isAi
@@ -242,7 +239,7 @@ const AiAssistant = () => {
             })}
           </AnimatePresence>
 
-          {/* Typing Loading Indicator */}
+
           {loading && (
             <div className="flex gap-3 max-w-[80%] mr-auto items-center">
               <div className="w-8.5 h-8.5 rounded-xl bg-brand-500/10 border border-brand-200 dark:border-brand-900 text-brand-600 dark:text-brand-400 flex items-center justify-center font-extrabold text-xs">
@@ -256,7 +253,6 @@ const AiAssistant = () => {
             </div>
           )}
 
-          {/* Error Banner */}
           {error && (
             <div className="p-4.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 flex gap-2.5 text-rose-500 max-w-md mx-auto items-center">
               <AlertCircle className="w-5 h-5 shrink-0" />
@@ -276,7 +272,6 @@ const AiAssistant = () => {
           <div ref={chatEndRef} />
         </div>
 
-        {/* Suggestion prompt list */}
         {messages.length === 1 && !loading && (
           <div className="py-3 border-t border-slate-100 dark:border-dark-850/80 shrink-0">
             <span className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block mb-2">Suggested prompts:</span>
@@ -294,7 +289,6 @@ const AiAssistant = () => {
           </div>
         )}
 
-        {/* Input Bar */}
         <div className="flex items-center gap-3 pt-4 border-t border-slate-150 dark:border-dark-850 shrink-0">
           <textarea
             value={inputValue}

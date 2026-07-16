@@ -134,8 +134,7 @@ const Particles = ({
     };
 
     if (moveParticlesOnHover) {
-      // Use window listener so overlay elements do not block mouse movements
-      window.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mousemove', handleMouseMove);
     }
 
     const count = particleCount;
@@ -215,7 +214,7 @@ const Particles = ({
     return () => {
       window.removeEventListener('resize', resize);
       if (moveParticlesOnHover) {
-        window.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mousemove', handleMouseMove);
       }
       cancelAnimationFrame(animationFrameId);
       if (container.contains(gl.canvas)) {
