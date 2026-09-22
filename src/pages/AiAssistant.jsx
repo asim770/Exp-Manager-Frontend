@@ -9,99 +9,175 @@ import axios from 'axios';
 
 const SUGGESTED_PROMPTS = [
   "Analyze my expenses",
-  "How can I save more money?",
   "Can I buy a ₹2,500 headphone this month?",
-  "How much can I spend today?",
-  "Summarize this month's finances",
-  "Where am I overspending?",
-  "Predict my end-of-month balance"
+  "How much can I safely spend today?",
+  "How do I add a new transaction?",
+  "How do Savings Goals work?",
+  "How does Borrow & Lend tracking work?",
+  "Where can I view monthly reports?",
+  "Where am I overspending this month?"
 ];
 
+const parseInlineMarkdown = (text) => {
+  if (!text) return text;
+  const parts = [];
+  const regex = /(\*\*.*?\*\*|`.*?`|\*.*?\*)/g;
+  let match;
+  let lastIndex = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    const token = match[0];
+    if (token.startsWith('**') && token.endsWith('**')) {
+      parts.push(
+        <strong key={match.index} className="font-extrabold text-slate-900 dark:text-white">
+          {token.substring(2, token.length - 2)}
+        </strong>
+      );
+    } else if (token.startsWith('`') && token.endsWith('`')) {
+      parts.push(
+        <code key={match.index} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-dark-950 text-brand-500 font-mono text-[11px] border border-slate-200/60 dark:border-dark-800">
+          {token.substring(1, token.length - 1)}
+        </code>
+      );
+    } else if (token.startsWith('*') && token.endsWith('*')) {
+      parts.push(
+        <em key={match.index} className="italic text-slate-700 dark:text-dark-200">
+          {token.substring(1, token.length - 1)}
+        </em>
+      );
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+  return parts.length > 0 ? parts : text;
+};
 
 const renderMarkdown = (text) => {
   if (!text) return null;
-  
-  const lines = text.split('\n');
-  return lines.map((line, idx) => {
-    let cleanLine = line;
-    
 
-    const isBullet = cleanLine.startsWith('- ') || cleanLine.startsWith('* ');
-    if (isBullet) {
-      cleanLine = cleanLine.substring(2);
-    }
-    
-    const isHeader = cleanLine.startsWith('### ') || cleanLine.startsWith('## ') || cleanLine.startsWith('# ');
-    let headerLevel = 0;
-    if (cleanLine.startsWith('### ')) {
-      headerLevel = 3;
-      cleanLine = cleanLine.substring(4);
-    } else if (cleanLine.startsWith('## ')) {
-      headerLevel = 2;
-      cleanLine = cleanLine.substring(3);
-    } else if (cleanLine.startsWith('# ')) {
-      headerLevel = 1;
-      cleanLine = cleanLine.substring(2);
-    }
+  const rawLines = text.split('\n');
+  const elements = [];
+  let i = 0;
 
-    
-    const parts = [];
-    let currentText = cleanLine;
-    const regex = /(\*\*.*?\*\*|`.*?`)/g;
-    let match;
-    let lastIndex = 0;
+  while (i < rawLines.length) {
+    const line = rawLines[i].trim();
 
-    while ((match = regex.exec(currentText)) !== null) {
-      const matchIndex = match.index;
-      
-      if (matchIndex > lastIndex) {
-        parts.push(currentText.substring(lastIndex, matchIndex));
+    // Check if line is a table row (starts with |)
+    if (line.startsWith('|') && line.endsWith('|')) {
+      const tableRows = [];
+      while (i < rawLines.length && rawLines[i].trim().startsWith('|') && rawLines[i].trim().endsWith('|')) {
+        const rawRow = rawLines[i].trim();
+        // Skip separator row |:---|:---|
+        if (!rawRow.replace(/[|:\-\s]/g, '').length) {
+          i++;
+          continue;
+        }
+        const cells = rawRow.slice(1, -1).split('|').map(c => c.trim());
+        tableRows.push(cells);
+        i++;
       }
-      
-      const matchedString = match[0];
-      if (matchedString.startsWith('**') && matchedString.endsWith('**')) {
-      
-        parts.push(
-          <strong key={matchIndex} className="font-extrabold text-slate-900 dark:text-white">
-            {matchedString.substring(2, matchedString.length - 2)}
-          </strong>
-        );
-      } else if (matchedString.startsWith('`') && matchedString.endsWith('`')) {
 
-        parts.push(
-          <code key={matchIndex} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-dark-900 text-brand-500 font-mono text-[11px] border border-slate-200/50 dark:border-dark-800">
-            {matchedString.substring(1, matchedString.length - 1)}
-          </code>
+      if (tableRows.length > 0) {
+        const headerRow = tableRows[0];
+        const bodyRows = tableRows.slice(1);
+        elements.push(
+          <div key={`table-${i}`} className="my-2 overflow-x-auto rounded-xl border border-slate-200/70 dark:border-dark-800">
+            <table className="min-w-full divide-y divide-slate-200/60 dark:divide-dark-800 text-left text-[11px]">
+              <thead className="bg-slate-50 dark:bg-dark-950/80">
+                <tr>
+                  {headerRow.map((h, cIdx) => (
+                    <th key={cIdx} className="px-3 py-1.5 font-bold text-slate-800 dark:text-dark-100 uppercase tracking-wider">
+                      {parseInlineMarkdown(h)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-dark-850/60 bg-white/50 dark:bg-dark-900/30">
+                {bodyRows.map((row, rIdx) => (
+                  <tr key={rIdx} className="hover:bg-slate-50/50 dark:hover:bg-dark-850/30 transition-colors">
+                    {row.map((cell, cIdx) => (
+                      <td key={cIdx} className="px-3 py-1.5 text-slate-650 dark:text-dark-300">
+                        {parseInlineMarkdown(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         );
       }
-      lastIndex = regex.lastIndex;
+      continue;
     }
 
-    if (lastIndex < currentText.length) {
-      parts.push(currentText.substring(lastIndex));
+    // Horizontal Rule
+    if (line === '---' || line === '***' || line === '___') {
+      elements.push(<hr key={`hr-${i}`} className="my-2.5 border-slate-200/70 dark:border-dark-800/80" />);
+      i++;
+      continue;
     }
 
-
-    if (isHeader) {
-      if (headerLevel === 1) return <h1 key={idx} className="text-lg font-black tracking-tight mt-3 mb-2">{parts}</h1>;
-      if (headerLevel === 2) return <h2 key={idx} className="text-base font-black tracking-tight mt-3 mb-2">{parts}</h2>;
-      return <h3 key={idx} className="text-sm font-bold mt-2.5 mb-1.5">{parts}</h3>;
+    // Headers
+    if (line.startsWith('### ')) {
+      elements.push(<h3 key={`h3-${i}`} className="text-sm font-bold mt-2.5 mb-1 text-slate-900 dark:text-white">{parseInlineMarkdown(line.substring(4))}</h3>);
+      i++;
+      continue;
+    }
+    if (line.startsWith('## ')) {
+      elements.push(<h2 key={`h2-${i}`} className="text-base font-black tracking-tight mt-3 mb-1.5 text-slate-900 dark:text-white">{parseInlineMarkdown(line.substring(3))}</h2>);
+      i++;
+      continue;
+    }
+    if (line.startsWith('# ')) {
+      elements.push(<h1 key={`h1-${i}`} className="text-lg font-black tracking-tight mt-3 mb-2 text-slate-900 dark:text-white">{parseInlineMarkdown(line.substring(2))}</h1>);
+      i++;
+      continue;
     }
 
-    if (isBullet) {
-      return (
-        <li key={idx} className="list-disc ml-5 mt-1 text-slate-650 dark:text-dark-300 font-medium">
-          {parts}
+    // Numbered list: "1. "
+    const numberedMatch = line.match(/^(\d+)\.\s+(.*)/);
+    if (numberedMatch) {
+      elements.push(
+        <div key={`num-${i}`} className="flex gap-2 ml-1 mt-1 text-slate-650 dark:text-dark-300 font-medium">
+          <span className="font-extrabold text-brand-600 dark:text-brand-400 shrink-0">{numberedMatch[1]}.</span>
+          <span className="leading-relaxed">{parseInlineMarkdown(numberedMatch[2])}</span>
+        </div>
+      );
+      i++;
+      continue;
+    }
+
+    // Bullet point: "- " or "* "
+    if (line.startsWith('- ') || line.startsWith('* ')) {
+      elements.push(
+        <li key={`bullet-${i}`} className="list-disc ml-5 mt-1 text-slate-650 dark:text-dark-300 font-medium leading-relaxed">
+          {parseInlineMarkdown(line.substring(2))}
         </li>
       );
+      i++;
+      continue;
     }
 
-    return (
-      <p key={idx} className="mt-1 leading-relaxed text-slate-650 dark:text-dark-300 font-medium min-h-[16px]">
-        {parts}
-      </p>
-    );
-  });
+    // Normal line or empty space
+    if (line.length === 0) {
+      elements.push(<div key={`sp-${i}`} className="h-1" />);
+    } else {
+      elements.push(
+        <p key={`p-${i}`} className="mt-1 leading-relaxed text-slate-650 dark:text-dark-300 font-medium min-h-[16px]">
+          {parseInlineMarkdown(line)}
+        </p>
+      );
+    }
+    i++;
+  }
+
+  return elements;
 };
 
 const AiAssistant = () => {
@@ -118,11 +194,15 @@ const AiAssistant = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  const chatEndRef = useRef(null);
-
+  const chatContainerRef = useRef(null);
 
   const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
@@ -178,7 +258,7 @@ const AiAssistant = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-130px)] lg:h-[calc(100vh-160px)]">
+    <div className="flex flex-col h-full overflow-hidden">
       
       <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-200/50 dark:border-dark-800/50 shrink-0">
         <div>
@@ -197,7 +277,7 @@ const AiAssistant = () => {
       <div className="flex-1 min-h-0 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-4 md:p-6 flex flex-col justify-between overflow-hidden shadow-xl">
         
        
-        <div className="flex-1 overflow-y-auto pr-1 space-y-4">
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto pr-1 space-y-4">
           <AnimatePresence initial={false}>
             {messages.map((msg, idx) => {
               const isAi = msg.sender === 'ai';
@@ -268,8 +348,6 @@ const AiAssistant = () => {
               </button>
             </div>
           )}
-          
-          <div ref={chatEndRef} />
         </div>
 
         {messages.length === 1 && !loading && (

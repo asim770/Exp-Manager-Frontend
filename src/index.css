@@ -40,8 +40,12 @@
 
 /* Base styles */
 @layer base {
+  html, body {
+    @apply h-full overflow-hidden;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 transition-colors duration-300 font-sans antialiased overflow-x-hidden;
+    @apply bg-slate-50 text-slate-900 transition-colors duration-300 font-sans antialiased;
   }
 
   .dark body,

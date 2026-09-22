@@ -106,7 +106,7 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen relative flex bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-dark-100 transition-colors duration-300">
+    <div className="h-screen max-h-screen overflow-hidden relative flex bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-dark-100 transition-colors duration-300">
       
       {/* Background ambient glows */}
       <div className="absolute top-[-10%] left-[-10%] ambient-glow bg-brand-500/20 dark:bg-brand-500/10"></div>
@@ -140,7 +140,7 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-72 glass-panel border-r border-slate-200 dark:border-dark-800/50 m-4 mr-0 rounded-3xl z-30 relative overflow-hidden">
+      <aside className="hidden lg:flex flex-col w-72 h-[calc(100vh-2rem)] glass-panel border-r border-slate-200 dark:border-dark-800/50 m-4 mr-0 rounded-3xl z-30 relative overflow-hidden shrink-0">
         {/* Brand */}
         <div className="p-6 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
@@ -207,10 +207,10 @@ const Layout = ({ children }) => {
       </aside>
 
       {/* Main content wrapper */}
-      <div className="flex-1 flex flex-col min-w-0 p-4 lg:p-6 overflow-x-hidden relative z-10">
+      <div className="flex-1 h-screen flex flex-col min-w-0 p-4 lg:p-6 overflow-hidden relative z-10">
         
         {/* Top Header */}
-        <header className="w-full glass-panel border border-slate-200 dark:border-dark-800/50 h-20 rounded-3xl px-6 flex items-center justify-between mb-6">
+        <header className="w-full glass-panel border border-slate-200 dark:border-dark-800/50 h-20 rounded-3xl px-6 flex items-center justify-between mb-6 shrink-0">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
@@ -341,13 +341,13 @@ const Layout = ({ children }) => {
           </div>
         </header>
 
-        <main className="flex-1 min-h-0 relative z-10">
+        <main id="snap-main-container" className="flex-1 min-h-0 overflow-y-auto relative z-10 pr-1">
           <AnimatedContent
             key={location.pathname}
-            distance={50}
+            distance={30}
             direction="vertical"
             reverse={false}
-            duration={0.7}
+            duration={0.5}
             ease="power3.out"
             initialOpacity={0}
             animateOpacity
@@ -355,6 +355,7 @@ const Layout = ({ children }) => {
             threshold={0.05}
             delay={0.05}
             className="h-full"
+            container="#snap-main-container"
           >
             {children}
           </AnimatedContent>
