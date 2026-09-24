@@ -1,16 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-
+import { useAuth } from './AuthContext';
 
 const FinanceContext = createContext();
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 export const FinanceProvider = ({ children }) => {
+  const { isAuthenticated, user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchProfile = useCallback(async () => {
@@ -41,6 +42,7 @@ export const FinanceProvider = ({ children }) => {
   }, []);
 
   const refreshAll = useCallback(async () => {
+    if (!isAuthenticated) return;
     setLoading(true);
     try {
       await Promise.all([
@@ -54,12 +56,19 @@ export const FinanceProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [fetchProfile, fetchNotifications, fetchDashboardData]);
+  }, [isAuthenticated, fetchProfile, fetchNotifications, fetchDashboardData]);
 
-  // Initial load
+  // Fetch data whenever user logs in or authentication state changes
   useEffect(() => {
-    refreshAll();
-  }, [refreshAll]);
+    if (isAuthenticated) {
+      refreshAll();
+    } else {
+      setProfile(null);
+      setNotifications([]);
+      setDashboardData(null);
+      setLoading(false);
+    }
+  }, [isAuthenticated, refreshAll]);
 
   // Helper methods
   const updateProfileSettings = async (settings) => {

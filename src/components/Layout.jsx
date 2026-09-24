@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, ArrowDownUp, HandCoins, PiggyBank, 
   BarChart3, Calendar as CalendarIcon, User, Bell, Sun, 
-  Moon, Search, Menu, X, Check, Trash2, Wallet, Sparkles
+  Moon, Search, Menu, X, Check, Trash2, Wallet, Sparkles, LogOut
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useFinance } from '../context/FinanceContext';
+import { useAuth } from '../context/AuthContext';
 import CommandPalette from './CommandPalette';
 import FloatingChatButton from './FloatingChatButton';
 import GradientText from './GradientText';
@@ -22,6 +23,7 @@ const Layout = ({ children }) => {
     markAllNotificationsRead, deleteNotificationRecord, 
     clearAllNotifications, currencySymbol 
   } = useFinance();
+  const { user, logout } = useAuth();
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -160,13 +162,17 @@ const Layout = ({ children }) => {
         </div>
 
         {/* User Quick Info */}
-        <div className="mx-4 mb-4 p-4 rounded-2xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-slate-300 dark:bg-dark-700 flex items-center justify-center font-bold text-slate-600 dark:text-dark-200 uppercase">
-            {profile?.name?.charAt(0) || 'A'}
-          </div>
+        <div className="mx-4 mb-4 p-3.5 rounded-2xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3">
+          {user?.avatar ? (
+            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border border-brand-500/30 shrink-0" />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-brand-500/20 text-brand-500 flex items-center justify-center font-bold uppercase shrink-0">
+              {(user?.name || profile?.name)?.charAt(0) || 'U'}
+            </div>
+          )}
           <div className="flex-1 overflow-hidden">
-            <h4 className="text-sm font-semibold truncate">{profile?.name || 'Loading...'}</h4>
-            <p className="text-xs text-slate-400 dark:text-dark-500 truncate">Currency: {currencySymbol}</p>
+            <h4 className="text-sm font-semibold truncate">{user?.name || profile?.name || 'User'}</h4>
+            <p className="text-[11px] text-slate-400 dark:text-dark-500 truncate">{user?.email || `Currency: ${currencySymbol}`}</p>
           </div>
         </div>
 
@@ -202,6 +208,12 @@ const Layout = ({ children }) => {
           >
             <span className="flex items-center gap-2"><Search className="w-3.5 h-3.5" /> Command Menu</span>
             <kbd className="px-1.5 py-0.5 rounded border border-slate-200 dark:border-dark-700 bg-slate-100 dark:bg-dark-800 text-[10px]">⌘K</kbd>
+          </button>
+          <button
+            onClick={logout}
+            className="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" /> Sign Out
           </button>
         </div>
       </aside>
@@ -335,9 +347,13 @@ const Layout = ({ children }) => {
               </AnimatePresence>
             </div>
             
-            <div className="w-10 h-10 rounded-2xl bg-brand-100 dark:bg-brand-950/50 border border-brand-200/50 dark:border-brand-900/50 flex items-center justify-center text-brand-600 dark:text-brand-400 font-extrabold uppercase shadow-sm">
-              {profile?.name?.substring(0, 2) || 'AM'}
-            </div>
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-2xl object-cover border border-brand-200/50 dark:border-brand-900/50 shadow-sm" />
+            ) : (
+              <div className="w-10 h-10 rounded-2xl bg-brand-100 dark:bg-brand-950/50 border border-brand-200/50 dark:border-brand-900/50 flex items-center justify-center text-brand-600 dark:text-brand-400 font-extrabold uppercase shadow-sm">
+                {(user?.name || profile?.name)?.substring(0, 2) || 'US'}
+              </div>
+            )}
           </div>
         </header>
 
@@ -405,13 +421,17 @@ const Layout = ({ children }) => {
                 </button>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-dark-700 flex items-center justify-center font-bold text-slate-600 dark:text-dark-200 uppercase">
-                  {profile?.name?.charAt(0) || 'A'}
-                </div>
-                <div className="overflow-hidden">
-                  <h4 className="text-sm font-semibold truncate">{profile?.name}</h4>
-                  <p className="text-xs text-slate-400 truncate">Currency: {currencySymbol}</p>
+              <div className="p-3.5 rounded-xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3 mb-6">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover border border-brand-500/30 shrink-0" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-dark-700 flex items-center justify-center font-bold text-slate-600 dark:text-dark-200 uppercase shrink-0">
+                    {(user?.name || profile?.name)?.charAt(0) || 'U'}
+                  </div>
+                )}
+                <div className="overflow-hidden flex-1">
+                  <h4 className="text-sm font-semibold truncate">{user?.name || profile?.name}</h4>
+                  <p className="text-[11px] text-slate-400 truncate">{user?.email || `Currency: ${currencySymbol}`}</p>
                 </div>
               </div>
 

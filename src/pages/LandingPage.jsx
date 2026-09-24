@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  ArrowRight, ShieldCheck
+  ArrowRight, ShieldCheck, Lock, LogOut, LayoutDashboard
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import LiquidEther from '../components/LiquidEther';
 import GradientText from '../components/GradientText';
 import AnimatedContent from '../components/AnimatedContent';
+import AuthModal from '../components/AuthModal';
+import GoogleAuthButton from '../components/GoogleAuthButton';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { isAuthenticated, user, logout } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-dark-100 transition-colors duration-300 relative overflow-hidden flex flex-col justify-between">
@@ -56,13 +61,43 @@ const LandingPage = () => {
           </GradientText>
         </div>
 
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0"
-          >
-            Enter Dashboard <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+        <div className="flex items-center gap-3">
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] text-white font-bold">
+                    {user?.name?.[0] || 'U'}
+                  </div>
+                )}
+                <span className="font-medium truncate max-w-[120px]">{user?.name}</span>
+              </div>
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-lg shadow-brand-500/20 transition-all hover:-translate-y-0.5"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+              </button>
+              <button
+                onClick={logout}
+                title="Sign Out"
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-900/40 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setShowAuthModal(true)}
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              >
+                <Lock className="w-3.5 h-3.5" /> Sign In with Google
+              </button>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -77,8 +112,8 @@ const LandingPage = () => {
             duration={0.7}
             ease="power3.out"
           >
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand-50 dark:bg-brand-950/40 border border-brand-200/50 dark:border-brand-900/50 text-[10px] font-bold text-brand-600 dark:text-brand-400 mb-6">
-              <ShieldCheck className="w-3.5 h-3.5" /> Single User Local Finance Hub
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200/50 dark:border-brand-900/60 text-[11px] font-bold text-brand-600 dark:text-brand-400 mb-6 backdrop-blur-md shadow-sm">
+              <ShieldCheck className="w-4 h-4 text-emerald-500" /> Multi-User Finance Hub • Google Authentication
             </div>
           </AnimatedContent>
 
@@ -95,7 +130,7 @@ const LandingPage = () => {
               <span className="bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
                 Wealth
               </span>
-              , Offline.
+              , Securely.
             </h1>
           </AnimatedContent>
 
@@ -108,11 +143,11 @@ const LandingPage = () => {
             ease="power3.out"
           >
             <p className="text-slate-500 dark:text-dark-400 text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium">
-              A premium personal dashboard with real-time stats, interactive cash flow charts, budgeting, savings targets, and debt ledgers. Safely stored on localhost.
+              A modern, intelligent personal finance manager with individual Google accounts, bank-grade data isolation, interactive cash flow charts, budgeting, savings targets, and AI assistant.
             </p>
           </AnimatedContent>
 
-          {/* Enter Button */}
+          {/* Action Buttons */}
           <AnimatedContent
             distance={40}
             direction="vertical"
@@ -120,24 +155,40 @@ const LandingPage = () => {
             duration={0.7}
             ease="power3.out"
           >
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-extrabold text-sm shadow-2xl shadow-brand-500/25 hover:shadow-brand-500/35 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-            >
-              Open Your App <ArrowRight className="w-4.5 h-4.5" />
-            </button>
+            {isAuthenticated ? (
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-extrabold text-sm shadow-2xl shadow-brand-500/25 hover:shadow-brand-500/35 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              >
+                Go to Dashboard <ArrowRight className="w-4.5 h-4.5" />
+              </button>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <GoogleAuthButton
+                  className="px-6 py-3.5 text-sm"
+                  buttonText="Sign in with Google"
+                  onSuccess={() => navigate('/dashboard')}
+                />
+              </div>
+            )}
           </AnimatedContent>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="h-14 border-t border-slate-200 dark:border-dark-900 bg-white/20 dark:bg-dark-950/40 relative z-10 px-6 lg:px-12 text-center text-[10px] text-slate-400 dark:text-dark-600 font-bold flex flex-col sm:flex-row justify-between items-center gap-2 shrink-0">
-        <span>© {new Date().getFullYear()} MyExpManager. Running on local node server.</span>
+        <span>© {new Date().getFullYear()} MyExpManager. Powered by Google Authentication & Gemini AI.</span>
         <div className="flex items-center gap-4">
-          <span>Private Mode Enabled</span>
+          <span className="text-emerald-500 font-medium">Google OAuth Protected</span>
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
         </div>
       </footer>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </div>
   );
 };
