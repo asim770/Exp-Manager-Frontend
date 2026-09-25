@@ -18,6 +18,7 @@ import CalendarView from './pages/CalendarView';
 import ProfileSettings from './pages/ProfileSettings';
 import AiAssistant from './pages/AiAssistant';
 import GoogleCallback from './pages/GoogleCallback';
+import LoginPage from './pages/LoginPage';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '666611753013-8dauik9chnkasm4268tml3ecc05mg0ns.apps.googleusercontent.com';
 
@@ -31,6 +32,7 @@ function App() {
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/auth/callback" element={<GoogleCallback />} />
                 <Route path="/api/auth/callback/google" element={<GoogleCallback />} />
 

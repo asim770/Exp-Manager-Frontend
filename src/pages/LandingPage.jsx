@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, ShieldCheck, Lock, LogOut, LayoutDashboard
@@ -10,12 +10,48 @@ import GradientText from '../components/GradientText';
 import AnimatedContent from '../components/AnimatedContent';
 import AuthModal from '../components/AuthModal';
 import GoogleAuthButton from '../components/GoogleAuthButton';
+import MobileLoginView from '../components/MobileLoginView';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { isAuthenticated, user, logout } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Phone / Mobile detection
+  const [isMobileScreen, setIsMobileScreen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return isMobileUA || window.innerWidth < 768;
+    }
+    return false;
+  });
+  const [forceDesktopView, setForceDesktopView] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobileScreen(isMobileUA || window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // On mobile phone, if user is already authenticated, take them directly to the dashboard
+  useEffect(() => {
+    if (isAuthenticated && isMobileScreen) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, isMobileScreen, navigate]);
+
+  // When on phone/mobile and user is not forcing desktop view, render direct Google Login screen
+  if (isMobileScreen && !forceDesktopView && !isAuthenticated) {
+    return (
+      <MobileLoginView
+        onSwitchToLanding={() => setForceDesktopView(true)}
+      />
+    );
+  }
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-dark-100 transition-colors duration-300 relative overflow-hidden flex flex-col justify-between">
@@ -24,7 +60,7 @@ const LandingPage = () => {
       <div className="absolute top-[-20%] left-[-10%] ambient-glow bg-brand-500/25 dark:bg-brand-500/10"></div>
       <div className="absolute bottom-[-10%] right-[-10%] ambient-glow bg-blue-500/20 dark:bg-blue-500/10"></div>
 
-      {/* LiquidEther Background */}
+      {/* LiquidEther Background (only rendered on desktop for performance) */}
       <div className="absolute inset-0 w-full h-full z-0 opacity-60 dark:opacity-40">
         <LiquidEther
           colors={[ '#5227FF', '#FF9FFC', '#B497CF' ]}

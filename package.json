@@ -20,6 +20,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^1.24.0",
     "ogl": "^1.0.11",
+    "puppeteer-core": "^25.12.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-is": "^19.3.0",
