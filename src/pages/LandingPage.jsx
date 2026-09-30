@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  ArrowRight, ShieldCheck, Lock, LogOut, LayoutDashboard
+  ArrowRight, ShieldCheck, Lock, LogOut, LayoutDashboard, Mail
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -130,7 +130,7 @@ const LandingPage = () => {
                 onClick={() => setShowAuthModal(true)}
                 className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               >
-                <Lock className="w-3.5 h-3.5" /> Sign In with Google
+                <Lock className="w-3.5 h-3.5" /> Sign In
               </button>
             </div>
           )}
@@ -205,6 +205,14 @@ const LandingPage = () => {
                   buttonText="Sign in with Google"
                   onSuccess={() => navigate('/dashboard')}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowAuthModal(true)}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-750 font-semibold text-sm transition-all shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
+                >
+                  <Mail className="w-4 h-4 text-indigo-400" />
+                  <span>Sign In with Email</span>
+                </button>
               </div>
             )}
           </AnimatedContent>

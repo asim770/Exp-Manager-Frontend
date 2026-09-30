@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  ShieldCheck, Lock, Sparkles, TrendingUp, Wallet, 
-  ArrowUpRight, ArrowDownLeft, Sun, Moon, CheckCircle2 
+  ShieldCheck, Lock, Sparkles, TrendingUp, 
+  ArrowUpRight, ArrowDownLeft, Sun, Moon, CheckCircle2, Mail 
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import GradientText from './GradientText';
 import GoogleAuthButton from './GoogleAuthButton';
+import AuthModal from './AuthModal';
 
 const MobileLoginView = ({ onSwitchToLanding }) => {
   const { theme, toggleTheme } = useTheme();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between p-5 relative overflow-hidden select-none">
@@ -110,15 +112,24 @@ const MobileLoginView = ({ onSwitchToLanding }) => {
           </div>
         </div>
 
-        {/* Google Authentication Button */}
-        <div>
+        {/* Authentication Buttons */}
+        <div className="space-y-3">
           <GoogleAuthButton
-            className="w-full py-4 text-sm font-bold rounded-2xl shadow-xl shadow-brand-500/25"
+            className="w-full py-3.5 text-sm font-bold rounded-2xl shadow-xl shadow-brand-500/25"
             buttonText="Continue with Google"
             onSuccess={() => {
               window.location.href = '/dashboard';
             }}
           />
+
+          <button
+            type="button"
+            onClick={() => setShowAuthModal(true)}
+            className="w-full py-3.5 px-4 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-850 text-slate-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+          >
+            <Mail className="w-4 h-4 text-indigo-400" />
+            <span>Sign In with Email & Password</span>
+          </button>
         </div>
       </div>
 
@@ -134,9 +145,15 @@ const MobileLoginView = ({ onSwitchToLanding }) => {
         )}
         <div className="flex items-center gap-2 text-[10px] text-slate-500">
           <Lock className="w-3 h-3 text-emerald-400" />
-          <span>OAuth 2.0 Secure • No Password Needed</span>
+          <span>OAuth 2.0 & Email Authentication • Bank-Grade Isolation</span>
         </div>
       </div>
+
+      {/* Auth Modal for Email / Password / Forgot / OTP */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </div>
   );
 };

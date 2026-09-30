@@ -123,6 +123,99 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Handle Login with Email & Password
+  const loginWithEmail = async (email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
+      const { token: newToken, user: newUser } = res.data;
+
+      localStorage.setItem('exp_token', newToken);
+      localStorage.setItem('exp_user', JSON.stringify(newUser));
+      setToken(newToken);
+      setUser(newUser);
+      return res.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Login failed. Please check your credentials.';
+      setError(msg);
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Sign Up with Name, Email & Password
+  const signupWithEmail = async (name, email, password, confirmPassword) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axios.post(`${API_URL}/auth/signup`, {
+        name,
+        email,
+        password,
+        confirmPassword,
+      });
+      const { token: newToken, user: newUser } = res.data;
+
+      localStorage.setItem('exp_token', newToken);
+      localStorage.setItem('exp_user', JSON.stringify(newUser));
+      setToken(newToken);
+      setUser(newUser);
+      return res.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to create account.';
+      setError(msg);
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Request Password Reset OTP
+  const forgotPassword = async (email) => {
+    setError(null);
+    try {
+      const res = await axios.post(`${API_URL}/auth/forgot-password`, { email });
+      return res.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to request password reset OTP.';
+      setError(msg);
+      throw new Error(msg);
+    }
+  };
+
+  // Verify Reset OTP
+  const verifyResetOtp = async (email, otp) => {
+    setError(null);
+    try {
+      const res = await axios.post(`${API_URL}/auth/verify-otp`, { email, otp });
+      return res.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Invalid or expired OTP.';
+      setError(msg);
+      throw new Error(msg);
+    }
+  };
+
+  // Reset Password with reset authorization token
+  const resetPassword = async (email, resetToken, password, confirmPassword) => {
+    setError(null);
+    try {
+      const res = await axios.post(`${API_URL}/auth/reset-password`, {
+        email,
+        resetToken,
+        password,
+        confirmPassword,
+      });
+      return res.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to reset password.';
+      setError(msg);
+      throw new Error(msg);
+    }
+  };
+
   // Direct login when returned from callback redirect
   const loginWithDirectToken = (newToken, newUser) => {
     localStorage.setItem('exp_token', newToken);
@@ -149,6 +242,11 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!token && !!user,
         loading,
         error,
+        loginWithEmail,
+        signupWithEmail,
+        forgotPassword,
+        verifyResetOtp,
+        resetPassword,
         loginWithGoogleCredential,
         loginWithGoogleCode,
         loginWithDirectToken,
