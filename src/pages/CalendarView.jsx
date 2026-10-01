@@ -7,20 +7,25 @@ import {
 import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
 
+// In-session memory cache to prevent UI flickering on tab switches
+let cachedCalendarData = null;
+
 const CalendarView = () => {
   const { currencySymbol, apiUrl } = useFinance();
   
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [transactions, setTransactions] = useState([]);
-  const [borrows, setBorrows] = useState([]);
-  const [lends, setLends] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState(() => cachedCalendarData?.transactions || []);
+  const [borrows, setBorrows] = useState(() => cachedCalendarData?.borrows || []);
+  const [lends, setLends] = useState(() => cachedCalendarData?.lends || []);
+  const [loading, setLoading] = useState(() => !cachedCalendarData);
 
   // Selected Day detailed modal
   const [selectedDayEvents, setSelectedDayEvents] = useState(null);
 
-  const fetchMonthEvents = async () => {
-    setLoading(true);
+  const fetchMonthEvents = async (silent = false) => {
+    if (!silent && !cachedCalendarData && transactions.length === 0) {
+      setLoading(true);
+    }
     try {
       // Calculate first and last day of the active month
       const year = currentDate.getFullYear();
@@ -47,6 +52,12 @@ const CalendarView = () => {
         return d.getFullYear() === year && d.getMonth() === month;
       });
 
+      cachedCalendarData = {
+        transactions: txsRes.data,
+        borrows: activeBorrows,
+        lends: activeLends
+      };
+
       setBorrows(activeBorrows);
       setLends(activeLends);
     } catch (err) {
@@ -57,7 +68,7 @@ const CalendarView = () => {
   };
 
   useEffect(() => {
-    fetchMonthEvents();
+    fetchMonthEvents(Boolean(cachedCalendarData));
   }, [currentDate]);
 
   // Calendar calculations

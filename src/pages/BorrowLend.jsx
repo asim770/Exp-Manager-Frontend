@@ -8,14 +8,21 @@ import {
 import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
 
+// In-session cache to eliminate UI flashing when switching tabs
+let cachedBorrowLend = {
+  borrow: null,
+  lend: null
+};
+
 const BorrowLend = () => {
   const { currencySymbol, apiUrl, refreshAll } = useFinance();
   
   const [activeTab, setActiveTab] = useState('borrow'); // borrow or lend
-  const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [records, setRecords] = useState(() => cachedBorrowLend['borrow'] || []);
+  const [loading, setLoading] = useState(() => !cachedBorrowLend['borrow']);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('pending'); // pending or all
+  const isInitialMount = React.useRef(true);
   
   // Drawer & Modals state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -41,14 +48,19 @@ const BorrowLend = () => {
   const [detailRecord, setDetailRecord] = useState(null);
 
   // Fetch lists
-  const fetchRecords = async () => {
-    setLoading(true);
+  const fetchRecords = async (currentTab = activeTab, silent = false) => {
+    if (!silent && !cachedBorrowLend[currentTab] && records.length === 0) {
+      setLoading(true);
+    }
     try {
-      const endpoint = activeTab === 'borrow' ? 'borrow' : 'lend';
+      const endpoint = currentTab === 'borrow' ? 'borrow' : 'lend';
       let url = `${apiUrl}/${endpoint}?status=${filterStatus === 'pending' ? 'pending' : ''}`;
       if (search.trim()) url += `&search=${search}`;
       
       const res = await axios.get(url);
+      if (!search.trim() && filterStatus === 'pending') {
+        cachedBorrowLend[currentTab] = res.data;
+      }
       setRecords(res.data);
     } catch (err) {
       console.error('Error fetching borrow/lend records:', err);
@@ -58,13 +70,21 @@ const BorrowLend = () => {
   };
 
   useEffect(() => {
-    fetchRecords();
+    if (cachedBorrowLend[activeTab]) {
+      setRecords(cachedBorrowLend[activeTab]);
+      setLoading(false);
+    }
+    fetchRecords(activeTab, Boolean(cachedBorrowLend[activeTab]));
   }, [activeTab, filterStatus]);
 
-  // Debounced Search
+  // Debounced Search (skip initial mount to prevent double fetch)
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     const delayDebounce = setTimeout(() => {
-      fetchRecords();
+      fetchRecords(activeTab, false);
     }, 300);
     return () => clearTimeout(delayDebounce);
   }, [search]);

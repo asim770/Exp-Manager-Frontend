@@ -16,20 +16,25 @@ import 'jspdf-autotable';
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#ef4444', '#06b6d4', '#84cc16', '#64748b'];
 
+// In-session memory cache to prevent UI flickering on tab switches
+let cachedReports = null;
+
 const Reports = () => {
   const { currencySymbol, apiUrl, refreshAll } = useFinance();
   
-  const [transactions, setTransactions] = useState([]);
-  const [borrows, setBorrows] = useState([]);
-  const [lends, setLends] = useState([]);
-  const [savings, setSavings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState(() => cachedReports?.transactions || []);
+  const [borrows, setBorrows] = useState(() => cachedReports?.borrows || []);
+  const [lends, setLends] = useState(() => cachedReports?.lends || []);
+  const [savings, setSavings] = useState(() => cachedReports?.savings || []);
+  const [loading, setLoading] = useState(() => !cachedReports);
   
   // Date filters
   const [timePeriod, setTimePeriod] = useState('6months'); // 1month, 3months, 6months, 1year, all
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (silent = false) => {
+    if (!silent && !cachedReports && transactions.length === 0) {
+      setLoading(true);
+    }
     try {
       // Query everything so we can build holistic reports
       const [txRes, borrowRes, lendRes, savingsRes] = await Promise.all([
@@ -51,6 +56,13 @@ const Reports = () => {
 
       const filteredTx = txRes.data.filter(t => new Date(t.date) >= limitDate);
 
+      cachedReports = {
+        transactions: filteredTx,
+        borrows: borrowRes.data,
+        lends: lendRes.data,
+        savings: savingsRes.data
+      };
+
       setTransactions(filteredTx);
       setBorrows(borrowRes.data);
       setLends(lendRes.data);
@@ -63,7 +75,7 @@ const Reports = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(Boolean(cachedReports));
   }, [timePeriod]);
 
   // Aggregate Category Expense Data (memoized)

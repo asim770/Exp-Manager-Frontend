@@ -7,19 +7,21 @@ import { FinanceProvider } from './context/FinanceContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
-// Lazy-loaded pages for optimal bundle splitting
+// Public routes lazy-loaded
 const LandingPage = lazy(() => import('./pages/LandingPage'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Transactions = lazy(() => import('./pages/Transactions'));
-const BorrowLend = lazy(() => import('./pages/BorrowLend'));
-const BudgetsSavings = lazy(() => import('./pages/BudgetsSavings'));
-const SplitGroups = lazy(() => import('./pages/SplitGroups'));
-const Reports = lazy(() => import('./pages/Reports'));
-const CalendarView = lazy(() => import('./pages/CalendarView'));
-const ProfileSettings = lazy(() => import('./pages/ProfileSettings'));
-const AiAssistant = lazy(() => import('./pages/AiAssistant'));
 const GoogleCallback = lazy(() => import('./pages/GoogleCallback'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+
+// Core authenticated pages imported statically for instant, flicker-free navigation
+import Dashboard from './pages/Dashboard';
+import Transactions from './pages/Transactions';
+import BorrowLend from './pages/BorrowLend';
+import BudgetsSavings from './pages/BudgetsSavings';
+import SplitGroups from './pages/SplitGroups';
+import Reports from './pages/Reports';
+import CalendarView from './pages/CalendarView';
+import ProfileSettings from './pages/ProfileSettings';
+import AiAssistant from './pages/AiAssistant';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '666611753013-8dauik9chnkasm4268tml3ecc05mg0ns.apps.googleusercontent.com';
 
@@ -45,87 +47,25 @@ function App() {
                   <Route path="/auth/callback" element={<GoogleCallback />} />
                   <Route path="/api/auth/callback/google" element={<GoogleCallback />} />
 
-                {/* Protected Application Routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><Dashboard /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/transactions"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><Transactions /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/borrow-lend"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><BorrowLend /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/split-groups"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><SplitGroups /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/split-groups/:groupId"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><SplitGroups /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/budgets-savings"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><BudgetsSavings /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/reports"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><Reports /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/calendar"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><CalendarView /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><ProfileSettings /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/ai-assistant"
-                  element={
-                    <ProtectedRoute>
-                      <Layout><AiAssistant /></Layout>
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* Protected Application Routes with Persistent Layout */}
+                  <Route
+                    element={
+                      <ProtectedRoute>
+                        <Layout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/borrow-lend" element={<BorrowLend />} />
+                    <Route path="/split-groups" element={<SplitGroups />} />
+                    <Route path="/split-groups/:groupId" element={<SplitGroups />} />
+                    <Route path="/budgets-savings" element={<BudgetsSavings />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/calendar" element={<CalendarView />} />
+                    <Route path="/profile" element={<ProfileSettings />} />
+                    <Route path="/ai-assistant" element={<AiAssistant />} />
+                  </Route>
 
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />

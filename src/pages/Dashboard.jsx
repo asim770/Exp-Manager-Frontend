@@ -18,15 +18,19 @@ import CreateSplitGroupModal from '../components/CreateSplitGroupModal';
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#ef4444', '#64748b'];
 
+// In-session memory cache to prevent UI flickering on tab switches
+let cachedAiInsights = null;
+let cachedSplitSummary = null;
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { dashboardData, loading, error, currencySymbol, refreshAll, apiUrl } = useFinance();
   
-  const [aiInsights, setAiInsights] = useState(null);
+  const [aiInsights, setAiInsights] = useState(() => cachedAiInsights);
   const [loadingInsights, setLoadingInsights] = useState(false);
   
-  const [splitSummary, setSplitSummary] = useState(null);
-  const [loadingSplitSummary, setLoadingSplitSummary] = useState(false);
+  const [splitSummary, setSplitSummary] = useState(() => cachedSplitSummary);
+  const [loadingSplitSummary, setLoadingSplitSummary] = useState(() => !cachedSplitSummary);
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const hasFetchedSplitSummary = useRef(false);
 
@@ -37,13 +41,19 @@ const Dashboard = () => {
     }
   }, [dashboardData, refreshAll]);
 
-  // Fetch AI insights once on mount
+  // Fetch AI insights once on mount if not already cached
   useEffect(() => {
-    if (aiInsights) return;
+    if (cachedAiInsights && !aiInsights) {
+      setAiInsights(cachedAiInsights);
+    }
+    if (aiInsights || cachedAiInsights) return;
     let isMounted = true;
     setLoadingInsights(true);
     axios.get(`${apiUrl}/ai/insights`)
-      .then(res => { if (isMounted) setAiInsights(res.data); })
+      .then(res => { 
+        cachedAiInsights = res.data;
+        if (isMounted) setAiInsights(res.data); 
+      })
       .catch(err => { if (isMounted) console.error('Failed to load AI Insights:', err); })
       .finally(() => { if (isMounted) setLoadingInsights(false); });
 
@@ -55,9 +65,14 @@ const Dashboard = () => {
     if (hasFetchedSplitSummary.current) return;
     hasFetchedSplitSummary.current = true;
     let isMounted = true;
-    setLoadingSplitSummary(true);
+    if (!cachedSplitSummary) {
+      setLoadingSplitSummary(true);
+    }
     axios.get(`${apiUrl}/split-groups/summary`)
-      .then(res => { if (isMounted) setSplitSummary(res.data); })
+      .then(res => { 
+        cachedSplitSummary = res.data;
+        if (isMounted) setSplitSummary(res.data); 
+      })
       .catch(err => { if (isMounted) console.error('Failed to load split groups summary:', err); })
       .finally(() => { if (isMounted) setLoadingSplitSummary(false); });
 
@@ -70,7 +85,10 @@ const Dashboard = () => {
 
   const handleGroupCreated = useCallback(() => {
     axios.get(`${apiUrl}/split-groups/summary`)
-      .then(res => setSplitSummary(res.data))
+      .then(res => {
+        cachedSplitSummary = res.data;
+        setSplitSummary(res.data);
+      })
       .catch(err => console.error(err));
   }, [apiUrl]);
 

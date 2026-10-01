@@ -11,6 +11,9 @@ import { useFinance } from '../context/FinanceContext';
 import { useAuth } from '../context/AuthContext';
 import CreateSplitGroupModal from '../components/CreateSplitGroupModal';
 
+// In-session memory cache to prevent UI flickering on tab switches
+let cachedSplitGroups = null;
+
 const SplitGroups = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
@@ -18,9 +21,9 @@ const SplitGroups = () => {
   const { user } = useAuth();
   const userId = user?._id || user?.id;
 
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState(() => cachedSplitGroups || []);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !cachedSplitGroups);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [error, setError] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -43,8 +46,9 @@ const SplitGroups = () => {
   // Fetch all groups (only needed when viewing the list)
   const fetchGroups = useCallback(async () => {
     try {
-      setLoading(true);
+      if (!cachedSplitGroups) setLoading(true);
       const res = await axios.get(`${apiUrl}/split-groups`);
+      cachedSplitGroups = res.data;
       setGroups(res.data);
       setError(null);
     } catch (err) {

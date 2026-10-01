@@ -89,12 +89,15 @@ const TransactionRow = React.memo(({ tx, currencySymbol, onEdit, onDelete }) => 
 
 const ITEMS_PER_PAGE = 25;
 
+// In-session memory cache to prevent UI flickering on tab switches
+let cachedTransactions = null;
+
 const Transactions = () => {
   const location = useLocation();
   const { currencySymbol, apiUrl } = useFinance();
   
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [transactions, setTransactions] = useState(() => cachedTransactions || []);
+  const [loading, setLoading] = useState(() => !cachedTransactions);
   
   // Filters & Search
   const [search, setSearch] = useState('');
@@ -134,7 +137,9 @@ const Transactions = () => {
 
   // Fetch transactions from DB
   const fetchTxList = React.useCallback(async () => {
-    setLoading(true);
+    if (!cachedTransactions) {
+      setLoading(true);
+    }
     try {
       let url = `${apiUrl}/transactions?sortBy=${sortBy}`;
       if (filterType !== 'all') url += `&type=${filterType}`;
@@ -166,6 +171,7 @@ const Transactions = () => {
       if (end) url += `&endDate=${end}`;
       
       const res = await axios.get(url);
+      cachedTransactions = res.data;
       setTransactions(res.data);
     } catch (err) {
       console.error('Error fetching transactions:', err);

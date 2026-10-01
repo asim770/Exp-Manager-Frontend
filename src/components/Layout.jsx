@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, ArrowDownUp, HandCoins, PiggyBank, 
@@ -13,13 +13,19 @@ import CommandPalette from './CommandPalette';
 import FloatingChatButton from './FloatingChatButton';
 import GradientText from './GradientText';
 import Particles from './Particles';
-import AnimatedContent from './AnimatedContent';
 import Ribbons from './Ribbons';
 
 // Stable WebGL color references to prevent GPU context thrashing
 const RIBBON_COLORS = ["#5227FF"];
 const PARTICLE_COLORS_DARK = ["#ffffff"];
 const PARTICLE_COLORS_LIGHT = ["#8b5cf6"];
+
+const ContentFallback = () => (
+  <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
+    <div className="spinner"></div>
+    <p className="text-xs text-slate-400 dark:text-dark-500 font-semibold animate-pulse">Loading...</p>
+  </div>
+);
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -49,6 +55,14 @@ const Layout = ({ children }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isNotificationsOpen]);
+
+  // Reset main container scroll when changing pages
+  useEffect(() => {
+    const container = document.getElementById('snap-main-container');
+    if (container) {
+      container.scrollTop = 0;
+    }
+  }, [location.pathname]);
 
   // Keyboard shortcut for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -415,23 +429,9 @@ const Layout = ({ children }) => {
         </header>
 
         <main id="snap-main-container" className="flex-1 min-h-0 overflow-y-auto relative z-10 pr-1">
-          <AnimatedContent
-            key={location.pathname}
-            distance={30}
-            direction="vertical"
-            reverse={false}
-            duration={0.5}
-            ease="power3.out"
-            initialOpacity={0}
-            animateOpacity
-            scale={0.98}
-            threshold={0.05}
-            delay={0.05}
-            className="h-full"
-            container="#snap-main-container"
-          >
-            {children}
-          </AnimatedContent>
+          <Suspense fallback={<ContentFallback />}>
+            {children || <Outlet />}
+          </Suspense>
         </main>
       </div>
 

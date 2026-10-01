@@ -8,14 +8,17 @@ import {
 import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
 
+// In-session memory cache to prevent UI flickering on tab switches
+let cachedGoals = null;
+
 const BudgetsSavings = () => {
   const { 
     profile, currencySymbol, dashboardData, apiUrl, 
     updateProfileSettings, refreshAll 
   } = useFinance();
   
-  const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [goals, setGoals] = useState(() => cachedGoals || []);
+  const [loading, setLoading] = useState(() => !cachedGoals);
 
   // Profile Edit fields (Monthly Budget)
   const [budgetVal, setBudgetVal] = useState('');
@@ -43,10 +46,13 @@ const BudgetsSavings = () => {
   // Detail Modal view
   const [detailGoal, setDetailGoal] = useState(null);
 
-  const fetchGoals = async () => {
-    setLoading(true);
+  const fetchGoals = async (silent = false) => {
+    if (!silent && !cachedGoals && goals.length === 0) {
+      setLoading(true);
+    }
     try {
       const res = await axios.get(`${apiUrl}/savings`);
+      cachedGoals = res.data;
       setGoals(res.data);
     } catch (err) {
       console.error('Error fetching savings goals:', err);
@@ -56,10 +62,13 @@ const BudgetsSavings = () => {
   };
 
   useEffect(() => {
-    fetchGoals();
+    fetchGoals(Boolean(cachedGoals));
+  }, []);
+
+  useEffect(() => {
     if (profile) {
-      setBudgetVal(profile.monthlyBudget.toString());
-      setAlertPercentage(profile.budgetAlertPercentage.toString());
+      setBudgetVal(profile.monthlyBudget ? profile.monthlyBudget.toString() : '');
+      setAlertPercentage(profile.budgetAlertPercentage ? profile.budgetAlertPercentage.toString() : '');
     }
   }, [profile]);
 
