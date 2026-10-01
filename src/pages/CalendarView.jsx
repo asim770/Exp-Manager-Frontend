@@ -150,10 +150,10 @@ const CalendarView = () => {
         </div>
         
         {/* Navigation toggles */}
-        <div className="flex items-center gap-3 bg-white/40 dark:bg-dark-900/40 border border-slate-200 dark:border-dark-800 p-1.5 rounded-xl">
+        <div className="flex items-center gap-3 glass-pill p-1.5 rounded-2xl">
           <button 
             onClick={prevMonth}
-            className="p-2 rounded-lg hover:bg-slate-105 dark:hover:bg-dark-800 text-slate-655"
+            className="p-2 rounded-xl glass-pill hover:bg-slate-105 dark:hover:bg-white/10 text-slate-400 hover:text-white"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -162,7 +162,7 @@ const CalendarView = () => {
           </span>
           <button 
             onClick={nextMonth}
-            className="p-2 rounded-lg hover:bg-slate-105 dark:hover:bg-dark-800 text-slate-655"
+            className="p-2 rounded-xl glass-pill hover:bg-slate-105 dark:hover:bg-white/10 text-slate-400 hover:text-white"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -170,7 +170,7 @@ const CalendarView = () => {
       </div>
 
       {/* Calendar Grid Container */}
-      <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-5 shadow">
+      <div className="glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl p-5 shadow">
         
         {/* Days Header */}
         <div className="grid grid-cols-7 gap-2 mb-4 text-center">
@@ -192,7 +192,7 @@ const CalendarView = () => {
             {calendarCells.map((cell, idx) => {
               if (cell.empty) {
                 return (
-                  <div key={idx} className="aspect-square bg-slate-100/10 dark:bg-dark-950/20 rounded-2xl border border-transparent"></div>
+                  <div key={idx} className="aspect-square bg-slate-100/10 dark:bg-white/5 rounded-2xl border border-transparent"></div>
                 );
               }
 
@@ -207,8 +207,8 @@ const CalendarView = () => {
                   onClick={() => handleCellClick(cell)}
                   className={`aspect-square p-2 border rounded-2xl flex flex-col justify-between transition-all select-none ${
                     cell.hasEvents 
-                      ? 'cursor-pointer hover:scale-[1.03] bg-white dark:bg-dark-900 border-slate-200/60 dark:border-dark-800/80 shadow-sm' 
-                      : 'bg-transparent border-slate-100 dark:border-dark-900/40 text-slate-400 dark:text-dark-600'
+                      ? 'cursor-pointer hover:scale-[1.03] glass-pill dark:bg-white/5 border-slate-200/60 dark:border-white/10 shadow-sm' 
+                      : 'bg-transparent border-slate-100 dark:border-white/5 text-slate-400 dark:text-dark-500'
                   }`}
                 >
                   <span className="text-xs font-bold">{cell.day}</span>
@@ -240,15 +240,15 @@ const CalendarView = () => {
       <AnimatePresence>
         {selectedDayEvents && (
           <>
-            <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-xs" onClick={() => setSelectedDayEvents(null)}></div>
+            <div className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={() => setSelectedDayEvents(null)}></div>
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed top-0 bottom-0 right-0 w-full max-w-md bg-white dark:bg-dark-900 border-l border-slate-200 dark:border-dark-850 z-50 p-6 flex flex-col shadow-2xl"
+              className="fixed top-0 bottom-0 right-0 w-full max-w-md glass-modal border-l border-slate-200/50 dark:border-white/10 z-50 p-6 flex flex-col shadow-2xl"
             >
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-dark-850">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
                 <div>
                   <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-brand-500" />
@@ -256,7 +256,7 @@ const CalendarView = () => {
                   </h2>
                   <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mt-0.5 block">Schedule of transactions on this day</span>
                 </div>
-                <button onClick={() => setSelectedDayEvents(null)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 text-slate-500">
+                <button onClick={() => setSelectedDayEvents(null)} className="p-1.5 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -268,7 +268,7 @@ const CalendarView = () => {
                   <div className="space-y-2">
                     <span className="font-bold text-slate-400 uppercase tracking-wider block text-[9px]">Transactions</span>
                     {selectedDayEvents.transactions.map(t => (
-                      <div key={t._id} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 dark:bg-dark-950/30 border border-slate-100 dark:border-dark-800">
+                      <div key={t._id} className="flex justify-between items-center p-3 rounded-2xl glass-pill">
                         <div>
                           <span className="font-bold text-slate-800 dark:text-white">{t.category}</span>
                           {t.notes && <span className="text-[10px] text-slate-400 block mt-0.5">{t.notes}</span>}
@@ -286,7 +286,7 @@ const CalendarView = () => {
                   <div className="space-y-2">
                     <span className="font-bold text-amber-500 uppercase tracking-wider block text-[9px]">Debts Due (You owe)</span>
                     {selectedDayEvents.borrows.map(b => (
-                      <div key={b._id} className="flex justify-between items-center p-3 rounded-2xl bg-amber-500/5 border border-amber-500/15">
+                      <div key={b._id} className="flex justify-between items-center p-3 rounded-2xl glass-pill border border-amber-500/20">
                         <div>
                           <span className="font-bold text-slate-800 dark:text-white">Pay: {b.personName}</span>
                           {b.notes && <span className="text-[10px] text-slate-400 block mt-0.5">{b.notes}</span>}
@@ -305,7 +305,7 @@ const CalendarView = () => {
                   <div className="space-y-2">
                     <span className="font-bold text-teal-500 uppercase tracking-wider block text-[9px]">Receivables Due (Collect)</span>
                     {selectedDayEvents.lends.map(l => (
-                      <div key={l._id} className="flex justify-between items-center p-3 rounded-2xl bg-teal-500/5 border border-teal-500/15">
+                      <div key={l._id} className="flex justify-between items-center p-3 rounded-2xl glass-pill border border-teal-500/20">
                         <div>
                           <span className="font-bold text-slate-800 dark:text-white">Collect from: {l.personName}</span>
                           {l.notes && <span className="text-[10px] text-slate-400 block mt-0.5">{l.notes}</span>}
@@ -323,7 +323,7 @@ const CalendarView = () => {
 
               <button 
                 onClick={() => setSelectedDayEvents(null)}
-                className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-xs shadow-sm mt-6"
+                className="w-full py-3.5 rounded-xl glass-pill hover:bg-white/10 text-white font-bold text-xs shadow-sm mt-6"
               >
                 Close list panel
               </button>

@@ -218,18 +218,18 @@ const Reports = () => {
           <select 
             value={timePeriod}
             onChange={(e) => setTimePeriod(e.target.value)}
-            className="px-4.5 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 text-xs font-bold outline-none cursor-pointer"
+            className="px-4.5 py-3 rounded-xl glass-pill text-xs font-bold outline-none cursor-pointer text-slate-800 dark:text-white"
           >
-            <option value="1month">Past 30 Days</option>
-            <option value="3months">Past 3 Months</option>
-            <option value="6months">Past 6 Months</option>
-            <option value="1year">Past 1 Year</option>
-            <option value="all">All-Time Statement</option>
+            <option value="1month" className="bg-slate-900 text-white">Past 30 Days</option>
+            <option value="3months" className="bg-slate-900 text-white">Past 3 Months</option>
+            <option value="6months" className="bg-slate-900 text-white">Past 6 Months</option>
+            <option value="1year" className="bg-slate-900 text-white">Past 1 Year</option>
+            <option value="all" className="bg-slate-900 text-white">All-Time Statement</option>
           </select>
           
           <button 
             onClick={handleExportCSV}
-            className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 text-xs font-bold hover:bg-slate-100"
+            className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl glass-pill text-xs font-bold hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-white"
             title="Download CSV"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-500" /> <span className="hidden md:inline">CSV</span>

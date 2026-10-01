@@ -114,8 +114,8 @@ const ProfileSettings = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6">
-            <div className="p-3.5 rounded-2xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-white dark:bg-dark-800 shadow-sm">
+            <div className="p-3.5 rounded-2xl glass-pill flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-white/10 dark:bg-white/10 shadow-sm">
                 <GoogleIcon />
               </div>
               <div>
@@ -124,8 +124,8 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+            <div className="p-3.5 rounded-2xl glass-pill flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
@@ -134,8 +134,8 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
+            <div className="p-3.5 rounded-2xl glass-pill flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
                 <CheckCircle className="w-5 h-5" />
               </div>
               <div>
@@ -147,7 +147,7 @@ const ProfileSettings = () => {
         </div>
 
         {/* Profile Settings Card */}
-        <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6 shadow-sm">
+        <div className="glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl p-6 shadow-sm">
           <h3 className="font-extrabold text-base flex items-center gap-2">
             <User className="w-5 h-5 text-indigo-500" />
             General Information Settings
@@ -164,7 +164,7 @@ const ProfileSettings = () => {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none font-bold text-slate-800 dark:text-white"
+                  className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-slate-800 dark:text-white"
                 />
               </div>
 
@@ -173,15 +173,15 @@ const ProfileSettings = () => {
                 <select 
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none font-bold text-slate-800 dark:text-white cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-slate-800 dark:text-white cursor-pointer"
                 >
-                  <option value="$">USD ($)</option>
-                  <option value="€">EUR (€)</option>
-                  <option value="₹">INR (₹)</option>
-                  <option value="£">GBP (£)</option>
-                  <option value="¥">JPY (¥)</option>
-                  <option value="C$">CAD (C$)</option>
-                  <option value="A$">AUD (A$)</option>
+                  <option value="$" className="bg-slate-900 text-white">USD ($)</option>
+                  <option value="€" className="bg-slate-900 text-white">EUR (€)</option>
+                  <option value="₹" className="bg-slate-900 text-white">INR (₹)</option>
+                  <option value="£" className="bg-slate-900 text-white">GBP (£)</option>
+                  <option value="¥" className="bg-slate-900 text-white">JPY (¥)</option>
+                  <option value="C$" className="bg-slate-900 text-white">CAD (C$)</option>
+                  <option value="A$" className="bg-slate-900 text-white">AUD (A$)</option>
                 </select>
               </div>
 
@@ -192,7 +192,7 @@ const ProfileSettings = () => {
                   required
                   value={monthlyBudget}
                   onChange={(e) => setMonthlyBudget(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none font-bold text-slate-800 dark:text-white"
+                  className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-slate-800 dark:text-white"
                 />
               </div>
 
@@ -204,7 +204,7 @@ const ProfileSettings = () => {
                   max="100"
                   value={alertPercent}
                   onChange={(e) => setAlertPercent(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none font-bold text-slate-800 dark:text-white"
+                  className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-slate-800 dark:text-white"
                 />
               </div>
 

@@ -306,84 +306,84 @@ const Transactions = () => {
       </div>
 
       {/* Advanced Filters Toolbar */}
-      <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-5 space-y-4">
+      <div className="glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl p-5 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
           {/* Search bar */}
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 text-xs">
-            <Search className="w-4 h-4 text-slate-400 dark:text-dark-500" />
+          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl glass-input text-xs">
+            <Search className="w-4 h-4 text-slate-400 dark:text-dark-400" />
             <input 
               type="text" 
               placeholder="Search category, notes..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-0 outline-none w-full text-xs"
+              className="bg-transparent border-0 outline-none w-full text-xs text-slate-800 dark:text-white"
             />
           </div>
 
           {/* Type Filter */}
-          <div className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 rounded-xl text-xs">
-            <Filter className="w-4 h-4 text-slate-400 dark:text-dark-500" />
+          <div className="flex items-center gap-2 px-3 py-2 glass-pill rounded-xl text-xs">
+            <Filter className="w-4 h-4 text-slate-400 dark:text-dark-400" />
             <select 
               value={filterType} 
               onChange={(e) => {
                 setFilterType(e.target.value);
                 setFilterCategory('all'); // Reset category
               }}
-              className="bg-transparent border-0 outline-none w-full text-xs font-semibold cursor-pointer"
+              className="bg-transparent border-0 outline-none w-full text-xs font-semibold cursor-pointer text-slate-800 dark:text-white"
             >
-              <option value="all">All Types</option>
-              <option value="expense">Expenses Only</option>
-              <option value="income">Incomes Only</option>
+              <option value="all" className="bg-slate-900 text-white">All Types</option>
+              <option value="expense" className="bg-slate-900 text-white">Expenses Only</option>
+              <option value="income" className="bg-slate-900 text-white">Incomes Only</option>
             </select>
           </div>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 rounded-xl text-xs">
-            <Filter className="w-4 h-4 text-slate-400 dark:text-dark-500" />
+          <div className="flex items-center gap-2 px-3 py-2 glass-pill rounded-xl text-xs">
+            <Filter className="w-4 h-4 text-slate-400 dark:text-dark-400" />
             <select 
               value={filterCategory} 
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="bg-transparent border-0 outline-none w-full text-xs font-semibold cursor-pointer"
+              className="bg-transparent border-0 outline-none w-full text-xs font-semibold cursor-pointer text-slate-800 dark:text-white"
             >
-              <option value="all">All Categories</option>
+              <option value="all" className="bg-slate-900 text-white">All Categories</option>
               {filterType !== 'income' && EXPENSE_CATEGORIES.map(c => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c} className="bg-slate-900 text-white">{c}</option>
               ))}
               {filterType !== 'expense' && INCOME_CATEGORIES.map(c => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c} className="bg-slate-900 text-white">{c}</option>
               ))}
             </select>
           </div>
 
           {/* Sorting Option */}
-          <div className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 rounded-xl text-xs">
-            <ArrowUpDown className="w-4 h-4 text-slate-400 dark:text-dark-500" />
+          <div className="flex items-center gap-2 px-3 py-2 glass-pill rounded-xl text-xs">
+            <ArrowUpDown className="w-4 h-4 text-slate-400 dark:text-dark-400" />
             <select 
               value={sortBy} 
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-transparent border-0 outline-none w-full text-xs font-semibold cursor-pointer"
+              className="bg-transparent border-0 outline-none w-full text-xs font-semibold cursor-pointer text-slate-800 dark:text-white"
             >
-              <option value="date_desc">Newest First</option>
-              <option value="date_asc">Oldest First</option>
-              <option value="amount_desc">Highest Amount</option>
-              <option value="amount_asc">Lowest Amount</option>
+              <option value="date_desc" className="bg-slate-900 text-white">Newest First</option>
+              <option value="date_asc" className="bg-slate-900 text-white">Oldest First</option>
+              <option value="amount_desc" className="bg-slate-900 text-white">Highest Amount</option>
+              <option value="amount_asc" className="bg-slate-900 text-white">Lowest Amount</option>
             </select>
           </div>
 
         </div>
 
         {/* Date Ranges Filter */}
-        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/50 dark:border-dark-800/50">
-          <span className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider mr-2">Timeline:</span>
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/50 dark:border-white/10">
+          <span className="text-[10px] font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider mr-2">Timeline:</span>
           {['all', 'today', 'week', 'month', 'custom'].map((range) => (
             <button
               key={range}
               onClick={() => setDateRange(range)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border capitalize transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
                 dateRange === range
-                  ? 'bg-slate-900 border-slate-900 text-white dark:bg-white dark:border-white dark:text-slate-950 shadow-sm'
-                  : 'bg-white/40 border-slate-200 hover:bg-slate-100 dark:bg-dark-900/40 dark:border-dark-800 hover:dark:bg-dark-900 text-slate-550 dark:text-dark-400'
+                  ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
+                  : 'glass-pill text-slate-600 dark:text-dark-300 hover:text-white'
               }`}
             >
               {range}
@@ -396,14 +396,14 @@ const Transactions = () => {
                 type="date" 
                 value={customStartDate} 
                 onChange={(e) => setCustomStartDate(e.target.value)}
-                className="px-2 py-1 text-xs border border-slate-200 dark:border-dark-800 rounded bg-white/40 dark:bg-dark-900/40 outline-none"
+                className="px-2 py-1 text-xs rounded glass-input outline-none text-slate-800 dark:text-white"
               />
               <span className="text-xs text-slate-400">to</span>
               <input 
                 type="date" 
                 value={customEndDate} 
                 onChange={(e) => setCustomEndDate(e.target.value)}
-                className="px-2 py-1 text-xs border border-slate-200 dark:border-dark-800 rounded bg-white/40 dark:bg-dark-900/40 outline-none"
+                className="px-2 py-1 text-xs rounded glass-input outline-none text-slate-800 dark:text-white"
               />
             </div>
           )}
@@ -411,7 +411,7 @@ const Transactions = () => {
       </div>
 
       {/* Transactions List */}
-      <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl overflow-hidden">
+      <div className="glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl overflow-hidden">
         {loading ? (
           <div className="py-20 text-center flex flex-col items-center gap-3">
             <div className="spinner"></div>
@@ -474,7 +474,7 @@ const Transactions = () => {
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsDrawerOpen(false)}
-              className="fixed inset-0 bg-black/50 z-40 backdrop-blur-xs"
+              className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"
             ></motion.div>
 
             {/* Form Drawer */}
@@ -483,16 +483,16 @@ const Transactions = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed top-0 bottom-0 right-0 w-full max-w-md bg-white dark:bg-dark-900 border-l border-slate-200 dark:border-dark-850 z-50 p-6 flex flex-col shadow-2xl"
+              className="fixed top-0 bottom-0 right-0 w-full max-w-md glass-modal border-l border-slate-200/50 dark:border-white/10 z-50 p-6 flex flex-col shadow-2xl"
             >
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-dark-850">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
                 <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-brand-500" />
                   {editingTx ? 'Modify Transaction' : 'Record Transaction'}
                 </h2>
                 <button 
                   onClick={() => setIsDrawerOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 text-slate-500"
+                  className="p-1.5 rounded-lg glass-pill text-slate-400 hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -502,15 +502,15 @@ const Transactions = () => {
                 
                 {/* Type Switcher */}
                 <div className="space-y-2">
-                  <span className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Transaction Type</span>
-                  <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-dark-950 rounded-2xl border border-slate-200/30 dark:border-dark-800">
+                  <span className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Transaction Type</span>
+                  <div className="grid grid-cols-2 gap-2 p-1 glass-pill rounded-2xl">
                     <button
                       type="button"
                       onClick={() => setTxType('expense')}
                       className={`py-2.5 rounded-xl font-bold transition-all text-xs ${
                         txType === 'expense'
-                          ? 'bg-white dark:bg-dark-900 shadow-sm text-rose-500'
-                          : 'text-slate-500 dark:text-dark-400'
+                          ? 'bg-rose-500/20 text-rose-500 border border-rose-500/30 shadow-sm'
+                          : 'text-slate-500 dark:text-dark-400 hover:text-slate-700 dark:hover:text-white'
                       }`}
                     >
                       Expense
@@ -520,8 +520,8 @@ const Transactions = () => {
                       onClick={() => setTxType('income')}
                       className={`py-2.5 rounded-xl font-bold transition-all text-xs ${
                         txType === 'income'
-                          ? 'bg-white dark:bg-dark-900 shadow-sm text-emerald-500'
-                          : 'text-slate-500 dark:text-dark-400'
+                          ? 'bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 shadow-sm'
+                          : 'text-slate-500 dark:text-dark-400 hover:text-slate-700 dark:hover:text-white'
                       }`}
                     >
                       Income
@@ -531,7 +531,7 @@ const Transactions = () => {
 
                 {/* Amount input */}
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Amount ({currencySymbol})</label>
+                  <label className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Amount ({currencySymbol})</label>
                   <input 
                     type="number"
                     step="0.01"
@@ -539,68 +539,68 @@ const Transactions = () => {
                     required
                     value={txAmount}
                     onChange={(e) => setTxAmount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-extrabold text-lg text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-extrabold text-lg text-slate-800 dark:text-white"
                   />
                 </div>
 
                 {/* Category Option */}
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Category</label>
+                  <label className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Category</label>
                   <select 
                     value={txCategory}
                     onChange={(e) => setTxCategory(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-bold text-xs cursor-pointer"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-xs cursor-pointer text-slate-800 dark:text-white"
                   >
                     {txType === 'expense' ? (
-                      EXPENSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)
+                      EXPENSE_CATEGORIES.map(c => <option key={c} value={c} className="bg-slate-900 text-white">{c}</option>)
                     ) : (
-                      INCOME_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)
+                      INCOME_CATEGORIES.map(c => <option key={c} value={c} className="bg-slate-900 text-white">{c}</option>)
                     )}
                   </select>
                 </div>
 
                 {/* Date */}
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Date</label>
+                  <label className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Date</label>
                   <input 
                     type="date"
                     required
                     value={txDate}
                     onChange={(e) => setTxDate(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-semibold text-xs text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-semibold text-xs text-slate-800 dark:text-white"
                   />
                 </div>
 
                 {/* Notes */}
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Notes</label>
+                  <label className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Notes</label>
                   <textarea 
                     placeholder="Short description or note..."
                     value={txNotes}
                     rows="3"
                     onChange={(e) => setTxNotes(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-medium text-xs text-slate-800 dark:text-white resize-none"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-medium text-xs text-slate-800 dark:text-white resize-none"
                   />
                 </div>
 
                 {/* Receipt Upload Link */}
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Receipt Image Link (URL)</label>
+                  <label className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Receipt Image Link (URL)</label>
                   <input 
                     type="url"
                     placeholder="https://example.com/receipt.jpg"
                     value={txReceipt}
                     onChange={(e) => setTxReceipt(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-medium text-xs text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-medium text-xs text-slate-800 dark:text-white"
                   />
                 </div>
 
                 {/* Recurring Options */}
-                <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-dark-850">
+                <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/10">
                   <div className="flex items-center justify-between">
-                    <label htmlFor="recurring-check" className="font-bold text-slate-500 dark:text-dark-400 cursor-pointer">Mark Recurring Expense</label>
+                    <label htmlFor="recurring-check" className="font-bold text-slate-500 dark:text-dark-300 cursor-pointer">Mark Recurring Expense</label>
                     <input 
-                      type="checkbox" 
+                       type="checkbox" 
                       id="recurring-check"
                       checked={txRecurring} 
                       onChange={(e) => setTxRecurring(e.target.checked)}
@@ -610,17 +610,17 @@ const Transactions = () => {
 
                   {txRecurring && (
                     <div className="space-y-2 animate-slideDown">
-                      <label className="font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Recurrence Interval</label>
+                      <label className="font-bold text-slate-400 dark:text-dark-400 uppercase tracking-wider block">Recurrence Interval</label>
                       <select 
                         value={txInterval}
                         onChange={(e) => setTxInterval(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-semibold text-xs cursor-pointer"
+                        className="w-full px-4 py-3 rounded-xl glass-input outline-none font-semibold text-xs cursor-pointer text-slate-800 dark:text-white"
                       >
-                        <option value="none">Choose interval...</option>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
+                        <option value="none" className="bg-slate-900 text-white">Choose interval...</option>
+                        <option value="daily" className="bg-slate-900 text-white">Daily</option>
+                        <option value="weekly" className="bg-slate-900 text-white">Weekly</option>
+                        <option value="monthly" className="bg-slate-900 text-white">Monthly</option>
+                        <option value="yearly" className="bg-slate-900 text-white">Yearly</option>
                       </select>
                     </div>
                   )}
@@ -645,26 +645,26 @@ const Transactions = () => {
         {deletingTx && (
           <>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50" onClick={() => setDeletingTx(null)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" onClick={() => setDeletingTx(null)}></div>
             
             {/* Modal */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-[30%] left-[50%] -translate-x-[50%] w-full max-w-sm bg-white dark:bg-dark-900 rounded-3xl border border-slate-200 dark:border-dark-850 p-6 z-[60] shadow-2xl text-center"
+              className="fixed top-[30%] left-[50%] -translate-x-[50%] w-full max-w-sm glass-modal rounded-3xl border border-slate-200/50 dark:border-white/15 p-6 z-[60] shadow-2xl text-center"
             >
               <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-4">
                 <Trash2 className="w-6 h-6" />
               </div>
               <h3 className="font-extrabold text-base mb-2">Delete Ledger Entry</h3>
-              <p className="text-xs text-slate-550 dark:text-dark-400 leading-relaxed font-semibold mb-6">
+              <p className="text-xs text-slate-550 dark:text-dark-300 leading-relaxed font-semibold mb-6">
                 Are you absolutely sure you want to delete this {deletingTx.type} record from category <strong className="text-slate-800 dark:text-white">"{deletingTx.category}"</strong>? This action is permanent.
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <button 
                   onClick={() => setDeletingTx(null)}
-                  className="py-3 rounded-xl border border-slate-200 dark:border-dark-800 hover:bg-slate-100 dark:hover:bg-dark-900 text-xs font-bold"
+                  className="py-3 rounded-xl glass-pill text-xs font-bold text-slate-300 hover:text-white"
                 >
                   Cancel
                 </button>

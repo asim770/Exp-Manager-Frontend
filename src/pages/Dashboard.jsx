@@ -237,7 +237,7 @@ const Dashboard = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-panel border border-slate-200/60 dark:border-dark-800/40 rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-brand-500/5 to-indigo-500/5 dark:from-brand-500/10 dark:to-indigo-500/10 shadow-lg"
+            className="glass-panel-primary border border-slate-200/70 dark:border-brand-500/25 rounded-3xl p-6 relative overflow-hidden shadow-xl"
           >
             {/* Background ambient glow */}
             <div className="absolute top-[-30%] right-[-20%] w-72 h-72 rounded-full bg-brand-500/10 dark:bg-brand-500/15 filter blur-3xl pointer-events-none"></div>
@@ -360,7 +360,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Cash Flow Line Chart Card */}
-        <div className="lg:col-span-2 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+        <div className="lg:col-span-2 glass-panel border border-slate-200/70 dark:border-white/10 rounded-3xl p-6 shadow-xl">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h3 className="font-extrabold text-base">Monthly Cash Flow</h3>
@@ -404,7 +404,7 @@ const Dashboard = () => {
         </div>
 
         {/* Budget Progress & Categories Panel */}
-        <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6 flex flex-col justify-between">
+        <div className="glass-panel border border-slate-200/70 dark:border-white/10 rounded-3xl p-6 flex flex-col justify-between shadow-xl">
           <div>
             <h3 className="font-extrabold text-base mb-1">Monthly Budget Limit</h3>
             <p className="text-[10px] text-slate-400 dark:text-dark-500 font-semibold mb-6">Track spending ceiling limit</p>
@@ -478,7 +478,7 @@ const Dashboard = () => {
       </div>
 
       {/* Split Groups Dashboard Section */}
-      <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+      <div className="glass-panel border border-slate-200/70 dark:border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2">
@@ -555,7 +555,7 @@ const Dashboard = () => {
               return (
                 <div
                   key={group._id}
-                  className="p-5 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850 hover:border-brand-500/30 transition-all flex flex-col justify-between group"
+                  className="p-5 rounded-2xl glass-pill border border-slate-200/60 dark:border-white/10 hover:border-brand-500/40 glass-card-interactive flex flex-col justify-between group shadow-sm"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
@@ -617,7 +617,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Recent Transactions List Card */}
-        <div className="lg:col-span-2 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+        <div className="lg:col-span-2 glass-panel border border-slate-200/70 dark:border-white/10 rounded-3xl p-6 shadow-xl">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h3 className="font-extrabold text-base">Recent Activity</h3>
@@ -636,7 +636,7 @@ const Dashboard = () => {
               </div>
             ) : (
               recentTransactions?.map((t) => (
-                <div key={t._id} className="flex justify-between items-center p-3 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850">
+                <div key={t._id} className="flex justify-between items-center p-3 rounded-2xl glass-pill border border-slate-200/50 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/[0.08] transition-all">
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${t.type === 'income'
                         ? 'bg-emerald-500/10 text-emerald-500'
@@ -662,7 +662,7 @@ const Dashboard = () => {
         </div>
 
         {/* Upcoming Due Dates (Lending or Borrowing payments soon) */}
-        <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+        <div className="glass-panel border border-slate-200/70 dark:border-white/10 rounded-3xl p-6 shadow-xl">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h3 className="font-extrabold text-base">Payment Deadlines</h3>
@@ -681,7 +681,7 @@ const Dashboard = () => {
               </div>
             ) : (
               upcomingPayments?.map((payment, idx) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850 flex flex-col gap-2">
+                <div key={idx} className="p-3.5 rounded-2xl glass-pill border border-slate-200/50 dark:border-white/10 flex flex-col gap-2 shadow-sm">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider">{payment.type}</span>
                     <span className="text-[10px] font-bold text-rose-500">

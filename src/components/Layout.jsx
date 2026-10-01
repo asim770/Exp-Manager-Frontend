@@ -170,11 +170,11 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden relative flex bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-dark-100 transition-colors duration-300">
+    <div className="h-screen max-h-screen overflow-hidden relative flex bg-slate-100 dark:bg-[#07090e] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,70,255,0.14),rgba(7,9,14,0.98)),radial-gradient(ellipse_60%_60%_at_100%_100%,rgba(59,130,246,0.06),transparent),#07090e] text-slate-800 dark:text-dark-100">
       
       {/* Background ambient glows */}
-      <div className="absolute top-[-10%] left-[-10%] ambient-glow bg-brand-500/20 dark:bg-brand-500/10"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] ambient-glow bg-blue-500/20 dark:bg-blue-500/10"></div>
+      <div className="absolute top-[-5%] left-[-5%] w-[550px] h-[550px] rounded-full bg-brand-500/20 dark:bg-brand-500/10 blur-[130px] pointer-events-none"></div>
+      <div className="absolute bottom-[-5%] right-[-5%] w-[550px] h-[550px] rounded-full bg-indigo-500/20 dark:bg-indigo-500/10 blur-[140px] pointer-events-none"></div>
 
       {/* Particles Background */}
       <div className="absolute inset-0 w-full h-full z-0 opacity-40 dark:opacity-30 pointer-events-none">
@@ -204,7 +204,7 @@ const Layout = ({ children }) => {
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-72 h-[calc(100vh-2rem)] glass-panel border-r border-slate-200 dark:border-dark-800/50 m-4 mr-0 rounded-3xl z-30 relative overflow-hidden shrink-0">
+      <aside className="hidden lg:flex flex-col w-72 h-[calc(100vh-2rem)] glass-panel border border-slate-200/70 dark:border-white/10 m-4 mr-0 rounded-3xl z-30 relative overflow-hidden shrink-0 shadow-2xl">
         {/* Brand */}
         <div className="p-6 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
@@ -224,7 +224,7 @@ const Layout = ({ children }) => {
         </div>
 
         {/* User Quick Info */}
-        <div className="mx-4 mb-4 p-3.5 rounded-2xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3">
+        <div className="mx-4 mb-4 p-3.5 rounded-2xl glass-pill border border-slate-200/60 dark:border-white/10 flex items-center gap-3 shadow-sm">
           {user?.avatar ? (
             <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border border-brand-500/30 shrink-0" />
           ) : (
@@ -233,7 +233,7 @@ const Layout = ({ children }) => {
             </div>
           )}
           <div className="flex-1 overflow-hidden">
-            <h4 className="text-sm font-semibold truncate">{user?.name || profile?.name || 'User'}</h4>
+            <h4 className="text-sm font-semibold truncate text-slate-900 dark:text-white">{user?.name || profile?.name || 'User'}</h4>
             <p className="text-[11px] text-slate-400 dark:text-dark-500 truncate">{user?.email || `Currency: ${currencySymbol}`}</p>
           </div>
         </div>
@@ -246,12 +246,12 @@ const Layout = ({ children }) => {
             return (
               <Link key={item.path} to={item.path}>
                 <motion.div
-                  whileHover={{ x: 4 }}
+                  whileHover={{ x: 3 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${
                     isActive 
-                      ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/25' 
-                      : 'text-slate-500 dark:text-dark-400 hover:bg-slate-100/70 dark:hover:bg-dark-900/60 hover:text-slate-800 dark:hover:text-dark-100'
+                      ? 'glass-nav-active' 
+                      : 'text-slate-500 dark:text-dark-400 hover:bg-white/50 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -263,13 +263,13 @@ const Layout = ({ children }) => {
         </nav>
 
         {/* Footer Info */}
-        <div className="p-6 border-t border-slate-200/50 dark:border-dark-800/50">
+        <div className="p-5 border-t border-slate-200/50 dark:border-white/10">
           <button 
             onClick={() => setIsCmdPaletteOpen(true)}
-            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800/80 bg-white/40 dark:bg-dark-900/40 hover:bg-slate-100 dark:hover:bg-dark-900 text-xs text-slate-400 dark:text-dark-500 transition-all"
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl glass-pill border border-slate-200 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/[0.09] text-xs text-slate-400 dark:text-dark-400 transition-all shadow-sm"
           >
             <span className="flex items-center gap-2"><Search className="w-3.5 h-3.5" /> Command Menu</span>
-            <kbd className="px-1.5 py-0.5 rounded border border-slate-200 dark:border-dark-700 bg-slate-100 dark:bg-dark-800 text-[10px]">⌘K</kbd>
+            <kbd className="px-1.5 py-0.5 rounded border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/10 text-[10px]">⌘K</kbd>
           </button>
           <button
             onClick={logout}
@@ -284,15 +284,15 @@ const Layout = ({ children }) => {
       <div className="flex-1 h-screen flex flex-col min-w-0 p-4 lg:p-6 overflow-hidden relative z-10">
         
         {/* Top Header */}
-        <header className="w-full glass-panel border border-slate-200 dark:border-dark-800/50 h-20 rounded-3xl px-6 flex items-center justify-between mb-6 shrink-0 relative z-40">
+        <header className="w-full glass-header border border-slate-200/70 dark:border-white/10 h-20 rounded-3xl px-6 flex items-center justify-between mb-6 shrink-0 relative z-40 shadow-lg">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 lg:hidden text-slate-600 dark:text-dark-300"
+              className="p-2 rounded-xl glass-pill border border-slate-200/60 dark:border-white/10 lg:hidden text-slate-600 dark:text-dark-300"
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h2 className="text-xl font-bold tracking-tight hidden md:block">
+            <h2 className="text-xl font-extrabold tracking-tight hidden md:block text-slate-900 dark:text-white">
               {navItems.find(item => item.path === location.pathname)?.name || 'Welcome'}
             </h2>
           </div>
@@ -301,7 +301,8 @@ const Layout = ({ children }) => {
             {/* Quick search button */}
             <button 
               onClick={() => setIsCmdPaletteOpen(true)}
-              className="p-2.5 rounded-2xl bg-white/80 dark:bg-dark-900/80 border border-slate-200/50 dark:border-dark-800/50 shadow-sm text-slate-500 dark:text-dark-400 hover:text-slate-800 dark:hover:text-dark-200 transition-all"
+              className="p-2.5 rounded-2xl glass-pill border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-dark-300 hover:text-slate-800 dark:hover:text-white hover:scale-105 active:scale-95 transition-all shadow-sm"
+              title="Command Palette (⌘K)"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -309,7 +310,8 @@ const Layout = ({ children }) => {
             {/* Theme Toggle */}
             <button 
               onClick={toggleTheme}
-              className="p-2.5 rounded-2xl bg-white/80 dark:bg-dark-900/80 border border-slate-200/50 dark:border-dark-800/50 shadow-sm text-slate-500 dark:text-dark-400 hover:text-slate-800 dark:hover:text-dark-200 transition-all"
+              className="p-2.5 rounded-2xl glass-pill border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-dark-300 hover:text-slate-800 dark:hover:text-white hover:scale-105 active:scale-95 transition-all shadow-sm"
+              title="Toggle Theme"
             >
               {theme === 'dark' ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-indigo-500" />}
             </button>
@@ -318,11 +320,12 @@ const Layout = ({ children }) => {
             <div className="relative" ref={notificationsRef}>
               <button 
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                className="p-2.5 rounded-2xl bg-white/80 dark:bg-dark-900/80 border border-slate-200/50 dark:border-dark-800/50 shadow-sm text-slate-500 dark:text-dark-400 hover:text-slate-800 dark:hover:text-dark-200 transition-all relative"
+                className="p-2.5 rounded-2xl glass-pill border border-slate-200/60 dark:border-white/10 text-slate-500 dark:text-dark-300 hover:text-slate-800 dark:hover:text-white hover:scale-105 active:scale-95 transition-all relative shadow-sm"
+                title="Notifications"
               >
                 <Bell className="w-5 h-5" />
                 {unreadNotifications.length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse shadow-md shadow-rose-500/30">
                     {unreadNotifications.length}
                   </span>
                 )}
@@ -334,10 +337,11 @@ const Layout = ({ children }) => {
                     {/* Overlay to close */}
                     <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)}></div>
                     <motion.div 
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 15 }}
-                      className="absolute sm:right-0 -right-12 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-[380px] glass-panel border border-slate-200 dark:border-dark-800 !bg-white dark:!bg-[#0c1222] rounded-2xl shadow-2xl p-4 z-50 overflow-hidden"
+                      initial={{ opacity: 0, y: 15, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 15, scale: 0.96 }}
+                      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                      className="absolute sm:right-0 -right-12 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-[380px] glass-modal border border-slate-200/70 dark:border-white/15 rounded-3xl shadow-2xl p-4.5 z-50 overflow-hidden"
                     >
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-dark-900">
                         <h4 className="font-bold text-sm">Notifications</h4>
@@ -454,7 +458,7 @@ const Layout = ({ children }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] glass-panel border-r border-slate-200 dark:border-dark-800 z-50 lg:hidden p-6 flex flex-col"
+              className="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] glass-modal border-r border-slate-200/70 dark:border-white/10 z-50 lg:hidden p-6 flex flex-col shadow-2xl"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-2">
@@ -472,13 +476,13 @@ const Layout = ({ children }) => {
                 </div>
                 <button 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 text-slate-500"
+                  className="p-1.5 rounded-lg glass-pill border border-slate-200/50 dark:border-white/10 text-slate-500 hover:text-slate-800 dark:hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-slate-100/50 dark:bg-dark-900/40 border border-slate-200/40 dark:border-dark-800/40 flex items-center gap-3 mb-6">
+              <div className="p-3.5 rounded-2xl glass-pill border border-slate-200/50 dark:border-white/10 flex items-center gap-3 mb-6">
                 {user?.avatar ? (
                   <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover border border-brand-500/30 shrink-0" />
                 ) : (
@@ -487,7 +491,7 @@ const Layout = ({ children }) => {
                   </div>
                 )}
                 <div className="overflow-hidden flex-1">
-                  <h4 className="text-sm font-semibold truncate">{user?.name || profile?.name}</h4>
+                  <h4 className="text-sm font-semibold truncate text-slate-900 dark:text-white">{user?.name || profile?.name}</h4>
                   <p className="text-[11px] text-slate-400 truncate">{user?.email || `Currency: ${currencySymbol}`}</p>
                 </div>
               </div>
@@ -498,10 +502,10 @@ const Layout = ({ children }) => {
                   const Icon = item.icon;
                   return (
                     <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>
-                      <div className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium ${
+                      <div className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-all ${
                         isActive 
-                          ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' 
-                          : 'text-slate-500 dark:text-dark-400 hover:bg-slate-100/70 dark:hover:bg-dark-900/60'
+                          ? 'glass-nav-active' 
+                          : 'text-slate-500 dark:text-dark-400 hover:bg-white/40 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white'
                       }`}>
                         <Icon className="w-5 h-5" />
                         {item.name}
@@ -516,7 +520,7 @@ const Layout = ({ children }) => {
                   setIsMobileMenuOpen(false);
                   setIsCmdPaletteOpen(true);
                 }}
-                className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/40 dark:bg-dark-900/40 text-xs text-slate-400 dark:text-dark-500 transition-all mt-4"
+                className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl glass-pill border border-slate-200 dark:border-white/10 text-xs text-slate-400 dark:text-dark-400 transition-all mt-4"
               >
                 <span className="flex items-center gap-2"><Search className="w-3.5 h-3.5" /> Command Palette</span>
                 <kbd className="px-1 py-0.5 rounded border border-slate-200 dark:border-dark-700 bg-slate-100 dark:bg-dark-800 text-[10px]">⌘K</kbd>

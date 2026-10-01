@@ -224,7 +224,7 @@ const BorrowLend = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Navigation Tabs */}
-        <div className="lg:col-span-2 p-1.5 bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 rounded-3xl flex gap-2 h-16 items-center">
+        <div className="lg:col-span-2 p-1.5 glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl flex gap-2 h-16 items-center">
           <button
             onClick={() => {
               setActiveTab('borrow');
@@ -232,8 +232,8 @@ const BorrowLend = () => {
             }}
             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-all ${
               activeTab === 'borrow'
-                ? 'bg-white dark:bg-dark-950 shadow text-rose-500'
-                : 'text-slate-500 hover:text-slate-800 dark:text-dark-400 dark:hover:text-dark-200'
+                ? 'glass-pill border border-rose-500/30 text-rose-500 shadow-sm'
+                : 'text-slate-500 hover:text-slate-800 dark:text-dark-400 dark:hover:text-white'
             }`}
           >
             <ArrowDownLeft className="w-4 h-4" /> Borrowed Money
@@ -245,8 +245,8 @@ const BorrowLend = () => {
             }}
             className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-all ${
               activeTab === 'lend'
-                ? 'bg-white dark:bg-dark-950 shadow text-emerald-500'
-                : 'text-slate-500 hover:text-slate-800 dark:text-dark-400 dark:hover:text-dark-200'
+                ? 'glass-pill border border-emerald-500/30 text-emerald-500 shadow-sm'
+                : 'text-slate-500 hover:text-slate-800 dark:text-dark-400 dark:hover:text-white'
             }`}
           >
             <ArrowUpRight className="w-4 h-4" /> Lent Money
@@ -453,7 +453,7 @@ const BorrowLend = () => {
         {isDrawerOpen && (
           <>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-xs" onClick={() => setIsDrawerOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={() => setIsDrawerOpen(false)}></div>
 
             {/* Form Drawer */}
             <motion.div 
@@ -461,16 +461,16 @@ const BorrowLend = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed top-0 bottom-0 right-0 w-full max-w-md bg-white dark:bg-dark-900 border-l border-slate-200 dark:border-dark-850 z-50 p-6 flex flex-col shadow-2xl"
+              className="fixed top-0 bottom-0 right-0 w-full max-w-md glass-modal border-l border-slate-200/50 dark:border-white/10 z-50 p-6 flex flex-col shadow-2xl"
             >
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-dark-850">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
                 <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-brand-500" />
                   {editingRecordId ? 'Modify Record' : `New ${activeTab === 'borrow' ? 'Debt' : 'Lending'} Obligation`}
                 </h2>
                 <button 
                   onClick={() => setIsDrawerOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 text-slate-500"
+                  className="p-1.5 rounded-lg glass-pill text-slate-400 hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -583,16 +583,16 @@ const BorrowLend = () => {
       <AnimatePresence>
         {isPaymentModalOpen && selectedRecord && (
           <>
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50" onClick={() => setIsPaymentModalOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" onClick={() => setIsPaymentModalOpen(false)}></div>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-[20%] left-[50%] -translate-x-[50%] w-full max-w-sm bg-white dark:bg-dark-900 rounded-3xl border border-slate-200 dark:border-dark-850 p-6 z-[60] shadow-2xl"
+              className="fixed top-[20%] left-[50%] -translate-x-[50%] w-full max-w-sm glass-modal rounded-3xl border border-slate-200/50 dark:border-white/15 p-6 z-[60] shadow-2xl"
             >
-              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-dark-850 mb-4">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-white/10 mb-4">
                 <h3 className="font-extrabold text-base">Submit Repayment Log</h3>
-                <button onClick={() => setIsPaymentModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setIsPaymentModalOpen(false)} className="p-1 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -607,7 +607,7 @@ const BorrowLend = () => {
                     max={selectedRecord.remainingAmount}
                     value={paymentAmount}
                     onChange={(e) => setPaymentAmount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-dark-800 bg-transparent outline-none font-bold text-sm text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-sm text-slate-800 dark:text-white"
                   />
                   <span className="text-[10px] text-slate-400 font-semibold mt-1 block">Max payable: {currencySymbol}{selectedRecord.remainingAmount.toFixed(2)}</span>
                 </div>
@@ -619,7 +619,7 @@ const BorrowLend = () => {
                     required
                     value={paymentDate}
                     onChange={(e) => setPaymentDate(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-dark-800 bg-transparent outline-none text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -630,7 +630,7 @@ const BorrowLend = () => {
                     placeholder="e.g. Paid cash, GPay, check number"
                     value={paymentNotes}
                     onChange={(e) => setPaymentNotes(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-dark-800 bg-transparent outline-none text-slate-850 dark:text-white font-medium"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none text-slate-850 dark:text-white font-medium"
                   />
                 </div>
 
@@ -650,26 +650,26 @@ const BorrowLend = () => {
       <AnimatePresence>
         {detailRecord && (
           <>
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50" onClick={() => setDetailRecord(null)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" onClick={() => setDetailRecord(null)}></div>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-[15%] left-[50%] -translate-x-[50%] w-full max-w-lg bg-white dark:bg-dark-900 rounded-3xl border border-slate-200 dark:border-dark-850 p-6 z-[60] shadow-2xl"
+              className="fixed top-[15%] left-[50%] -translate-x-[50%] w-full max-w-lg glass-modal rounded-3xl border border-slate-200/50 dark:border-white/15 p-6 z-[60] shadow-2xl"
             >
-              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-dark-850 mb-4">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-white/10 mb-4">
                 <h3 className="font-extrabold text-base flex items-center gap-1.5">
                   <ClipboardCheck className="w-5 h-5 text-brand-500" />
                   Repayments Ledger: {detailRecord.personName}
                 </h3>
-                <button onClick={() => setDetailRecord(null)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setDetailRecord(null)} className="p-1 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1 text-xs">
                 {/* Key metadata */}
-                <div className="grid grid-cols-3 gap-3 p-3 bg-slate-50 dark:bg-dark-955 rounded-2xl border border-slate-100 dark:border-dark-800 text-[11px] font-semibold">
+                <div className="grid grid-cols-3 gap-3 p-3 glass-pill rounded-2xl text-[11px] font-semibold">
                   <div>
                     <span className="text-slate-400 block mb-0.5">Principal Amount</span>
                     <span className="font-bold text-slate-600 dark:text-dark-300">{currencySymbol}{detailRecord.amount.toFixed(2)}</span>
@@ -687,13 +687,13 @@ const BorrowLend = () => {
                 <h4 className="font-bold text-slate-400 uppercase tracking-wider text-[10px] mt-4 mb-2">Transaction Logs</h4>
                 
                 {detailRecord.paymentHistory?.length === 0 ? (
-                  <div className="py-8 text-center text-slate-450 dark:text-dark-500 font-semibold bg-slate-50/50 dark:bg-dark-950/20 rounded-2xl">
+                  <div className="py-8 text-center text-slate-450 dark:text-dark-500 font-semibold glass-pill rounded-2xl">
                     No partial payments logged yet.
                   </div>
                 ) : (
                   <div className="space-y-2">
                     {detailRecord.paymentHistory.map((history, idx) => (
-                      <div key={idx} className="flex justify-between items-center p-3 rounded-2xl bg-white border border-slate-150 dark:bg-dark-900 dark:border-dark-800/80">
+                      <div key={idx} className="flex justify-between items-center p-3 rounded-2xl glass-pill">
                         <div>
                           <span className="font-bold text-slate-800 dark:text-white">{history.notes || 'Repayment'}</span>
                           <span className="text-[10px] text-slate-400 block mt-0.5">
@@ -711,7 +711,7 @@ const BorrowLend = () => {
 
               <button 
                 onClick={() => setDetailRecord(null)}
-                className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-xs shadow-sm mt-6"
+                className="w-full py-3.5 rounded-xl glass-pill hover:bg-white/10 text-white font-bold text-xs shadow-sm mt-6"
               >
                 Close ledger panel
               </button>

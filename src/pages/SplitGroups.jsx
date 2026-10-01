@@ -174,7 +174,7 @@ const SplitGroups = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/split-groups')}
-              className="p-2 rounded-2xl bg-white/60 dark:bg-dark-900/60 border border-slate-200/50 dark:border-dark-800/60 hover:bg-slate-100 dark:hover:bg-dark-800 text-slate-500 dark:text-dark-400 transition-colors"
+              className="p-2 rounded-2xl glass-pill hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 dark:text-dark-300 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -192,7 +192,7 @@ const SplitGroups = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setIsSettleModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 hover:bg-slate-100 dark:hover:bg-dark-850 text-slate-700 dark:text-dark-200 font-bold text-xs transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl glass-pill hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-dark-200 font-bold text-xs transition-all"
             >
               <HandCoins className="w-4 h-4 text-brand-500" /> Settle Up
             </button>
@@ -208,7 +208,7 @@ const SplitGroups = () => {
         {/* Group Financial Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Card 1: Total Group Spending */}
-          <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-5">
+          <div className="glass-panel glass-card-interactive border border-slate-200/50 dark:border-white/10 rounded-3xl p-5">
             <span className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block mb-1">
               Total Group Spend
             </span>
@@ -221,7 +221,7 @@ const SplitGroups = () => {
           </div>
 
           {/* Card 2: Your Balance */}
-          <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-5">
+          <div className="glass-panel glass-card-interactive border border-slate-200/50 dark:border-white/10 rounded-3xl p-5">
             <span className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block mb-1">
               Your Group Balance
             </span>
@@ -240,7 +240,7 @@ const SplitGroups = () => {
           </div>
 
           {/* Card 3: Members */}
-          <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-5">
+          <div className="glass-panel glass-card-interactive border border-slate-200/50 dark:border-white/10 rounded-3xl p-5">
             <span className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block mb-1">
               Members ({(selectedGroup.members || []).length})
             </span>
@@ -264,7 +264,7 @@ const SplitGroups = () => {
         {/* Expenses List & Settlement History */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Expenses List */}
-          <div className="lg:col-span-2 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+          <div className="lg:col-span-2 glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl p-6">
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="font-extrabold text-base">Group Expenses</h3>
@@ -288,16 +288,16 @@ const SplitGroups = () => {
                 {selectedGroup.expenses.slice().reverse().map((exp) => (
                   <div
                     key={exp._id}
-                    className="p-3.5 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850 flex items-center justify-between"
+                    className="p-3.5 rounded-2xl glass-pill flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center font-bold text-xs">
+                      <div className="w-9 h-9 rounded-xl bg-brand-500/15 text-brand-500 flex items-center justify-center font-bold text-xs border border-brand-500/20">
                         {exp.category?.substring(0, 2).toUpperCase() || 'EX'}
                       </div>
                       <div>
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white">{exp.title}</h4>
-                        <p className="text-[10px] text-slate-400 dark:text-dark-500 mt-0.5">
-                          Paid by <strong className="text-slate-600 dark:text-dark-300">{exp.paidByName}</strong> • {new Date(exp.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        <p className="text-[10px] text-slate-400 dark:text-dark-400 mt-0.5">
+                          Paid by <strong className="text-slate-600 dark:text-dark-200">{exp.paidByName}</strong> • {new Date(exp.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                         </p>
                       </div>
                     </div>
@@ -305,7 +305,7 @@ const SplitGroups = () => {
                       <span className="text-sm font-extrabold text-slate-900 dark:text-white">
                         {currencySymbol}{exp.amount.toFixed(2)}
                       </span>
-                      <span className="block text-[9px] text-slate-400 dark:text-dark-550 font-medium">
+                      <span className="block text-[9px] text-slate-400 dark:text-dark-400 font-medium">
                         Split equally
                       </span>
                     </div>
@@ -316,7 +316,7 @@ const SplitGroups = () => {
           </div>
 
           {/* Settlements History */}
-          <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+          <div className="glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl p-6">
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="font-extrabold text-base">Settlements</h3>
@@ -334,7 +334,7 @@ const SplitGroups = () => {
                 {selectedGroup.settlements.slice().reverse().map((set) => (
                   <div
                     key={set._id}
-                    className="p-3 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850 text-xs"
+                    className="p-3 rounded-2xl glass-pill text-xs"
                   >
                     <div className="flex justify-between items-center font-bold">
                       <span className="text-emerald-500 flex items-center gap-1">
@@ -344,7 +344,7 @@ const SplitGroups = () => {
                         {currencySymbol}{set.amount.toFixed(2)}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 dark:text-dark-400 mt-1">
+                    <p className="text-[11px] text-slate-500 dark:text-dark-300 mt-1">
                       <strong>{set.fromName}</strong> paid <strong>{set.toName}</strong>
                     </p>
                     {set.notes && (
@@ -360,17 +360,17 @@ const SplitGroups = () => {
         {/* Modal: Add Expense */}
         {isExpenseModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsExpenseModalOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsExpenseModalOpen(false)}></div>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative w-full max-w-md glass-panel border border-slate-200 dark:border-dark-800 bg-white dark:bg-dark-900 rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              className="relative w-full max-w-md glass-modal rounded-3xl p-6 shadow-2xl z-10 space-y-4"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-dark-800">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
                 <h3 className="font-bold text-base flex items-center gap-2">
                   <Receipt className="w-4 h-4 text-brand-500" /> Add Group Expense
                 </h3>
-                <button onClick={() => setIsExpenseModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setIsExpenseModalOpen(false)} className="p-1 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -384,7 +384,7 @@ const SplitGroups = () => {
                     placeholder="e.g. Beach Shack Dinner, Villa Rent, Fuel"
                     value={expenseTitle}
                     onChange={(e) => setExpenseTitle(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/50 dark:bg-dark-950 text-slate-800 dark:text-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -397,7 +397,7 @@ const SplitGroups = () => {
                     placeholder="0.00"
                     value={expenseAmount}
                     onChange={(e) => setExpenseAmount(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/50 dark:bg-dark-950 text-slate-800 dark:text-white font-bold"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-slate-800 dark:text-white font-bold"
                   />
                 </div>
 
@@ -406,17 +406,17 @@ const SplitGroups = () => {
                   <select
                     value={expensePaidBy}
                     onChange={(e) => setExpensePaidBy(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/50 dark:bg-dark-950 text-slate-800 dark:text-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-slate-800 dark:text-white"
                   >
                     {selectedGroup.members?.filter(m => m.user).map((m) => (
-                      <option key={m.user} value={m.user}>
+                      <option key={m.user} value={m.user} className="bg-slate-900 text-white">
                         {m.name} {m.user === (user?._id || user?.id) ? '(You)' : ''}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[11px] font-semibold">
+                <div className="p-3 rounded-2xl bg-brand-500/15 border border-brand-500/25 text-brand-600 dark:text-brand-300 text-[11px] font-semibold">
                   Split equally among all {(selectedGroup.members || []).filter(m => m.status === 'accepted').length} accepted members.
                 </div>
 
@@ -424,14 +424,14 @@ const SplitGroups = () => {
                   <button
                     type="button"
                     onClick={() => setIsExpenseModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-dark-800 font-semibold"
+                    className="px-4 py-2 rounded-xl glass-pill font-semibold text-slate-300 hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submittingExpense}
-                    className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"
+                    className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-md shadow-brand-500/20"
                   >
                     {submittingExpense ? 'Adding...' : 'Save Expense'}
                   </button>
@@ -444,17 +444,17 @@ const SplitGroups = () => {
         {/* Modal: Settle Up */}
         {isSettleModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsSettleModalOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsSettleModalOpen(false)}></div>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative w-full max-w-md glass-panel border border-slate-200 dark:border-dark-800 bg-white dark:bg-dark-900 rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              className="relative w-full max-w-md glass-modal rounded-3xl p-6 shadow-2xl z-10 space-y-4"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-dark-800">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
                 <h3 className="font-bold text-base flex items-center gap-2">
                   <HandCoins className="w-4 h-4 text-brand-500" /> Settle Debt
                 </h3>
-                <button onClick={() => setIsSettleModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setIsSettleModalOpen(false)} className="p-1 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -466,13 +466,13 @@ const SplitGroups = () => {
                     required
                     value={settleTo}
                     onChange={(e) => setSettleTo(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/50 dark:bg-dark-950 text-slate-800 dark:text-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-slate-800 dark:text-white"
                   >
-                    <option value="">Select recipient member</option>
+                    <option value="" className="bg-slate-900 text-white">Select recipient member</option>
                     {selectedGroup.members
                       ?.filter(m => m.user && m.user.toString() !== (user?._id || user?.id)?.toString())
                       .map((m) => (
-                        <option key={m.user} value={m.user}>
+                        <option key={m.user} value={m.user} className="bg-slate-900 text-white">
                           {m.name} ({m.email})
                         </option>
                       ))}
@@ -488,7 +488,7 @@ const SplitGroups = () => {
                     placeholder="0.00"
                     value={settleAmount}
                     onChange={(e) => setSettleAmount(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/50 dark:bg-dark-950 text-slate-800 dark:text-white font-bold"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-slate-800 dark:text-white font-bold"
                   />
                 </div>
 
@@ -499,7 +499,7 @@ const SplitGroups = () => {
                     placeholder="e.g. Paid via UPI / GPay"
                     value={settleNotes}
                     onChange={(e) => setSettleNotes(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-dark-800 bg-white/50 dark:bg-dark-950 text-slate-800 dark:text-white"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-input text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -507,14 +507,14 @@ const SplitGroups = () => {
                   <button
                     type="button"
                     onClick={() => setIsSettleModalOpen(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-dark-800 font-semibold"
+                    className="px-4 py-2 rounded-xl glass-pill font-semibold text-slate-300 hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submittingSettle}
-                    className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"
+                    className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-md shadow-brand-500/20"
                   >
                     {submittingSettle ? 'Recording...' : 'Record Payment'}
                   </button>
@@ -559,7 +559,7 @@ const SplitGroups = () => {
             {pendingInvitations.map((inv) => (
               <div
                 key={inv._id}
-                className="p-3.5 rounded-2xl bg-white/60 dark:bg-dark-900/60 border border-slate-200/50 dark:border-dark-800 flex items-center justify-between"
+                className="p-3.5 rounded-2xl glass-pill flex items-center justify-between"
               >
                 <div className="flex items-center gap-2.5">
                   <span className="text-2xl">{inv.emoji}</span>
@@ -577,7 +577,7 @@ const SplitGroups = () => {
                   </button>
                   <button
                     onClick={() => handleInvitationResponse(inv._id, 'decline')}
-                    className="p-1.5 rounded-xl bg-slate-100 dark:bg-dark-800 text-slate-500 hover:text-rose-500 transition-colors"
+                    className="p-1.5 rounded-xl glass-pill text-slate-500 hover:text-rose-500 transition-colors"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -595,7 +595,7 @@ const SplitGroups = () => {
           <p className="text-xs text-slate-400 font-semibold">Loading your split groups...</p>
         </div>
       ) : activeGroups.length === 0 ? (
-        <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-12 text-center flex flex-col items-center justify-center max-w-md mx-auto space-y-4">
+        <div className="glass-panel border border-slate-200/50 dark:border-white/10 rounded-3xl p-12 text-center flex flex-col items-center justify-center max-w-md mx-auto space-y-4">
           <div className="w-16 h-16 rounded-full bg-brand-500/10 text-brand-500 flex items-center justify-center">
             <Users className="w-8 h-8" />
           </div>
@@ -622,12 +622,12 @@ const SplitGroups = () => {
             return (
               <div
                 key={group._id}
-                className="glass-panel border border-slate-200/50 dark:border-dark-800/40 hover:border-brand-500/40 rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/5 flex flex-col justify-between group"
+                className="glass-panel glass-card-interactive border border-slate-200/50 dark:border-white/10 hover:border-brand-500/40 rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/5 flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl p-2 rounded-2xl bg-white/40 dark:bg-dark-900/50 border border-slate-200/30 dark:border-dark-800">
+                      <span className="text-3xl p-2 rounded-2xl glass-pill">
                         {group.emoji}
                       </span>
                       <div>
@@ -641,14 +641,14 @@ const SplitGroups = () => {
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850 space-y-2 mb-4">
+                  <div className="p-3.5 rounded-2xl glass-pill space-y-2 mb-4">
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-slate-400 font-medium">Total Spend</span>
                       <span className="font-extrabold text-slate-800 dark:text-white">
                         {currencySymbol}{(group.totalExpenses || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 dark:border-dark-850">
+                    <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100 dark:border-white/5">
                       <span className="text-slate-400 font-medium">Your Balance</span>
                       <span className={`font-extrabold ${
                         isOwed ? 'text-emerald-500' : isOwe ? 'text-rose-500' : 'text-slate-400'
@@ -665,7 +665,7 @@ const SplitGroups = () => {
 
                 <button
                   onClick={() => navigate(`/split-groups/${group._id}`)}
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-slate-100 dark:bg-dark-900 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-dark-200 text-xs font-bold transition-all"
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl glass-pill hover:bg-brand-600 hover:text-white text-slate-700 dark:text-dark-200 text-xs font-bold transition-all"
                 >
                   View Group <ChevronRight className="w-4 h-4" />
                 </button>

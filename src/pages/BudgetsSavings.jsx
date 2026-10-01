@@ -423,20 +423,20 @@ const BudgetsSavings = () => {
       <AnimatePresence>
         {isGoalDrawerOpen && (
           <>
-            <div className="fixed inset-0 bg-black/50 z-40 backdrop-blur-xs" onClick={() => setIsGoalDrawerOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={() => setIsGoalDrawerOpen(false)}></div>
             <motion.div 
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed top-0 bottom-0 right-0 w-full max-w-md bg-white dark:bg-dark-900 border-l border-slate-200 dark:border-dark-850 z-50 p-6 flex flex-col shadow-2xl"
+              className="fixed top-0 bottom-0 right-0 w-full max-w-md glass-modal border-l border-slate-200/50 dark:border-white/10 z-50 p-6 flex flex-col shadow-2xl"
             >
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-dark-850">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
                 <h2 className="text-lg font-black tracking-tight flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-pink-500" />
                   {editingGoalId ? 'Modify Goal settings' : 'Establish Savings Goal'}
                 </h2>
-                <button onClick={() => setIsGoalDrawerOpen(false)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-900 border border-slate-200/50 dark:border-dark-800 text-slate-500">
+                <button onClick={() => setIsGoalDrawerOpen(false)} className="p-1.5 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -452,7 +452,7 @@ const BudgetsSavings = () => {
                     placeholder="e.g. New Macbook, Emergency Fund"
                     value={goalTitle}
                     onChange={(e) => setGoalTitle(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-semibold text-xs text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-semibold text-xs text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -465,7 +465,7 @@ const BudgetsSavings = () => {
                     placeholder="0.00"
                     value={goalTarget}
                     onChange={(e) => setGoalTarget(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-extrabold text-lg text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-extrabold text-lg text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -477,7 +477,7 @@ const BudgetsSavings = () => {
                     placeholder="0.00"
                     value={goalCurrent}
                     onChange={(e) => setGoalCurrent(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-semibold text-xs text-slate-850 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-semibold text-xs text-slate-850 dark:text-white"
                   />
                 </div>
 
@@ -489,7 +489,7 @@ const BudgetsSavings = () => {
                     required
                     value={goalDueDate}
                     onChange={(e) => setGoalDueDate(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-semibold text-xs text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-semibold text-xs text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -501,11 +501,11 @@ const BudgetsSavings = () => {
                     value={goalNotes}
                     rows="3"
                     onChange={(e) => setGoalNotes(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-250 dark:border-dark-800 bg-transparent outline-none focus:border-brand-500 font-medium text-xs text-slate-800 dark:text-white resize-none"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-medium text-xs text-slate-800 dark:text-white resize-none"
                   />
                 </div>
 
-                {/* Submit */}
+                {/* Submit button */}
                 <button
                   type="submit"
                   className="w-full py-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-xl shadow-brand-500/20 transition-all mt-6"
@@ -523,19 +523,19 @@ const BudgetsSavings = () => {
       <AnimatePresence>
         {isContributionOpen && contribGoal && (
           <>
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50" onClick={() => setIsContributionOpen(false)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" onClick={() => setIsContributionOpen(false)}></div>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-[20%] left-[50%] -translate-x-[50%] w-full max-w-sm bg-white dark:bg-dark-900 rounded-3xl border border-slate-200 dark:border-dark-850 p-6 z-[60] shadow-2xl"
+              className="fixed top-[20%] left-[50%] -translate-x-[50%] w-full max-w-sm glass-modal rounded-3xl border border-slate-200/50 dark:border-white/15 p-6 z-[60] shadow-2xl"
             >
-              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-dark-850 mb-4">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-white/10 mb-4">
                 <h3 className="font-extrabold text-base flex items-center gap-1.5 text-pink-500">
                   <Coins className="w-5 h-5" />
                   Deposit: {contribGoal.title}
                 </h3>
-                <button onClick={() => setIsContributionOpen(false)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setIsContributionOpen(false)} className="p-1 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -550,7 +550,7 @@ const BudgetsSavings = () => {
                     max={contribGoal.targetAmount - contribGoal.currentAmount}
                     value={contribAmount}
                     onChange={(e) => setContribAmount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-205 dark:border-dark-800 bg-transparent outline-none font-bold text-sm text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none font-bold text-sm text-slate-800 dark:text-white"
                   />
                   <span className="text-[10px] text-slate-400 font-semibold mt-1 block">Needed to complete: {currencySymbol}{(contribGoal.targetAmount - contribGoal.currentAmount).toFixed(2)}</span>
                 </div>
@@ -562,7 +562,7 @@ const BudgetsSavings = () => {
                     required
                     value={contribDate}
                     onChange={(e) => setContribDate(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-205 dark:border-dark-800 bg-transparent outline-none text-slate-800 dark:text-white"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -573,7 +573,7 @@ const BudgetsSavings = () => {
                     placeholder="e.g. Salary savings, cash, freelancer payout"
                     value={contribNotes}
                     onChange={(e) => setContribNotes(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-205 dark:border-dark-800 bg-transparent outline-none text-slate-850 dark:text-white font-medium"
+                    className="w-full px-4 py-3 rounded-xl glass-input outline-none text-slate-850 dark:text-white font-medium"
                   />
                 </div>
 
@@ -593,32 +593,32 @@ const BudgetsSavings = () => {
       <AnimatePresence>
         {detailGoal && (
           <>
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50" onClick={() => setDetailGoal(null)}></div>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50" onClick={() => setDetailGoal(null)}></div>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-[15%] left-[50%] -translate-x-[50%] w-full max-w-lg bg-white dark:bg-dark-900 rounded-3xl border border-slate-200 dark:border-dark-850 p-6 z-[60] shadow-2xl"
+              className="fixed top-[15%] left-[50%] -translate-x-[50%] w-full max-w-lg glass-modal rounded-3xl border border-slate-200/50 dark:border-white/15 p-6 z-[60] shadow-2xl"
             >
-              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-dark-850 mb-4">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-white/10 mb-4">
                 <h3 className="font-extrabold text-base flex items-center gap-1.5">
                   <Coins className="w-5 h-5 text-pink-500 animate-pulse" />
                   Deposit Ledger: {detailGoal.title}
                 </h3>
-                <button onClick={() => setDetailGoal(null)} className="text-slate-400 hover:text-slate-600">
+                <button onClick={() => setDetailGoal(null)} className="p-1 rounded-lg glass-pill text-slate-400 hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1 text-xs">
                 {/* Meta details */}
-                <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-dark-955 rounded-2xl border border-slate-150 dark:border-dark-800 text-[11px] font-semibold">
+                <div className="grid grid-cols-2 gap-3 p-3 glass-pill rounded-2xl text-[11px] font-semibold">
                   <div>
-                    <span className="text-slate-450 block mb-0.5">Target Amount</span>
+                    <span className="text-slate-400 block mb-0.5">Target Amount</span>
                     <span className="font-bold text-slate-800 dark:text-white">{currencySymbol}{detailGoal.targetAmount.toFixed(2)}</span>
                   </div>
                   <div>
-                    <span className="text-slate-450 block mb-0.5">Total Deposited</span>
+                    <span className="text-slate-400 block mb-0.5">Total Deposited</span>
                     <span className="font-bold text-emerald-500">{currencySymbol}{detailGoal.currentAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -626,16 +626,16 @@ const BudgetsSavings = () => {
                 <h4 className="font-bold text-slate-400 uppercase tracking-wider text-[10px] mt-4 mb-2">Deposit Statements</h4>
                 
                 {detailGoal.contributions?.length === 0 ? (
-                  <div className="py-8 text-center text-slate-400 dark:text-dark-500 font-semibold bg-slate-50/50 dark:bg-dark-950/20 rounded-2xl">
+                  <div className="py-8 text-center text-slate-400 dark:text-dark-500 font-semibold glass-pill rounded-2xl">
                     No deposits recorded yet.
                   </div>
                 ) : (
                   <div className="space-y-2">
                     {detailGoal.contributions.map((contrib, idx) => (
-                      <div key={idx} className="flex justify-between items-center p-3 rounded-2xl bg-white border border-slate-150 dark:bg-dark-905 dark:border-dark-800/80">
+                      <div key={idx} className="flex justify-between items-center p-3 rounded-2xl glass-pill">
                         <div>
                           <span className="font-bold text-slate-800 dark:text-white">{contrib.notes || 'Savings deposit'}</span>
-                          <span className="text-[10px] text-slate-450 block mt-0.5">
+                          <span className="text-[10px] text-slate-400 block mt-0.5">
                             {new Date(contrib.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                           </span>
                         </div>
@@ -650,7 +650,7 @@ const BudgetsSavings = () => {
 
               <button 
                 onClick={() => setDetailGoal(null)}
-                className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-xs shadow-sm mt-6"
+                className="w-full py-3.5 rounded-xl glass-pill hover:bg-white/10 text-white font-bold text-xs shadow-sm mt-6"
               >
                 Close ledger panel
               </button>
