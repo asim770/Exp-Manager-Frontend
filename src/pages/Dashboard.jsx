@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  TrendingUp, TrendingDown, PiggyBank, HandCoins, ArrowDownUp, 
-  Calendar as CalendarIcon, ArrowUpRight, Plus, AlertCircle, 
+import {
+  TrendingUp, TrendingDown, PiggyBank, HandCoins, ArrowDownUp,
+  Calendar as CalendarIcon, ArrowUpRight, Plus, AlertCircle,
   Wallet, ChevronRight, Award, Sparkles, Brain, ShieldAlert,
   Users, Clock
 } from 'lucide-react';
-import { 
-  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, 
-  PieChart, Pie, Cell 
+import {
+  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
+  PieChart, Pie, Cell
 } from 'recharts';
 import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
@@ -25,10 +25,10 @@ let cachedSplitSummary = null;
 const Dashboard = () => {
   const navigate = useNavigate();
   const { dashboardData, loading, error, currencySymbol, refreshAll, apiUrl } = useFinance();
-  
+
   const [aiInsights, setAiInsights] = useState(() => cachedAiInsights);
   const [loadingInsights, setLoadingInsights] = useState(false);
-  
+
   const [splitSummary, setSplitSummary] = useState(() => cachedSplitSummary);
   const [loadingSplitSummary, setLoadingSplitSummary] = useState(() => !cachedSplitSummary);
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
@@ -50,9 +50,9 @@ const Dashboard = () => {
     let isMounted = true;
     setLoadingInsights(true);
     axios.get(`${apiUrl}/ai/insights`)
-      .then(res => { 
+      .then(res => {
         cachedAiInsights = res.data;
-        if (isMounted) setAiInsights(res.data); 
+        if (isMounted) setAiInsights(res.data);
       })
       .catch(err => { if (isMounted) console.error('Failed to load AI Insights:', err); })
       .finally(() => { if (isMounted) setLoadingInsights(false); });
@@ -69,9 +69,9 @@ const Dashboard = () => {
       setLoadingSplitSummary(true);
     }
     axios.get(`${apiUrl}/split-groups/summary`)
-      .then(res => { 
+      .then(res => {
         cachedSplitSummary = res.data;
-        if (isMounted) setSplitSummary(res.data); 
+        if (isMounted) setSplitSummary(res.data);
       })
       .catch(err => { if (isMounted) console.error('Failed to load split groups summary:', err); })
       .finally(() => { if (isMounted) setLoadingSplitSummary(false); });
@@ -111,50 +111,50 @@ const Dashboard = () => {
   } = dashboardData || {};
 
   const stats = React.useMemo(() => [
-    { 
-      label: 'Net Balance', 
-      value: currentBalance ?? 0, 
-      desc: 'All-time Income minus Expenses', 
+    {
+      label: 'Net Balance',
+      value: currentBalance ?? 0,
+      desc: 'All-time Income minus Expenses',
       icon: Wallet,
       color: 'text-indigo-500',
       bg: 'bg-indigo-500/10'
     },
-    { 
-      label: "Month's Income", 
-      value: monthlyIncome ?? 0, 
-      desc: 'Total earned this calendar month', 
+    {
+      label: "Month's Income",
+      value: monthlyIncome ?? 0,
+      desc: 'Total earned this calendar month',
       icon: TrendingUp,
       color: 'text-emerald-500',
       bg: 'bg-emerald-500/10'
     },
-    { 
-      label: "Month's Expenses", 
-      value: monthlyExpense ?? 0, 
-      desc: `Budget: ${currencySymbol}${budgetProgress?.budget ?? 2000}`, 
+    {
+      label: "Month's Expenses",
+      value: monthlyExpense ?? 0,
+      desc: `Budget: ${currencySymbol}${budgetProgress?.budget ?? 2000}`,
       icon: TrendingDown,
       color: 'text-rose-500',
       bg: 'bg-rose-500/10'
     },
-    { 
-      label: 'Total Savings', 
-      value: totalSavings ?? 0, 
-      desc: 'Current goals allocations', 
+    {
+      label: 'Total Savings',
+      value: totalSavings ?? 0,
+      desc: 'Current goals allocations',
       icon: PiggyBank,
       color: 'text-pink-500',
       bg: 'bg-pink-500/10'
     },
-    { 
-      label: 'Money to Pay', 
-      value: moneyToPay ?? 0, 
-      desc: 'Outstanding borrow list', 
+    {
+      label: 'Money to Pay',
+      value: moneyToPay ?? 0,
+      desc: 'Outstanding borrow list',
       icon: HandCoins,
       color: 'text-amber-500',
       bg: 'bg-amber-500/10'
     },
-    { 
-      label: 'Money to Receive', 
-      value: moneyToReceive ?? 0, 
-      desc: 'Outstanding lend list', 
+    {
+      label: 'Money to Receive',
+      value: moneyToReceive ?? 0,
+      desc: 'Outstanding lend list',
       icon: HandCoins,
       color: 'text-teal-500',
       bg: 'bg-teal-500/10'
@@ -196,8 +196,8 @@ const Dashboard = () => {
         </div>
         <h3 className="text-xl font-bold mb-2">Failed to load financial records</h3>
         <p className="text-sm text-slate-500 max-w-sm mb-6 font-medium">{error}</p>
-        <button 
-          onClick={refreshAll} 
+        <button
+          onClick={refreshAll}
           className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold shadow-lg text-sm"
         >
           Try Reconnecting
@@ -208,7 +208,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      
+
       {/* Top Banner Quick Actions */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -216,13 +216,13 @@ const Dashboard = () => {
           <p className="text-xs text-slate-400 dark:text-dark-500 font-semibold">Your daily financial pulse at a glance.</p>
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={() => navigate('/transactions', { state: { openAddDrawer: true, defaultType: 'expense' } })}
             className="flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-sm shadow-sm transition-all"
           >
             <Plus className="w-4 h-4" /> Add Expense
           </button>
-          <button 
+          <button
             onClick={() => navigate('/transactions', { state: { openAddDrawer: true, defaultType: 'income' } })}
             className="flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-md shadow-brand-500/15 transition-all"
           >
@@ -241,7 +241,7 @@ const Dashboard = () => {
           >
             {/* Background ambient glow */}
             <div className="absolute top-[-30%] right-[-20%] w-72 h-72 rounded-full bg-brand-500/10 dark:bg-brand-500/15 filter blur-3xl pointer-events-none"></div>
-            
+
             <div className="flex items-center justify-between pb-4 border-b border-slate-200/50 dark:border-dark-850/80 mb-5">
               <div className="flex items-center gap-2">
                 <Brain className="w-5 h-5 text-brand-600 dark:text-brand-400 animate-pulse" />
@@ -250,7 +250,7 @@ const Dashboard = () => {
                   <Sparkles className="w-3.5 h-3.5 text-brand-500" />
                 </h3>
               </div>
-              <button 
+              <button
                 onClick={() => navigate('/ai-assistant')}
                 className="text-[10px] font-bold text-brand-600 dark:text-brand-400 hover:underline uppercase tracking-wider"
               >
@@ -265,7 +265,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                
+
                 {/* 1. Daily Safe Spend */}
                 <div className="space-y-1">
                   <span className="text-[9px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Daily Spending Limit</span>
@@ -306,13 +306,12 @@ const Dashboard = () => {
                 <div className="space-y-1">
                   <span className="text-[9px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider block">Account Risk Level</span>
                   <div className="flex items-center gap-2 pt-0.5">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${
-                      aiInsights?.riskLevel === 'High' 
-                        ? 'bg-rose-500/10 border-rose-500/25 text-rose-500' 
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${aiInsights?.riskLevel === 'High'
+                        ? 'bg-rose-500/10 border-rose-500/25 text-rose-500'
                         : aiInsights?.riskLevel === 'Medium'
                           ? 'bg-amber-500/10 border-amber-500/20 text-amber-555'
                           : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-                    }`}>
+                      }`}>
                       {aiInsights?.riskLevel || 'Low'} Risk
                     </span>
                   </div>
@@ -342,7 +341,7 @@ const Dashboard = () => {
       </AnimatePresence>
 
       {/* Grid of Core Stats Cards */}
-      <MagicBento 
+      <MagicBento
         cardData={bentoCardData}
         textAutoHide={true}
         enableStars
@@ -359,7 +358,7 @@ const Dashboard = () => {
 
       {/* Cash Flow Chart & Category / Budget Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Cash Flow Line Chart Card */}
         <div className="lg:col-span-2 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
           <div className="flex justify-between items-center mb-6">
@@ -378,24 +377,24 @@ const Dashboard = () => {
               <AreaChart data={cashFlowData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'rgba(15, 23, 42, 0.9)', 
-                    border: '1px solid rgba(255, 255, 255, 0.1)', 
+                <Tooltip
+                  contentStyle={{
+                    background: 'rgba(15, 23, 42, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '16px',
                     color: '#fff',
                     fontSize: '12px'
-                  }} 
+                  }}
                 />
                 <Area type="monotone" dataKey="income" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#colorIncome)" />
                 <Area type="monotone" dataKey="expense" stroke="#ef4444" strokeWidth={2.5} fillOpacity={1} fill="url(#colorExpense)" />
@@ -409,7 +408,7 @@ const Dashboard = () => {
           <div>
             <h3 className="font-extrabold text-base mb-1">Monthly Budget Limit</h3>
             <p className="text-[10px] text-slate-400 dark:text-dark-500 font-semibold mb-6">Track spending ceiling limit</p>
-            
+
             {/* Linear budget progress indicator */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold">
@@ -419,17 +418,16 @@ const Dashboard = () => {
                 </span>
               </div>
               <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-dark-900 overflow-hidden border border-slate-200/20 dark:border-dark-800">
-                <motion.div 
+                <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${budgetProgress?.percentage ?? 0}%` }}
                   transition={{ duration: 1, ease: 'easeOut' }}
-                  className={`h-full rounded-full ${
-                    (budgetProgress?.percentage ?? 0) >= 100 
-                      ? 'bg-rose-500 shadow-lg shadow-rose-500/20' 
+                  className={`h-full rounded-full ${(budgetProgress?.percentage ?? 0) >= 100
+                      ? 'bg-rose-500 shadow-lg shadow-rose-500/20'
                       : (budgetProgress?.percentage ?? 0) >= 80
                         ? 'bg-amber-500 shadow-lg shadow-amber-500/20'
                         : 'bg-brand-600 shadow-lg shadow-brand-500/20'
-                  }`}
+                    }`}
                 />
               </div>
               <div className="flex justify-between items-center text-[10px] text-slate-400 dark:text-dark-500 font-bold">
@@ -584,13 +582,12 @@ const Dashboard = () => {
                     </div>
 
                     <div className="pt-1">
-                      <div className={`text-xs font-bold px-3 py-1.5 rounded-xl border flex items-center justify-between ${
-                        isOwed
+                      <div className={`text-xs font-bold px-3 py-1.5 rounded-xl border flex items-center justify-between ${isOwed
                           ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
                           : isOwe
                             ? 'bg-rose-500/10 border-rose-500/20 text-rose-500'
                             : 'bg-slate-500/10 border-slate-500/20 text-slate-400'
-                      }`}>
+                        }`}>
                         <span>{isOwed ? 'You are owed' : isOwe ? 'You owe' : 'Settled up'}</span>
                         {!isSettled && (
                           <span className="font-black">
@@ -618,7 +615,7 @@ const Dashboard = () => {
 
       {/* Recent Ledger Transactions & Upcoming Due Payments */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Recent Transactions List Card */}
         <div className="lg:col-span-2 glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
           <div className="flex justify-between items-center mb-6">
@@ -641,11 +638,10 @@ const Dashboard = () => {
               recentTransactions?.map((t) => (
                 <div key={t._id} className="flex justify-between items-center p-3 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850">
                   <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${
-                      t.type === 'income' 
-                        ? 'bg-emerald-500/10 text-emerald-500' 
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${t.type === 'income'
+                        ? 'bg-emerald-500/10 text-emerald-500'
                         : 'bg-rose-500/10 text-rose-500'
-                    }`}>
+                      }`}>
                       {t.category.substring(0, 2).toUpperCase()}
                     </div>
                     <div>

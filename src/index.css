@@ -40,7 +40,9 @@
 
 /* Base styles */
 @layer base {
-  html, body {
+
+  html,
+  body {
     @apply h-full overflow-hidden;
   }
 
@@ -83,8 +85,8 @@
 
 /* Prevent browser autofill from turning inputs bright white with dark text across all browsers */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active,
 textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover,
@@ -103,12 +105,14 @@ select:-webkit-autofill:focus {
 /* Glassmorphism utility classes */
 .glass-panel {
   position: relative;
-  background: #ffffff; /* Solid white background in light mode */
+  background: #ffffff;
+  /* Solid white background in light mode */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
-  --glow-color: 139, 92, 246; /* Purple color */
+  --glow-color: 139, 92, 246;
+  /* Purple color */
 }
 
 .dark .glass-panel {
@@ -125,13 +129,12 @@ select:-webkit-autofill:focus {
   content: '';
   position: absolute;
   inset: 0;
-  padding: 6px; /* Thick 6px border */
-  background: radial-gradient(
-    var(--glow-radius, 250px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color), calc(var(--glow-intensity, 0) * 0.85)) 0%,
-    rgba(var(--glow-color), calc(var(--glow-intensity, 0) * 0.35)) 40%,
-    transparent 70%
-  );
+  padding: 6px;
+  /* Thick 6px border */
+  background: radial-gradient(var(--glow-radius, 250px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+      rgba(var(--glow-color), calc(var(--glow-intensity, 0) * 0.85)) 0%,
+      rgba(var(--glow-color), calc(var(--glow-intensity, 0) * 0.35)) 40%,
+      transparent 70%);
   border-radius: inherit;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -182,9 +185,17 @@ select:-webkit-autofill:focus {
 
 /* Custom Keyframe Animations */
 @keyframes float {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
 }
 
 .animate-float {
@@ -192,8 +203,15 @@ select:-webkit-autofill:focus {
 }
 
 @keyframes pulse-slow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .animate-pulse-slow {
@@ -211,54 +229,49 @@ select:-webkit-autofill:focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Glassmorphism Typography Effects */
 .glass-text-hero {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.95) 8%,
-    rgba(255, 255, 255, 0.3) 28%,
-    rgba(255, 255, 255, 0.1) 56%,
-    rgba(255, 255, 255, 0.38) 85%,
-    rgba(255, 255, 255, 0.85) 100%
-  );
+  background: linear-gradient(180deg,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0.95) 8%,
+      rgba(255, 255, 255, 0.3) 28%,
+      rgba(255, 255, 255, 0.1) 56%,
+      rgba(255, 255, 255, 0.38) 85%,
+      rgba(255, 255, 255, 0.85) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.7))
-          drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85))
-          drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.7)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
 }
 
 .glass-text-accent {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    rgba(243, 232, 255, 0.95) 10%,
-    rgba(216, 180, 254, 0.4) 30%,
-    rgba(192, 132, 252, 0.12) 58%,
-    rgba(216, 180, 254, 0.45) 86%,
-    rgba(255, 255, 255, 0.88) 100%
-  );
+  background: linear-gradient(180deg,
+      #ffffff 0%,
+      rgba(243, 232, 255, 0.95) 10%,
+      rgba(216, 180, 254, 0.4) 30%,
+      rgba(192, 132, 252, 0.12) 58%,
+      rgba(216, 180, 254, 0.45) 86%,
+      rgba(255, 255, 255, 0.88) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.8))
-          drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85))
-          drop-shadow(0 0 20px rgba(192, 132, 252, 0.35));
+  filter: drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.8)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(192, 132, 252, 0.35));
 }
 
 .glass-text-sub {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(226, 232, 240, 0.8) 50%,
-    rgba(203, 213, 225, 0.55) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(226, 232, 240, 0.8) 50%,
+      rgba(203, 213, 225, 0.55) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -267,13 +280,11 @@ select:-webkit-autofill:focus {
 
 /* Light mode adjustments for glass typography */
 :root:not(.dark) .glass-text-hero {
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.95) 0%,
-    rgba(30, 41, 59, 0.75) 45%,
-    rgba(71, 85, 105, 0.4) 75%,
-    rgba(15, 23, 42, 0.7) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(15, 23, 42, 0.95) 0%,
+      rgba(30, 41, 59, 0.75) 45%,
+      rgba(71, 85, 105, 0.4) 75%,
+      rgba(15, 23, 42, 0.7) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -281,15 +292,12 @@ select:-webkit-autofill:focus {
 }
 
 :root:not(.dark) .glass-text-sub {
-  background: linear-gradient(
-    180deg,
-    rgba(51, 65, 85, 0.95) 0%,
-    rgba(71, 85, 105, 0.7) 60%,
-    rgba(100, 116, 139, 0.4) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(51, 65, 85, 0.95) 0%,
+      rgba(71, 85, 105, 0.7) 60%,
+      rgba(100, 116, 139, 0.4) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: none;
 }
-
