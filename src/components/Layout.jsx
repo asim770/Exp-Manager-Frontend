@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -36,6 +36,19 @@ const Layout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = useState(false);
+  const notificationsRef = useRef(null);
+
+  // Close notifications on outside click
+  useEffect(() => {
+    if (!isNotificationsOpen) return;
+    const handleClickOutside = (e) => {
+      if (notificationsRef.current && !notificationsRef.current.contains(e.target)) {
+        setIsNotificationsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isNotificationsOpen]);
 
   // Keyboard shortcut for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -257,7 +270,7 @@ const Layout = ({ children }) => {
       <div className="flex-1 h-screen flex flex-col min-w-0 p-4 lg:p-6 overflow-hidden relative z-10">
         
         {/* Top Header */}
-        <header className="w-full glass-panel border border-slate-200 dark:border-dark-800/50 h-20 rounded-3xl px-6 flex items-center justify-between mb-6 shrink-0">
+        <header className="w-full glass-panel border border-slate-200 dark:border-dark-800/50 h-20 rounded-3xl px-6 flex items-center justify-between mb-6 shrink-0 relative z-40">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
@@ -288,7 +301,7 @@ const Layout = ({ children }) => {
             </button>
 
             {/* Notifications Dropdown */}
-            <div className="relative">
+            <div className="relative" ref={notificationsRef}>
               <button 
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                 className="p-2.5 rounded-2xl bg-white/80 dark:bg-dark-900/80 border border-slate-200/50 dark:border-dark-800/50 shadow-sm text-slate-500 dark:text-dark-400 hover:text-slate-800 dark:hover:text-dark-200 transition-all relative"
@@ -310,7 +323,7 @@ const Layout = ({ children }) => {
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 15 }}
-                      className="absolute right-0 mt-3 w-80 md:w-96 glass-panel border border-slate-200 dark:border-dark-800 rounded-2xl shadow-2xl p-4 z-50 overflow-hidden"
+                      className="absolute sm:right-0 -right-12 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-[380px] glass-panel border border-slate-200 dark:border-dark-800 !bg-white dark:!bg-[#0c1222] rounded-2xl shadow-2xl p-4 z-50 overflow-hidden"
                     >
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-dark-900">
                         <h4 className="font-bold text-sm">Notifications</h4>
