@@ -111,7 +111,7 @@ const LandingPage = () => {
                 )}
                 <span className="font-medium truncate max-w-[120px]">{user?.name}</span>
               </div>
-              <button 
+              <button
                 onClick={() => navigate('/dashboard')}
                 className="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-500/25 hover:bg-brand-500/35 text-white border border-brand-400/40 font-semibold text-xs shadow-lg shadow-brand-500/20 backdrop-blur-md transition-all hover:-translate-y-0.5 overflow-hidden"
               >
@@ -128,7 +128,7 @@ const LandingPage = () => {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => setShowAuthModal(true)}
                 className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500/20 hover:bg-brand-500/30 text-white font-semibold text-xs border border-brand-400/35 hover:border-brand-400/60 backdrop-blur-xl shadow-[0_4px_16px_rgba(139,92,246,0.25),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer overflow-hidden"
               >
@@ -185,7 +185,6 @@ const LandingPage = () => {
               A modern, intelligent personal finance manager with individual Google accounts, bank-grade data isolation, interactive cash flow charts, budgeting, savings targets, and AI assistant.
             </p>
           </AnimatedContent>
-
           {/* Action Buttons */}
           <AnimatedContent
             distance={40}

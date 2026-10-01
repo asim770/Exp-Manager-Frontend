@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, ArrowDownUp, HandCoins, PiggyBank, 
   BarChart3, Calendar as CalendarIcon, User, Bell, Sun, 
-  Moon, Search, Menu, X, Check, Trash2, Wallet, Sparkles, LogOut
+  Moon, Search, Menu, X, Check, Trash2, Wallet, Sparkles, LogOut, Users
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useFinance } from '../context/FinanceContext';
@@ -15,6 +15,11 @@ import GradientText from './GradientText';
 import Particles from './Particles';
 import AnimatedContent from './AnimatedContent';
 import Ribbons from './Ribbons';
+
+// Stable WebGL color references to prevent GPU context thrashing
+const RIBBON_COLORS = ["#5227FF"];
+const PARTICLE_COLORS_DARK = ["#ffffff"];
+const PARTICLE_COLORS_LIGHT = ["#8b5cf6"];
 
 const Layout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
@@ -118,16 +123,17 @@ const Layout = ({ children }) => {
     };
   }, [location.pathname]);
 
-  const navItems = [
+  const navItems = React.useMemo(() => [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Transactions', path: '/transactions', icon: ArrowDownUp },
+    { name: 'Split Groups', path: '/split-groups', icon: Users },
     { name: 'Borrow & Lend', path: '/borrow-lend', icon: HandCoins },
     { name: 'Budgets & Savings', path: '/budgets-savings', icon: PiggyBank },
     { name: 'Analytics & Reports', path: '/reports', icon: BarChart3 },
     { name: 'Calendar', path: '/calendar', icon: CalendarIcon },
     { name: 'Profile & Settings', path: '/profile', icon: User },
     { name: 'AI Assistant', path: '/ai-assistant', icon: Sparkles },
-  ];
+  ], []);
 
   const unreadNotifications = notifications.filter(n => !n.read);
 
@@ -146,7 +152,7 @@ const Layout = ({ children }) => {
       {/* Particles Background */}
       <div className="absolute inset-0 w-full h-full z-0 opacity-40 dark:opacity-30 pointer-events-none">
         <Particles
-          particleColors={theme === 'dark' ? ["#ffffff"] : ["#8b5cf6"]}
+          particleColors={theme === 'dark' ? PARTICLE_COLORS_DARK : PARTICLE_COLORS_LIGHT}
           particleCount={150}
           particleSpread={12}
           speed={0.08}
@@ -162,7 +168,7 @@ const Layout = ({ children }) => {
       <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
         <Ribbons
           baseThickness={30}
-          colors={["#5227FF"]}
+          colors={RIBBON_COLORS}
           speedMultiplier={0.5}
           maxAge={500}
           enableFade={false}
@@ -208,7 +214,7 @@ const Layout = ({ children }) => {
         {/* Nav Links */}
         <nav className="flex-1 px-4 space-y-1">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
             const Icon = item.icon;
             return (
               <Link key={item.path} to={item.path}>
@@ -363,6 +369,15 @@ const Layout = ({ children }) => {
                               <p className="text-xs text-slate-500 dark:text-dark-400 leading-relaxed font-medium">
                                 {n.message}
                               </p>
+                              {n.type === 'group_invite' && (
+                                <Link
+                                  to="/split-groups"
+                                  onClick={() => setIsNotificationsOpen(false)}
+                                  className="inline-flex items-center gap-1 text-[10px] font-bold text-brand-600 dark:text-brand-400 hover:underline mt-1"
+                                >
+                                  View Invitations &rarr;
+                                </Link>
+                              )}
                               <span className="text-[9px] text-slate-400 dark:text-dark-600 font-medium">
                                 {formatNotifyDate(n.date)}
                               </span>
@@ -466,7 +481,7 @@ const Layout = ({ children }) => {
 
               <nav className="flex-1 space-y-1">
                 {navItems.map((item) => {
-                  const isActive = location.pathname === item.path;
+                  const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
                   const Icon = item.icon;
                   return (
                     <Link key={item.path} to={item.path} onClick={() => setIsMobileMenuOpen(false)}>

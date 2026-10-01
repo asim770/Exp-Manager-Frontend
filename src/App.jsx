@@ -13,6 +13,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Transactions = lazy(() => import('./pages/Transactions'));
 const BorrowLend = lazy(() => import('./pages/BorrowLend'));
 const BudgetsSavings = lazy(() => import('./pages/BudgetsSavings'));
+const SplitGroups = lazy(() => import('./pages/SplitGroups'));
 const Reports = lazy(() => import('./pages/Reports'));
 const CalendarView = lazy(() => import('./pages/CalendarView'));
 const ProfileSettings = lazy(() => import('./pages/ProfileSettings'));
@@ -66,6 +67,22 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Layout><BorrowLend /></Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/split-groups"
+                  element={
+                    <ProtectedRoute>
+                      <Layout><SplitGroups /></Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/split-groups/:groupId"
+                  element={
+                    <ProtectedRoute>
+                      <Layout><SplitGroups /></Layout>
                     </ProtectedRoute>
                   }
                 />

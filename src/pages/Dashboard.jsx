@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, TrendingDown, PiggyBank, HandCoins, ArrowDownUp, 
   Calendar as CalendarIcon, ArrowUpRight, Plus, AlertCircle, 
-  Wallet, ChevronRight, Award, Sparkles, Brain, ShieldAlert
+  Wallet, ChevronRight, Award, Sparkles, Brain, ShieldAlert,
+  Users, Clock
 } from 'lucide-react';
 import { 
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, 
@@ -13,6 +14,7 @@ import {
 import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
 import MagicBento from '../components/MagicBento';
+import CreateSplitGroupModal from '../components/CreateSplitGroupModal';
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#ef4444', '#64748b'];
 
@@ -22,33 +24,55 @@ const Dashboard = () => {
   
   const [aiInsights, setAiInsights] = useState(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
+  
+  const [splitSummary, setSplitSummary] = useState(null);
+  const [loadingSplitSummary, setLoadingSplitSummary] = useState(false);
+  const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
+  const hasFetchedSplitSummary = useRef(false);
 
   useEffect(() => {
-    // Only fetch if dashboard data is not yet loaded
+    // Only fetch ledger data if not already present
     if (!dashboardData) {
       refreshAll();
     }
-    
-    // Fetch AI insights only if not already loaded
-    let isMounted = true;
-    const fetchInsights = async () => {
-      if (aiInsights) return;
-      setLoadingInsights(true);
-      try {
-        const res = await axios.get(`${apiUrl}/ai/insights`);
-        if (isMounted) setAiInsights(res.data);
-      } catch (err) {
-        if (isMounted) console.error('Failed to load AI Insights:', err);
-      } finally {
-        if (isMounted) setLoadingInsights(false);
-      }
-    };
-    fetchInsights();
+  }, [dashboardData, refreshAll]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [dashboardData, refreshAll, apiUrl]);
+  // Fetch AI insights once on mount
+  useEffect(() => {
+    if (aiInsights) return;
+    let isMounted = true;
+    setLoadingInsights(true);
+    axios.get(`${apiUrl}/ai/insights`)
+      .then(res => { if (isMounted) setAiInsights(res.data); })
+      .catch(err => { if (isMounted) console.error('Failed to load AI Insights:', err); })
+      .finally(() => { if (isMounted) setLoadingInsights(false); });
+
+    return () => { isMounted = false; };
+  }, [apiUrl, aiInsights]);
+
+  // Fetch Split Groups summary once on mount (isolated from ledger data updates)
+  useEffect(() => {
+    if (hasFetchedSplitSummary.current) return;
+    hasFetchedSplitSummary.current = true;
+    let isMounted = true;
+    setLoadingSplitSummary(true);
+    axios.get(`${apiUrl}/split-groups/summary`)
+      .then(res => { if (isMounted) setSplitSummary(res.data); })
+      .catch(err => { if (isMounted) console.error('Failed to load split groups summary:', err); })
+      .finally(() => { if (isMounted) setLoadingSplitSummary(false); });
+
+    return () => { isMounted = false; };
+  }, [apiUrl]);
+
+  const handleCloseCreateModal = useCallback(() => {
+    setIsCreateGroupModalOpen(false);
+  }, []);
+
+  const handleGroupCreated = useCallback(() => {
+    axios.get(`${apiUrl}/split-groups/summary`)
+      .then(res => setSplitSummary(res.data))
+      .catch(err => console.error(err));
+  }, [apiUrl]);
 
   const {
     currentBalance,
@@ -127,6 +151,15 @@ const Dashboard = () => {
     currencySymbol,
     budgetProgress?.budget
   ]);
+
+  const bentoCardData = useMemo(() => stats.map(stat => ({
+    label: stat.label,
+    title: `${currencySymbol}${(stat.value ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    description: stat.desc,
+    icon: stat.icon,
+    iconColor: stat.color,
+    iconBg: stat.bg
+  })), [stats, currencySymbol]);
 
   if (loading && !dashboardData) {
     return (
@@ -292,14 +325,7 @@ const Dashboard = () => {
 
       {/* Grid of Core Stats Cards */}
       <MagicBento 
-        cardData={stats.map(stat => ({
-          label: stat.label,
-          title: `${currencySymbol}${(stat.value ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-          description: stat.desc,
-          icon: stat.icon,
-          iconColor: stat.color,
-          iconBg: stat.bg
-        }))}
+        cardData={bentoCardData}
         textAutoHide={true}
         enableStars
         enableSpotlight
@@ -435,6 +461,143 @@ const Dashboard = () => {
 
       </div>
 
+      {/* Split Groups Dashboard Section */}
+      <div className="glass-panel border border-slate-200/50 dark:border-dark-800/40 rounded-3xl p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-extrabold text-base flex items-center gap-2">
+                Split Groups
+              </h3>
+              {splitSummary?.totalGroups > 0 && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/20">
+                  {splitSummary.totalGroups} Active {splitSummary.totalGroups === 1 ? 'Group' : 'Groups'}
+                </span>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-400 dark:text-dark-500 font-semibold mt-0.5">
+              Manage shared expenses with friends and groups.
+            </p>
+          </div>
+
+          <div className="flex items-center flex-wrap gap-2.5">
+            {splitSummary?.pendingInvitationsCount > 0 && (
+              <Link
+                to="/split-groups"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-500 hover:bg-amber-500/20 text-xs font-bold transition-all"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>{splitSummary.pendingInvitationsCount} Pending {splitSummary.pendingInvitationsCount === 1 ? 'Invitation' : 'Invitations'}</span>
+              </Link>
+            )}
+            <button
+              onClick={() => setIsCreateGroupModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-md shadow-brand-500/15 transition-all"
+            >
+              <Plus className="w-3.5 h-3.5" /> Create Split Group
+            </button>
+            <Link
+              to="/split-groups"
+              className="flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 font-bold hover:underline ml-1"
+            >
+              View All Groups <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Content: Loading / Empty State / Group Cards */}
+        {loadingSplitSummary && !splitSummary ? (
+          <div className="py-10 flex flex-col items-center justify-center gap-2">
+            <div className="spinner w-5 h-5 border-2"></div>
+            <span className="text-[10px] text-slate-400 font-semibold">Loading split groups...</span>
+          </div>
+        ) : (!splitSummary?.groups || splitSummary.groups.length === 0) ? (
+          /* Clean Empty State */
+          <div className="py-10 px-4 text-center rounded-2xl bg-white/30 dark:bg-dark-900/20 border border-slate-200/30 dark:border-dark-850 flex flex-col items-center justify-center max-w-lg mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center mb-3">
+              <Users className="w-6 h-6" />
+            </div>
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">No shared groups yet.</h4>
+            <p className="text-xs text-slate-400 dark:text-dark-500 mb-5 max-w-xs font-medium leading-relaxed">
+              Create a group with friends and easily track who owes whom.
+            </p>
+            <button
+              onClick={() => setIsCreateGroupModalOpen(true)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-md shadow-brand-500/15 transition-all"
+            >
+              <Plus className="w-3.5 h-3.5" /> Create Split Group
+            </button>
+          </div>
+        ) : (
+          /* Cards Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {splitSummary.groups.slice(0, 3).map((group) => {
+              const isSettled = group.balanceStatus === 'settled';
+              const isOwed = group.balanceStatus === 'owed';
+              const isOwe = group.balanceStatus === 'owe';
+
+              return (
+                <div
+                  key={group._id}
+                  className="p-5 rounded-2xl bg-white/40 dark:bg-dark-900/35 border border-slate-200/30 dark:border-dark-850 hover:border-brand-500/30 transition-all flex flex-col justify-between group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-2xl p-1.5 rounded-xl bg-white/50 dark:bg-dark-900/60 border border-slate-200/40 dark:border-dark-800">
+                          {group.emoji || '👥'}
+                        </span>
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-500 transition-colors">
+                            {group.name}
+                          </h4>
+                          <span className="text-[10px] text-slate-400 dark:text-dark-500 font-semibold flex items-center gap-1">
+                            <Users className="w-3 h-3" /> {group.memberCount} {group.memberCount === 1 ? 'Member' : 'Members'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-1 flex items-baseline justify-between text-xs">
+                      <span className="text-slate-400 font-medium">Total:</span>
+                      <span className="font-extrabold text-slate-800 dark:text-white">
+                        {currencySymbol}{(group.totalExpenses || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+
+                    <div className="pt-1">
+                      <div className={`text-xs font-bold px-3 py-1.5 rounded-xl border flex items-center justify-between ${
+                        isOwed
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
+                          : isOwe
+                            ? 'bg-rose-500/10 border-rose-500/20 text-rose-500'
+                            : 'bg-slate-500/10 border-slate-500/20 text-slate-400'
+                      }`}>
+                        <span>{isOwed ? 'You are owed' : isOwe ? 'You owe' : 'Settled up'}</span>
+                        {!isSettled && (
+                          <span className="font-black">
+                            {currencySymbol}{group.absBalance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-200/30 dark:border-dark-850">
+                    <button
+                      onClick={() => navigate(`/split-groups/${group._id}`)}
+                      className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-100/80 dark:bg-dark-900/80 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-dark-200 text-xs font-bold transition-all"
+                    >
+                      View Group <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       {/* Recent Ledger Transactions & Upcoming Due Payments */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
@@ -527,6 +690,13 @@ const Dashboard = () => {
         </div>
 
       </div>
+
+      {/* Create Split Group Modal */}
+      <CreateSplitGroupModal
+        isOpen={isCreateGroupModalOpen}
+        onClose={handleCloseCreateModal}
+        onGroupCreated={handleGroupCreated}
+      />
 
     </div>
   );
