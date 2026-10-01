@@ -120,7 +120,7 @@ const GoogleAuthButton = ({
       disabled={loading}
       className={`group relative flex items-center justify-center gap-3 font-semibold text-sm transition-all duration-300 active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed overflow-hidden ${
         isGlass
-          ? 'px-6 py-3.5 rounded-2xl bg-white/[0.14] hover:bg-white/[0.22] text-white border border-white/30 hover:border-white/50 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.45)] hover:-translate-y-0.5'
+          ? 'px-6 py-3.5 rounded-2xl bg-white/[0.14] hover:bg-white/[0.22] text-white border border-white/1 hover:border-white/35 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.45)] hover:-translate-y-0.5'
           : 'px-5 py-3 rounded-xl bg-white text-slate-800 hover:bg-slate-50 shadow-md hover:shadow-lg'
       } ${className}`}
     >

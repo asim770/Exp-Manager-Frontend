@@ -82,10 +82,11 @@ const LandingPage = () => {
       </div>
 
       {/* Glassmorphic Navbar */}
-      <nav className="h-20 glass-nav z-50 px-6 lg:px-12 flex items-center justify-between shrink-0">
+      <nav className="h-20 glass-nav z-50 px-6 lg:px-12 flex items-center justify-between shrink-0 relative">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-extrabold shadow-lg shadow-brand-500/20">
-            P
+          <div className="relative w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-600/90 to-indigo-500/90 border border-white/20 flex items-center justify-center text-white font-extrabold shadow-lg shadow-brand-500/20 backdrop-blur-md overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+            <span className="relative z-10">P</span>
           </div>
           <GradientText
             colors={["#5227FF", "#FF9FFC", "#B497CF"]}
@@ -100,7 +101,7 @@ const LandingPage = () => {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.08] dark:bg-slate-900/50 border border-white/15 backdrop-blur-md text-xs text-slate-300">
                 {user?.avatar ? (
                   <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full" />
                 ) : (
@@ -110,27 +111,30 @@ const LandingPage = () => {
                 )}
                 <span className="font-medium truncate max-w-[120px]">{user?.name}</span>
               </div>
-              <button
+              <button 
                 onClick={() => navigate('/dashboard')}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-lg shadow-brand-500/20 transition-all hover:-translate-y-0.5"
+                className="group relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-500/25 hover:bg-brand-500/35 text-white border border-brand-400/40 font-semibold text-xs shadow-lg shadow-brand-500/20 backdrop-blur-md transition-all hover:-translate-y-0.5 overflow-hidden"
               >
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />
                 <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
               </button>
               <button
                 onClick={logout}
                 title="Sign Out"
-                className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-slate-900/40 transition-colors"
+                className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-white/[0.08] transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <button
+              <button 
                 onClick={() => setShowAuthModal(true)}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500/20 hover:bg-brand-500/30 text-white font-semibold text-xs border border-brand-400/35 hover:border-brand-400/60 backdrop-blur-xl shadow-[0_4px_16px_rgba(139,92,246,0.25),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer overflow-hidden"
               >
-                <Lock className="w-3.5 h-3.5" /> Sign In
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none" />
+                <Lock className="w-3.5 h-3.5 text-brand-300 group-hover:text-brand-200 transition-colors" />
+                <span>Sign In</span>
               </button>
             </div>
           )}
@@ -162,14 +166,9 @@ const LandingPage = () => {
             ease="power3.out"
           >
             <div className="relative">
-              {/* Ambient backlight glow for glass refraction */}
-              <div className="absolute inset-0 -top-6 -bottom-6 bg-gradient-to-r from-brand-500/10 via-purple-500/15 to-indigo-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.15] mb-6 glass-text-hero select-none">
                 Take Control of Your <br className="hidden sm:inline" />
-                <span className="glass-text-accent inline">
-                  Wealth
-                </span>
-                , Securely.
+                Wealth, Securely.
               </h1>
             </div>
           </AnimatedContent>
@@ -212,7 +211,7 @@ const LandingPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowAuthModal(true)}
-                  className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-white/[0.08] hover:bg-white/[0.16] text-slate-200 hover:text-white border border-white/20 hover:border-white/35 font-semibold text-sm transition-all duration-300 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.35)] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer overflow-hidden"
+                  className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-white/[0.08] hover:bg-white/[0.16] text-slate-200 hover:text-white border border-white/1 hover:border-white/35 font-semibold text-sm transition-all duration-300 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.35)] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer overflow-hidden"
                 >
                   <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
                   <Mail className="w-4 h-4 text-indigo-300 group-hover:text-indigo-200 transition-colors" />
