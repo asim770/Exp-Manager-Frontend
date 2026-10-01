@@ -71,7 +71,7 @@ export const FinanceProvider = ({ children }) => {
   }, [isAuthenticated, refreshAll]);
 
   // Helper methods
-  const updateProfileSettings = async (settings) => {
+  const updateProfileSettings = useCallback(async (settings) => {
     try {
       const res = await axios.put(`${API_URL}/profile`, settings);
       setProfile(res.data);
@@ -81,64 +81,77 @@ export const FinanceProvider = ({ children }) => {
       console.error('Failed to update profile settings', err);
       throw err;
     }
-  };
+  }, [fetchDashboardData]);
 
-  const markNotificationRead = async (id) => {
+  const markNotificationRead = useCallback(async (id) => {
     try {
       await axios.put(`${API_URL}/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
     } catch (err) {
       console.error('Failed to mark notification as read', err);
     }
-  };
+  }, []);
 
-  const markAllNotificationsRead = async () => {
+  const markAllNotificationsRead = useCallback(async () => {
     try {
       await axios.put(`${API_URL}/notifications/read-all`);
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     } catch (err) {
       console.error('Failed to mark all notifications as read', err);
     }
-  };
+  }, []);
 
-  const deleteNotificationRecord = async (id) => {
+  const deleteNotificationRecord = useCallback(async (id) => {
     try {
       await axios.delete(`${API_URL}/notifications/${id}`);
       setNotifications(prev => prev.filter(n => n._id !== id));
     } catch (err) {
       console.error('Failed to delete notification', err);
     }
-  };
+  }, []);
 
-  const clearAllNotifications = async () => {
+  const clearAllNotifications = useCallback(async () => {
     try {
       await axios.delete(`${API_URL}/notifications`);
       setNotifications([]);
     } catch (err) {
       console.error('Failed to clear notifications', err);
     }
-  };
+  }, []);
 
   const currencySymbol = profile?.currency || '$';
 
+  const contextValue = React.useMemo(() => ({
+    profile,
+    notifications,
+    dashboardData,
+    loading,
+    error,
+    currencySymbol,
+    refreshAll,
+    updateProfileSettings,
+    markNotificationRead,
+    markAllNotificationsRead,
+    deleteNotificationRecord,
+    clearAllNotifications,
+    apiUrl: API_URL
+  }), [
+    profile,
+    notifications,
+    dashboardData,
+    loading,
+    error,
+    currencySymbol,
+    refreshAll,
+    updateProfileSettings,
+    markNotificationRead,
+    markAllNotificationsRead,
+    deleteNotificationRecord,
+    clearAllNotifications
+  ]);
+
   return (
-    <FinanceContext.Provider
-      value={{
-        profile,
-        notifications,
-        dashboardData,
-        loading,
-        error,
-        currencySymbol,
-        refreshAll,
-        updateProfileSettings,
-        markNotificationRead,
-        markAllNotificationsRead,
-        deleteNotificationRecord,
-        clearAllNotifications,
-        apiUrl: API_URL
-      }}
-    >
+    <FinanceContext.Provider value={contextValue}>
       {children}
     </FinanceContext.Provider>
   );

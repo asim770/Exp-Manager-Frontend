@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Handle Google Login with ID Token (Credential) from GIS
-  const loginWithGoogleCredential = async (credential) => {
+  const loginWithGoogleCredential = useCallback(async (credential) => {
     setLoading(true);
     setError(null);
     try {
@@ -99,10 +99,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Handle Google Login with Authorization Code
-  const loginWithGoogleCode = async (code, redirectUri) => {
+  const loginWithGoogleCode = useCallback(async (code, redirectUri) => {
     setLoading(true);
     setError(null);
     try {
@@ -121,10 +121,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Handle Login with Email & Password
-  const loginWithEmail = async (email, password) => {
+  const loginWithEmail = useCallback(async (email, password) => {
     setLoading(true);
     setError(null);
     try {
@@ -143,10 +143,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Handle Sign Up with Name, Email & Password
-  const signupWithEmail = async (name, email, password, confirmPassword) => {
+  const signupWithEmail = useCallback(async (name, email, password, confirmPassword) => {
     setLoading(true);
     setError(null);
     try {
@@ -170,10 +170,10 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Request Password Reset OTP
-  const forgotPassword = async (email) => {
+  const forgotPassword = useCallback(async (email) => {
     setError(null);
     try {
       const res = await axios.post(`${API_URL}/auth/forgot-password`, { email });
@@ -183,10 +183,10 @@ export const AuthProvider = ({ children }) => {
       setError(msg);
       throw new Error(msg);
     }
-  };
+  }, []);
 
   // Verify Reset OTP
-  const verifyResetOtp = async (email, otp) => {
+  const verifyResetOtp = useCallback(async (email, otp) => {
     setError(null);
     try {
       const res = await axios.post(`${API_URL}/auth/verify-otp`, { email, otp });
@@ -196,10 +196,10 @@ export const AuthProvider = ({ children }) => {
       setError(msg);
       throw new Error(msg);
     }
-  };
+  }, []);
 
   // Reset Password with reset authorization token
-  const resetPassword = async (email, resetToken, password, confirmPassword) => {
+  const resetPassword = useCallback(async (email, resetToken, password, confirmPassword) => {
     setError(null);
     try {
       const res = await axios.post(`${API_URL}/auth/reset-password`, {
@@ -214,46 +214,60 @@ export const AuthProvider = ({ children }) => {
       setError(msg);
       throw new Error(msg);
     }
-  };
+  }, []);
 
   // Direct login when returned from callback redirect
-  const loginWithDirectToken = (newToken, newUser) => {
+  const loginWithDirectToken = useCallback((newToken, newUser) => {
     localStorage.setItem('exp_token', newToken);
     localStorage.setItem('exp_user', JSON.stringify(newUser));
     setToken(newToken);
     setUser(newUser);
     setError(null);
-  };
+  }, []);
 
   // Logout
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('exp_token');
     localStorage.removeItem('exp_user');
     setToken(null);
     setUser(null);
     setError(null);
-  };
+  }, []);
+
+  const value = React.useMemo(() => ({
+    user,
+    token,
+    isAuthenticated: !!token && !!user,
+    loading,
+    error,
+    loginWithEmail,
+    signupWithEmail,
+    forgotPassword,
+    verifyResetOtp,
+    resetPassword,
+    loginWithGoogleCredential,
+    loginWithGoogleCode,
+    loginWithDirectToken,
+    logout,
+    apiUrl: API_URL,
+  }), [
+    user,
+    token,
+    loading,
+    error,
+    loginWithEmail,
+    signupWithEmail,
+    forgotPassword,
+    verifyResetOtp,
+    resetPassword,
+    loginWithGoogleCredential,
+    loginWithGoogleCode,
+    loginWithDirectToken,
+    logout
+  ]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        isAuthenticated: !!token && !!user,
-        loading,
-        error,
-        loginWithEmail,
-        signupWithEmail,
-        forgotPassword,
-        verifyResetOtp,
-        resetPassword,
-        loginWithGoogleCredential,
-        loginWithGoogleCode,
-        loginWithDirectToken,
-        logout,
-        apiUrl: API_URL,
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

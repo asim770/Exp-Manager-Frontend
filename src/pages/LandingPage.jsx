@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
   ArrowRight, ShieldCheck, Lock, LogOut, LayoutDashboard, Mail
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -55,7 +55,7 @@ const LandingPage = () => {
 
   return (
     <div className="h-screen bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-dark-100 transition-colors duration-300 relative overflow-hidden flex flex-col justify-between">
-      
+
       {/* Background ambient glows */}
       <div className="absolute top-[-20%] left-[-10%] ambient-glow bg-brand-500/25 dark:bg-brand-500/10"></div>
       <div className="absolute bottom-[-10%] right-[-10%] ambient-glow bg-blue-500/20 dark:bg-blue-500/10"></div>
@@ -63,7 +63,7 @@ const LandingPage = () => {
       {/* LiquidEther Background (only rendered on desktop for performance) */}
       <div className="absolute inset-0 w-full h-full z-0 opacity-60 dark:opacity-40">
         <LiquidEther
-          colors={[ '#5227FF', '#FF9FFC', '#B497CF' ]}
+          colors={['#5227FF', '#FF9FFC', '#B497CF']}
           mouseForce={20}
           cursorSize={100}
           isViscous
@@ -110,7 +110,7 @@ const LandingPage = () => {
                 )}
                 <span className="font-medium truncate max-w-[120px]">{user?.name}</span>
               </div>
-              <button 
+              <button
                 onClick={() => navigate('/dashboard')}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-lg shadow-brand-500/20 transition-all hover:-translate-y-0.5"
               >
@@ -126,7 +126,7 @@ const LandingPage = () => {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <button 
+              <button
                 onClick={() => setShowAuthModal(true)}
                 className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs shadow-xl shadow-brand-500/20 hover:shadow-brand-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               >
@@ -153,7 +153,7 @@ const LandingPage = () => {
             </div>
           </AnimatedContent>
 
-          {/* Heading */}
+          {/* Heading with Glassmorphism Text Effect */}
           <AnimatedContent
             distance={60}
             direction="vertical"
@@ -161,16 +161,20 @@ const LandingPage = () => {
             duration={0.8}
             ease="power3.out"
           >
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-6">
-              Take Control of Your{" "}
-              <span className="bg-gradient-to-r from-brand-600 to-indigo-500 dark:from-brand-400 dark:to-indigo-300 bg-clip-text text-transparent">
-                Wealth
-              </span>
-              , Securely.
-            </h1>
+            <div className="relative">
+              {/* Ambient backlight glow for glass refraction */}
+              <div className="absolute inset-0 -top-6 -bottom-6 bg-gradient-to-r from-brand-500/10 via-purple-500/15 to-indigo-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.15] mb-6 glass-text-hero select-none">
+                Take Control of Your <br className="hidden sm:inline" />
+                <span className="glass-text-accent inline">
+                  Wealth
+                </span>
+                , Securely.
+              </h1>
+            </div>
           </AnimatedContent>
 
-          {/* Subheading */}
+          {/* Subheading with Glassmorphism Text Effect */}
           <AnimatedContent
             distance={50}
             direction="vertical"
@@ -178,7 +182,7 @@ const LandingPage = () => {
             duration={0.8}
             ease="power3.out"
           >
-            <p className="text-slate-500 dark:text-dark-400 text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium">
+            <p className="glass-text-sub text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium">
               A modern, intelligent personal finance manager with individual Google accounts, bank-grade data isolation, interactive cash flow charts, budgeting, savings targets, and AI assistant.
             </p>
           </AnimatedContent>
@@ -199,18 +203,19 @@ const LandingPage = () => {
                 Go to Dashboard <ArrowRight className="w-4.5 h-4.5" />
               </button>
             ) : (
-              <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center gap-3.5">
                 <GoogleAuthButton
-                  className="px-6 py-3.5 text-sm"
+                  variant="glass"
                   buttonText="Sign in with Google"
                   onSuccess={() => navigate('/dashboard')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowAuthModal(true)}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-750 font-semibold text-sm transition-all shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
+                  className="group relative inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-white/[0.08] hover:bg-white/[0.16] text-slate-200 hover:text-white border border-white/20 hover:border-white/35 font-semibold text-sm transition-all duration-300 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.35)] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer overflow-hidden"
                 >
-                  <Mail className="w-4 h-4 text-indigo-400" />
+                  <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+                  <Mail className="w-4 h-4 text-indigo-300 group-hover:text-indigo-200 transition-colors" />
                   <span>Sign In with Email</span>
                 </button>
               </div>

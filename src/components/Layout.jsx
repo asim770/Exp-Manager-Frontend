@@ -44,49 +44,78 @@ const Layout = ({ children }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Global mousemove tracking for .glass-panel border glow effects
+  // Global mousemove tracking for .glass-panel border glow effects (throttled with rAF & cached rects)
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    let rafId = null;
+    let panelsCache = [];
+    let lastCacheTime = 0;
+
+    const updateCache = () => {
       const panels = document.querySelectorAll('.glass-panel');
-      panels.forEach(panel => {
-        // Skip Bento cards since they handle their own internal GSAP spotlights
-        if (panel.classList.contains('card')) return;
+      panelsCache = Array.from(panels)
+        .filter(panel => !panel.classList.contains('card'))
+        .map(panel => ({
+          el: panel,
+          rect: panel.getBoundingClientRect()
+        }));
+      lastCacheTime = performance.now();
+    };
 
-        const rect = panel.getBoundingClientRect();
+    const handleResize = () => updateCache();
+    window.addEventListener('resize', handleResize, { passive: true });
+    updateCache();
+
+    const handleMouseMove = (e) => {
+      if (rafId) return;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        if (performance.now() - lastCacheTime > 1500) {
+          updateCache();
+        }
+
         const pad = 150; // padding active range
+        for (let i = 0; i < panelsCache.length; i++) {
+          const { el: panel, rect } = panelsCache[i];
+          if (
+            clientX >= rect.left - pad &&
+            clientX <= rect.right + pad &&
+            clientY >= rect.top - pad &&
+            clientY <= rect.bottom + pad
+          ) {
+            const x = ((clientX - rect.left) / rect.width) * 100;
+            const y = ((clientY - rect.top) / rect.height) * 100;
 
-        if (
-          e.clientX >= rect.left - pad &&
-          e.clientX <= rect.right + pad &&
-          e.clientY >= rect.top - pad &&
-          e.clientY <= rect.bottom + pad
-        ) {
-          const x = ((e.clientX - rect.left) / rect.width) * 100;
-          const y = ((e.clientY - rect.top) / rect.height) * 100;
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distance = Math.hypot(clientX - centerX, clientY - centerY);
+            const maxDim = Math.max(rect.width, rect.height);
 
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-          const maxDim = Math.max(rect.width, rect.height);
+            let intensity = 0;
+            if (distance < maxDim) {
+              intensity = 0.85;
+            } else if (distance < maxDim + pad) {
+              intensity = 0.85 * (1 - (distance - maxDim) / pad);
+            }
 
-          let intensity = 0;
-          if (distance < maxDim) {
-            intensity = 0.85;
-          } else if (distance < maxDim + pad) {
-            intensity = 0.85 * (1 - (distance - maxDim) / pad);
+            panel.style.setProperty('--glow-x', `${x}%`);
+            panel.style.setProperty('--glow-y', `${y}%`);
+            panel.style.setProperty('--glow-intensity', intensity.toString());
+          } else if (panel.style.getPropertyValue('--glow-intensity') !== '0') {
+            panel.style.setProperty('--glow-intensity', '0');
           }
-
-          panel.style.setProperty('--glow-x', `${x}%`);
-          panel.style.setProperty('--glow-y', `${y}%`);
-          panel.style.setProperty('--glow-intensity', intensity.toString());
-        } else {
-          panel.style.setProperty('--glow-intensity', '0');
         }
       });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [location.pathname]);
 
   const navItems = [

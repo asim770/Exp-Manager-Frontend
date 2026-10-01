@@ -14,6 +14,8 @@ import { useFinance } from '../context/FinanceContext';
 import axios from 'axios';
 import MagicBento from '../components/MagicBento';
 
+const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#ef4444', '#64748b'];
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const { dashboardData, loading, error, currencySymbol, refreshAll, apiUrl } = useFinance();
@@ -22,49 +24,31 @@ const Dashboard = () => {
   const [loadingInsights, setLoadingInsights] = useState(false);
 
   useEffect(() => {
-    refreshAll();
+    // Only fetch if dashboard data is not yet loaded
+    if (!dashboardData) {
+      refreshAll();
+    }
     
-    // Fetch AI insights
+    // Fetch AI insights only if not already loaded
+    let isMounted = true;
     const fetchInsights = async () => {
+      if (aiInsights) return;
       setLoadingInsights(true);
       try {
         const res = await axios.get(`${apiUrl}/ai/insights`);
-        setAiInsights(res.data);
+        if (isMounted) setAiInsights(res.data);
       } catch (err) {
-        console.error('Failed to load AI Insights:', err);
+        if (isMounted) console.error('Failed to load AI Insights:', err);
       } finally {
-        setLoadingInsights(false);
+        if (isMounted) setLoadingInsights(false);
       }
     };
     fetchInsights();
-  }, []);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] gap-3">
-        <div className="spinner"></div>
-        <p className="text-sm text-slate-400 dark:text-dark-500 font-semibold">Gathering your financial ledger...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] text-center p-6">
-        <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
-          <AlertCircle className="w-8 h-8" />
-        </div>
-        <h3 className="text-xl font-bold mb-2">Failed to load financial records</h3>
-        <p className="text-sm text-slate-500 max-w-sm mb-6 font-medium">{error}</p>
-        <button 
-          onClick={refreshAll} 
-          className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold shadow-lg text-sm"
-        >
-          Try Reconnecting
-        </button>
-      </div>
-    );
-  }
+    return () => {
+      isMounted = false;
+    };
+  }, [dashboardData, refreshAll, apiUrl]);
 
   const {
     currentBalance,
@@ -84,9 +68,7 @@ const Dashboard = () => {
     categoryBreakdown
   } = dashboardData || {};
 
-  const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#ef4444', '#64748b'];
-
-  const stats = [
+  const stats = React.useMemo(() => [
     { 
       label: 'Net Balance', 
       value: currentBalance ?? 0, 
@@ -135,7 +117,43 @@ const Dashboard = () => {
       color: 'text-teal-500',
       bg: 'bg-teal-500/10'
     },
-  ];
+  ], [
+    currentBalance,
+    monthlyIncome,
+    monthlyExpense,
+    totalSavings,
+    moneyToPay,
+    moneyToReceive,
+    currencySymbol,
+    budgetProgress?.budget
+  ]);
+
+  if (loading && !dashboardData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] gap-3">
+        <div className="spinner"></div>
+        <p className="text-sm text-slate-400 dark:text-dark-500 font-semibold">Gathering your financial ledger...</p>
+      </div>
+    );
+  }
+
+  if (error && !dashboardData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] text-center p-6">
+        <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
+          <AlertCircle className="w-8 h-8" />
+        </div>
+        <h3 className="text-xl font-bold mb-2">Failed to load financial records</h3>
+        <p className="text-sm text-slate-500 max-w-sm mb-6 font-medium">{error}</p>
+        <button 
+          onClick={refreshAll} 
+          className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold shadow-lg text-sm"
+        >
+          Try Reconnecting
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

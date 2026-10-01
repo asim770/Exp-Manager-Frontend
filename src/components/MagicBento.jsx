@@ -353,94 +353,115 @@ const GlobalSpotlight = ({
     document.body.appendChild(spotlight);
     spotlightRef.current = spotlight;
 
-    const handleMouseMove = e => {
-      if (!spotlightRef.current || !gridRef.current) return;
+    let rafId = null;
+    let cachedCards = [];
+    let lastSectionRect = null;
+    let lastCacheTime = 0;
 
+    const updateCardCache = () => {
+      if (!gridRef.current) return;
       const section = gridRef.current.closest('.bento-section');
-      const rect = section?.getBoundingClientRect();
-      const mouseInside =
-        rect && e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
-
-      isInsideSection.current = mouseInside || false;
+      lastSectionRect = section ? section.getBoundingClientRect() : null;
       const cards = gridRef.current.querySelectorAll('.card');
+      cachedCards = Array.from(cards).map(card => {
+        const cardRect = card.getBoundingClientRect();
+        return {
+          el: card,
+          rect: cardRect,
+          centerX: cardRect.left + cardRect.width / 2,
+          centerY: cardRect.top + cardRect.height / 2,
+          halfMaxDim: Math.max(cardRect.width, cardRect.height) / 2
+        };
+      });
+      lastCacheTime = performance.now();
+    };
 
-      if (!mouseInside) {
-        gsap.to(spotlightRef.current, {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-        cards.forEach(card => {
-          card.style.setProperty('--glow-intensity', '0');
-        });
-        return;
-      }
+    const handleMouseMove = e => {
+      if (!spotlightRef.current || !gridRef.current || rafId) return;
 
-      const { proximity, fadeDistance } = calculateSpotlightValues(spotlightRadius);
-      let minDistance = Infinity;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
 
-      cards.forEach(card => {
-        const cardElement = card;
-        const cardRect = cardElement.getBoundingClientRect();
-        const centerX = cardRect.left + cardRect.width / 2;
-        const centerY = cardRect.top + cardRect.height / 2;
-        const distance =
-          Math.hypot(e.clientX - centerX, e.clientY - centerY) - Math.max(cardRect.width, cardRect.height) / 2;
-        const effectiveDistance = Math.max(0, distance);
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
 
-        minDistance = Math.min(minDistance, effectiveDistance);
-
-        let glowIntensity = 0;
-        if (effectiveDistance <= proximity) {
-          glowIntensity = 1;
-        } else if (effectiveDistance <= fadeDistance) {
-          glowIntensity = (fadeDistance - effectiveDistance) / (fadeDistance - proximity);
+        if (!lastSectionRect || performance.now() - lastCacheTime > 1500) {
+          updateCardCache();
         }
 
-        updateCardGlowProperties(cardElement, e.clientX, e.clientY, glowIntensity, spotlightRadius);
-      });
+        const rect = lastSectionRect;
+        const mouseInside =
+          rect && clientX >= rect.left - 50 && clientX <= rect.right + 50 && clientY >= rect.top - 50 && clientY <= rect.bottom + 50;
 
-      gsap.to(spotlightRef.current, {
-        left: e.clientX,
-        top: e.clientY,
-        duration: 0.1,
-        ease: 'power2.out'
-      });
+        if (!mouseInside) {
+          if (isInsideSection.current) {
+            isInsideSection.current = false;
+            gsap.to(spotlightRef.current, {
+              opacity: 0,
+              duration: 0.3,
+              ease: 'power2.out'
+            });
+            cachedCards.forEach(({ el: card }) => {
+              card.style.setProperty('--glow-intensity', '0');
+            });
+          }
+          return;
+        }
 
-      const targetOpacity =
-        minDistance <= proximity
-          ? 0.8
-          : minDistance <= fadeDistance
-            ? ((fadeDistance - minDistance) / (fadeDistance - proximity)) * 0.8
-            : 0;
+        isInsideSection.current = true;
+        const { proximity, fadeDistance } = calculateSpotlightValues(spotlightRadius);
+        let minDistance = Infinity;
 
-      gsap.to(spotlightRef.current, {
-        opacity: targetOpacity,
-        duration: targetOpacity > 0 ? 0.2 : 0.5,
-        ease: 'power2.out'
+        for (let i = 0; i < cachedCards.length; i++) {
+          const item = cachedCards[i];
+          const distance = Math.hypot(clientX - item.centerX, clientY - item.centerY) - item.halfMaxDim;
+          const effectiveDistance = Math.max(0, distance);
+
+          if (effectiveDistance < minDistance) minDistance = effectiveDistance;
+
+          let glowIntensity = 0;
+          if (effectiveDistance <= proximity) {
+            glowIntensity = 1;
+          } else if (effectiveDistance <= fadeDistance) {
+            glowIntensity = (fadeDistance - effectiveDistance) / (fadeDistance - proximity);
+          }
+
+          updateCardGlowProperties(item.el, clientX, clientY, glowIntensity, spotlightRadius);
+        }
+
+        spotlightRef.current.style.left = `${clientX}px`;
+        spotlightRef.current.style.top = `${clientY}px`;
+
+        const targetOpacity =
+          minDistance <= proximity
+            ? 0.8
+            : minDistance <= fadeDistance
+              ? ((fadeDistance - minDistance) / (fadeDistance - proximity)) * 0.8
+              : 0;
+
+        spotlightRef.current.style.opacity = targetOpacity.toString();
       });
     };
 
     const handleMouseLeave = () => {
       isInsideSection.current = false;
-      gridRef.current?.querySelectorAll('.card').forEach(card => {
-        card.style.setProperty('--glow-intensity', '0');
-      });
-      if (spotlightRef.current) {
-        gsap.to(spotlightRef.current, {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power2.out'
+      if (gridRef.current) {
+        gridRef.current.querySelectorAll('.card').forEach(card => {
+          card.style.setProperty('--glow-intensity', '0');
         });
+      }
+      if (spotlightRef.current) {
+        spotlightRef.current.style.opacity = '0';
       }
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
+      if (rafId) cancelAnimationFrame(rafId);
       spotlightRef.current?.parentNode?.removeChild(spotlightRef.current);
     };
   }, [gridRef, disableAnimations, enabled, spotlightRadius, glowColor]);

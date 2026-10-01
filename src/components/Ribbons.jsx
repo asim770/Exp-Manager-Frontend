@@ -21,7 +21,8 @@ const Ribbons = ({
         const container = containerRef.current;
         if (!container) return;
 
-        const renderer = new Renderer({ dpr: window.devicePixelRatio || 2, alpha: true });
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const renderer = new Renderer({ dpr, alpha: true });
         const gl = renderer.gl;
         if (Array.isArray(backgroundColor) && backgroundColor.length === 4) {
             gl.clearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
@@ -99,13 +100,16 @@ const Ribbons = ({
       }
     `;
 
+        let containerRect = container.getBoundingClientRect();
         function resize() {
+            if (!container) return;
+            containerRect = container.getBoundingClientRect();
             const width = container.clientWidth;
             const height = container.clientHeight;
             renderer.setSize(width, height);
             lines.forEach(line => line.polyline.resize());
         }
-        window.addEventListener('resize', resize);
+        window.addEventListener('resize', resize, { passive: true });
 
         const center = (colors.length - 1) / 2;
         colors.forEach((color, index) => {
@@ -153,37 +157,53 @@ const Ribbons = ({
         resize();
 
         const mouse = new Vec3();
+        let isMoving = true;
+        let lastMoveTime = performance.now();
+
         function updateMouse(e) {
             let x, y;
-            const rect = container.getBoundingClientRect();
             if (e.changedTouches && e.changedTouches.length) {
-                x = e.changedTouches[0].clientX - rect.left;
-                y = e.changedTouches[0].clientY - rect.top;
+                x = e.changedTouches[0].clientX - containerRect.left;
+                y = e.changedTouches[0].clientY - containerRect.top;
             } else {
-                x = e.clientX - rect.left;
-                y = e.clientY - rect.top;
+                x = e.clientX - containerRect.left;
+                y = e.clientY - containerRect.top;
             }
-            const width = container.clientWidth;
-            const height = container.clientHeight;
+            const width = containerRect.width || container.clientWidth || 1;
+            const height = containerRect.height || container.clientHeight || 1;
             mouse.set((x / width) * 2 - 1, (y / height) * -2 + 1, 0);
+
+            isMoving = true;
+            lastMoveTime = performance.now();
+            startLoop();
         }
-        container.addEventListener('mousemove', updateMouse);
-        container.addEventListener('touchstart', updateMouse);
-        container.addEventListener('touchmove', updateMouse);
+        window.addEventListener('mousemove', updateMouse, { passive: true });
+        window.addEventListener('touchstart', updateMouse, { passive: true });
+        window.addEventListener('touchmove', updateMouse, { passive: true });
 
         const tmp = new Vec3();
-        let frameId;
+        let frameId = null;
         let lastTime = performance.now();
+
         function update() {
-            frameId = requestAnimationFrame(update);
+            if (document.hidden) {
+                frameId = null;
+                return;
+            }
+
             const currentTime = performance.now();
             const dt = currentTime - lastTime;
             lastTime = currentTime;
+
+            let maxVelocity = 0;
 
             lines.forEach(line => {
                 tmp.copy(mouse).add(line.mouseOffset).sub(line.points[0]).multiply(line.spring);
                 line.mouseVelocity.add(tmp).multiply(line.friction);
                 line.points[0].add(line.mouseVelocity);
+
+                const velLen = line.mouseVelocity.len();
+                if (velLen > maxVelocity) maxVelocity = velLen;
 
                 for (let i = 1; i < line.points.length; i++) {
                     if (isFinite(maxAge) && maxAge > 0) {
@@ -201,18 +221,49 @@ const Ribbons = ({
             });
 
             renderer.render({ scene });
+
+            // If mouse has stopped moving for > 1.5 seconds and ribbons have settled, sleep loop to save CPU
+            if (currentTime - lastMoveTime > 1500 && maxVelocity < 0.0005) {
+                isMoving = false;
+                frameId = null;
+                return;
+            }
+
+            frameId = requestAnimationFrame(update);
         }
-        update();
+
+        function startLoop() {
+            if (!frameId && !document.hidden) {
+                lastTime = performance.now();
+                frameId = requestAnimationFrame(update);
+            }
+        }
+
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                if (frameId) {
+                    cancelAnimationFrame(frameId);
+                    frameId = null;
+                }
+            } else if (isMoving) {
+                startLoop();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        startLoop();
 
         return () => {
             window.removeEventListener('resize', resize);
-            container.removeEventListener('mousemove', updateMouse);
-            container.removeEventListener('touchstart', updateMouse);
-            container.removeEventListener('touchmove', updateMouse);
-            cancelAnimationFrame(frameId);
+            window.removeEventListener('mousemove', updateMouse);
+            window.removeEventListener('touchstart', updateMouse);
+            window.removeEventListener('touchmove', updateMouse);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            if (frameId) cancelAnimationFrame(frameId);
             if (gl.canvas && gl.canvas.parentNode === container) {
                 container.removeChild(gl.canvas);
             }
+            gl.getExtension('WEBGL_lose_context')?.loseContext();
         };
     }, [
         colors,

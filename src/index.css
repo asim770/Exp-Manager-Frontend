@@ -212,3 +212,78 @@ select:-webkit-autofill:focus {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Glassmorphism Typography Effects */
+.glass-text-hero {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.95) 25%,
+    rgba(255, 255, 255, 0.45) 65%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.75))
+          drop-shadow(0 0 25px rgba(255, 255, 255, 0.3))
+          drop-shadow(0 10px 35px rgba(139, 92, 246, 0.25));
+}
+
+.glass-text-accent {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f3e8ff 20%,
+    #d8b4fe 45%,
+    #a855f7 75%,
+    rgba(168, 85, 247, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.85))
+          drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5));
+}
+
+.glass-text-sub {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(226, 232, 240, 0.85) 50%,
+    rgba(203, 213, 225, 0.65) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+/* Light mode adjustments for glass typography */
+:root:not(.dark) .glass-text-hero {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(30, 41, 59, 0.75) 45%,
+    rgba(71, 85, 105, 0.4) 75%,
+    rgba(15, 23, 42, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.12));
+}
+
+:root:not(.dark) .glass-text-sub {
+  background: linear-gradient(
+    180deg,
+    rgba(51, 65, 85, 0.95) 0%,
+    rgba(71, 85, 105, 0.7) 60%,
+    rgba(100, 116, 139, 0.4) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
+}
+

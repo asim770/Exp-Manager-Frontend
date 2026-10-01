@@ -275,6 +275,14 @@ const AiAssistant = () => {
   const [copiedId, setCopiedId] = useState(null);
   
   const chatContainerRef = useRef(null);
+  const abortControllerRef = useRef(null);
+
+  // Clean up in-flight requests on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   // Smooth container-only scrolling to bottom
   const scrollToBottom = () => {
@@ -299,6 +307,7 @@ const AiAssistant = () => {
 
   // Reset conversation to fresh state
   const handleClearChat = () => {
+    abortControllerRef.current?.abort();
     setMessages([
       {
         id: 'welcome',
@@ -313,6 +322,11 @@ const AiAssistant = () => {
   const handleSendMessage = async (textToSend) => {
     const text = textToSend?.trim() || inputValue.trim();
     if (!text || loading) return;
+
+    // Abort previous in-flight request if any
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
     const userMsg = {
       id: `user-${Date.now()}`,
@@ -335,6 +349,8 @@ const AiAssistant = () => {
       const res = await axios.post(`${apiUrl}/ai/chat`, {
         message: text,
         history: chatHistory
+      }, {
+        signal: controller.signal
       });
 
       const aiReply = {
@@ -346,6 +362,9 @@ const AiAssistant = () => {
 
       setMessages(prev => [...prev, aiReply]);
     } catch (err) {
+      if (axios.isCancel(err) || err.name === 'CanceledError' || err.name === 'AbortError') {
+        return; // Request was cleanly cancelled, ignore
+      }
       console.error('Error posting to AI helper:', err);
       setError(err.response?.data?.message || 'Failed to connect to AI Assistant. Check your backend server and Gemini API Key.');
     } finally {

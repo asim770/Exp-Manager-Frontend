@@ -25,9 +25,16 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const GoogleAuthButton = ({ onSuccess, onError, className = '', buttonText = 'Continue with Google' }) => {
+const GoogleAuthButton = ({ 
+  onSuccess, 
+  onError, 
+  className = '', 
+  buttonText = 'Continue with Google',
+  variant = 'default',
+}) => {
   const { loginWithGoogleCredential, loginWithGoogleCode, apiUrl } = useAuth();
   const [loading, setLoading] = useState(false);
+  const isGlass = variant === 'glass';
 
   // 1. Popup Google Login via @react-oauth/google
   let triggerPopupLogin = null;
@@ -111,15 +118,22 @@ const GoogleAuthButton = ({ onSuccess, onError, className = '', buttonText = 'Co
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`group relative flex items-center justify-center gap-3 px-5 py-3 rounded-xl bg-white text-slate-800 font-semibold text-sm hover:bg-slate-50 transition-all duration-200 shadow-md hover:shadow-lg active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed ${className}`}
+      className={`group relative flex items-center justify-center gap-3 font-semibold text-sm transition-all duration-300 active:scale-[0.99] disabled:opacity-75 disabled:cursor-not-allowed overflow-hidden ${
+        isGlass
+          ? 'px-6 py-3.5 rounded-2xl bg-white/[0.14] hover:bg-white/[0.22] text-white border border-white/30 hover:border-white/50 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.45)] hover:-translate-y-0.5'
+          : 'px-5 py-3 rounded-xl bg-white text-slate-800 hover:bg-slate-50 shadow-md hover:shadow-lg'
+      } ${className}`}
     >
+      {isGlass && (
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none" />
+      )}
       {loading ? (
-        <Loader2 className="w-5 h-5 animate-spin text-slate-600" />
+        <Loader2 className={`w-5 h-5 animate-spin ${isGlass ? 'text-white' : 'text-slate-600'}`} />
       ) : (
         <GoogleIcon />
       )}
       <span>{loading ? 'Authenticating...' : buttonText}</span>
-      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+      <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${isGlass ? 'text-white/70 group-hover:text-white' : 'text-slate-400'}`} />
     </button>
   );
 };

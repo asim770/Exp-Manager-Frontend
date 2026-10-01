@@ -19,21 +19,101 @@ const INCOME_CATEGORIES = [
   'Salary', 'Freelance', 'Investment', 'Gifts', 'Other'
 ];
 
+const TransactionRow = React.memo(({ tx, currencySymbol, onEdit, onDelete }) => (
+  <div 
+    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 hover:bg-slate-50/50 dark:hover:bg-dark-900/20 transition-all gap-4"
+  >
+    {/* Category Info */}
+    <div className="flex items-center gap-4">
+      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-xs shrink-0 ${
+        tx.type === 'income' 
+          ? 'bg-emerald-500/10 text-emerald-500' 
+          : 'bg-rose-500/10 text-rose-500'
+      }`}>
+        {tx.category.substring(0, 2).toUpperCase()}
+      </div>
+      <div>
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-bold">{tx.category}</h3>
+          {tx.isRecurring && (
+            <span className="text-[9px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/40 border border-brand-200/30 px-1.5 py-0.5 rounded-full uppercase">
+              {tx.recurringInterval}
+            </span>
+          )}
+        </div>
+        {tx.notes && <p className="text-xs text-slate-400 dark:text-dark-550 leading-relaxed font-semibold mt-0.5">{tx.notes}</p>}
+        <p className="text-[10px] text-slate-450 dark:text-dark-600 font-bold mt-1.5 flex items-center gap-1">
+          <CalendarIcon className="w-3.5 h-3.5" />
+          {new Date(tx.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+        </p>
+      </div>
+    </div>
+
+    {/* Operations & Amount */}
+    <div className="flex items-center justify-between sm:justify-end gap-6 sm:text-right">
+      <div className="sm:text-right">
+        <span className={`text-base font-extrabold ${tx.type === 'income' ? 'text-emerald-500' : 'text-slate-800 dark:text-white'}`}>
+          {tx.type === 'income' ? '+' : '-'}{currencySymbol}{tx.amount.toFixed(2)}
+        </span>
+        {tx.receiptUrl && (
+          <a 
+            href={tx.receiptUrl} 
+            target="_blank" 
+            rel="noreferrer"
+            className="flex items-center justify-end gap-1 text-[10px] text-slate-400 dark:text-dark-500 hover:underline font-bold mt-1"
+          >
+            <Image className="w-3.5 h-3.5" /> Receipt Attached
+          </a>
+        )}
+      </div>
+
+      <div className="flex items-center gap-1">
+        <button 
+          onClick={() => onEdit(tx)}
+          className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-900 border border-transparent hover:border-slate-200/50 dark:hover:border-dark-800 text-slate-500 dark:text-dark-400 transition-all"
+          title="Edit Entry"
+        >
+          <Edit2 className="w-4 h-4" />
+        </button>
+        <button 
+          onClick={() => onDelete(tx)}
+          className="p-2 rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 text-rose-500 transition-all"
+          title="Delete Entry"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  </div>
+));
+
+const ITEMS_PER_PAGE = 25;
+
 const Transactions = () => {
   const location = useLocation();
-  const { currencySymbol, apiUrl, refreshAll } = useFinance();
+  const { currencySymbol, apiUrl } = useFinance();
   
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Filters & Search
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [sortBy, setSortBy] = useState('date_desc');
   const [dateRange, setDateRange] = useState('all'); // all, today, week, month, custom
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Debounce search input without double-triggering on mount
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
 
   // Form Drawer State
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -53,13 +133,13 @@ const Transactions = () => {
   const [deletingTx, setDeletingTx] = useState(null);
 
   // Fetch transactions from DB
-  const fetchTxList = async () => {
+  const fetchTxList = React.useCallback(async () => {
     setLoading(true);
     try {
       let url = `${apiUrl}/transactions?sortBy=${sortBy}`;
       if (filterType !== 'all') url += `&type=${filterType}`;
       if (filterCategory !== 'all') url += `&category=${filterCategory}`;
-      if (search.trim()) url += `&search=${search}`;
+      if (debouncedSearch.trim()) url += `&search=${encodeURIComponent(debouncedSearch.trim())}`;
       
       // Calculate date filters
       let start = '';
@@ -92,19 +172,23 @@ const Transactions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [apiUrl, sortBy, filterType, filterCategory, debouncedSearch, dateRange, customStartDate, customEndDate]);
 
+  // Unified single fetch effect
   useEffect(() => {
     fetchTxList();
-  }, [filterType, filterCategory, sortBy, dateRange, customStartDate, customEndDate]);
+  }, [fetchTxList]);
 
-  // Debounced search
+  // Reset page when filters change
   useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      fetchTxList();
-    }, 300);
-    return () => clearTimeout(delayDebounce);
-  }, [search]);
+    setCurrentPage(1);
+  }, [filterType, filterCategory, sortBy, dateRange, customStartDate, customEndDate, debouncedSearch]);
+
+  const totalPages = Math.max(1, Math.ceil(transactions.length / ITEMS_PER_PAGE));
+  const paginatedTransactions = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return transactions.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [transactions, currentPage]);
 
   // Open drawer if navigated with state from dashboard or command palette
   useEffect(() => {
@@ -334,75 +418,42 @@ const Transactions = () => {
           </div>
         ) : (
           <div className="divide-y divide-slate-100 dark:divide-dark-850">
-            {transactions.map((tx) => (
-              <div 
-                key={tx._id} 
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 hover:bg-slate-50/50 dark:hover:bg-dark-900/20 transition-all gap-4"
-              >
-                {/* Category Info */}
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-xs shrink-0 ${
-                    tx.type === 'income' 
-                      ? 'bg-emerald-500/10 text-emerald-500' 
-                      : 'bg-rose-500/10 text-rose-500'
-                  }`}>
-                    {tx.category.substring(0, 2).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-bold">{tx.category}</h3>
-                      {tx.isRecurring && (
-                        <span className="text-[9px] font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/40 border border-brand-200/30 px-1.5 py-0.5 rounded-full uppercase">
-                          {tx.recurringInterval}
-                        </span>
-                      )}
-                    </div>
-                    {tx.notes && <p className="text-xs text-slate-400 dark:text-dark-550 leading-relaxed font-semibold mt-0.5">{tx.notes}</p>}
-                    <p className="text-[10px] text-slate-450 dark:text-dark-600 font-bold mt-1.5 flex items-center gap-1">
-                      <CalendarIcon className="w-3.5 h-3.5" />
-                      {new Date(tx.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Operations & Amount */}
-                <div className="flex items-center justify-between sm:justify-end gap-6 sm:text-right">
-                  <div className="sm:text-right">
-                    <span className={`text-base font-extrabold ${tx.type === 'income' ? 'text-emerald-500' : 'text-slate-800 dark:text-white'}`}>
-                      {tx.type === 'income' ? '+' : '-'}{currencySymbol}{tx.amount.toFixed(2)}
-                    </span>
-                    {tx.receiptUrl && (
-                      <a 
-                        href={tx.receiptUrl} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex items-center justify-end gap-1 text-[10px] text-slate-400 dark:text-dark-500 hover:underline font-bold mt-1"
-                      >
-                        <Image className="w-3.5 h-3.5" /> Receipt Attached
-                      </a>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <button 
-                      onClick={() => handleEdit(tx)}
-                      className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-900 border border-transparent hover:border-slate-200/50 dark:hover:border-dark-800 text-slate-500 dark:text-dark-400 transition-all"
-                      title="Edit Entry"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => setDeletingTx(tx)}
-                      className="p-2 rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 text-rose-500 transition-all"
-                      title="Delete Entry"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-              </div>
+            {paginatedTransactions.map((tx) => (
+              <TransactionRow
+                key={tx._id}
+                tx={tx}
+                currencySymbol={currencySymbol}
+                onEdit={handleEdit}
+                onDelete={setDeletingTx}
+              />
             ))}
+
+            {totalPages > 1 && (
+              <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/40 dark:bg-dark-900/30 text-xs">
+                <span className="text-slate-400 font-semibold">
+                  Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, transactions.length)} of {transactions.length} records
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-dark-800 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-dark-800 font-bold transition-all text-xs"
+                  >
+                    Previous
+                  </button>
+                  <span className="px-2 font-bold text-slate-600 dark:text-dark-300">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-dark-800 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-dark-800 font-bold transition-all text-xs"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -66,29 +66,30 @@ const Reports = () => {
     fetchData();
   }, [timePeriod]);
 
-  // Aggregate Category Expense Data
-  const getCategoryData = () => {
+  // Aggregate Category Expense Data (memoized)
+  const categoryData = React.useMemo(() => {
     const categories = {};
-    transactions
-      .filter(t => t.type === 'expense')
-      .forEach(t => {
+    for (let i = 0; i < transactions.length; i++) {
+      const t = transactions[i];
+      if (t.type === 'expense') {
         categories[t.category] = (categories[t.category] || 0) + t.amount;
-      });
-
+      }
+    }
     return Object.keys(categories)
       .map(cat => ({
         name: cat,
         value: categories[cat]
       }))
       .sort((a, b) => b.value - a.value);
-  };
+  }, [transactions]);
 
-  // Aggregate Monthly Income vs Expense Data
-  const getMonthlyBarData = () => {
+  // Aggregate Monthly Income vs Expense Data (memoized)
+  const barChartData = React.useMemo(() => {
     const monthlyStats = {};
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-    transactions.forEach(t => {
+    for (let i = 0; i < transactions.length; i++) {
+      const t = transactions[i];
       const d = new Date(t.date);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       
@@ -101,13 +102,12 @@ const Reports = () => {
       } else {
         monthlyStats[key].expense += t.amount;
       }
-    });
+    }
 
-    // Sort keys and return
     return Object.keys(monthlyStats)
       .sort()
       .map(key => monthlyStats[key]);
-  };
+  }, [transactions]);
 
   // Export CSV Helper
   const handleExportCSV = () => {
@@ -180,12 +180,17 @@ const Reports = () => {
     doc.save(`financial_ledger_${timePeriod}.pdf`);
   };
 
-  const categoryData = getCategoryData();
-  const barChartData = getMonthlyBarData();
-
-  // Aggregate totals
-  const totalInc = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
-  const totalExp = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+  // Aggregate totals (memoized)
+  const { totalInc, totalExp } = React.useMemo(() => {
+    let inc = 0;
+    let exp = 0;
+    for (let i = 0; i < transactions.length; i++) {
+      const t = transactions[i];
+      if (t.type === 'income') inc += t.amount;
+      else if (t.type === 'expense') exp += t.amount;
+    }
+    return { totalInc: inc, totalExp: exp };
+  }, [transactions]);
 
   return (
     <div className="space-y-6">
