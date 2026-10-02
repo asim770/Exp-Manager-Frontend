@@ -100,7 +100,11 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
   const switchMode = (newMode) => {
     setError(null);
     setSuccessMessage(null);
-    setEmail('');
+    // Preserve email for OTP verification and password reset screens
+    if (newMode !== 'OTP_VERIFY' && newMode !== 'RESET_PASSWORD') {
+      setEmail('');
+      setResetToken('');
+    }
     setPassword('');
     setName('');
     setConfirmPassword('');
@@ -297,6 +301,15 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
     setError(null);
     setSuccessMessage(null);
 
+    const targetEmail = (email || '').trim();
+    if (!targetEmail) {
+      setError('Email address is missing. Please restart the password reset process.');
+      return;
+    }
+    if (!resetToken) {
+      setError('Password reset authorization is missing. Please verify your OTP again.');
+      return;
+    }
     if (password.length < 8) {
       setError('Password must be at least 8 characters long.');
       return;
@@ -308,7 +321,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
 
     setLoading(true);
     try {
-      await resetPassword(email.trim(), resetToken, password, confirmPassword);
+      await resetPassword(targetEmail, resetToken, password, confirmPassword);
       setMode('RESET_SUCCESS');
     } catch (err) {
       setError(err.message || 'Failed to reset password.');
