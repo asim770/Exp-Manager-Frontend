@@ -152,8 +152,10 @@ const LandingPage = () => {
             duration={0.7}
             ease="power3.out"
           >
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200/50 dark:border-brand-900/60 text-[11px] font-bold text-brand-600 dark:text-brand-400 mb-6 backdrop-blur-md shadow-sm">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" /> Multi-User Finance Hub • Google Authentication
+            <div className="relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.06] dark:bg-brand-950/40 border border-white/15 dark:border-brand-500/25 text-[11px] font-semibold mb-6 backdrop-blur-xl shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.35)] overflow-hidden">
+              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="glass-text-badge">Multi-User Finance Hub • Google Authentication</span>
             </div>
           </AnimatedContent>
 

@@ -27,14 +27,15 @@ const MobileLoginView = ({ onSwitchToLanding }) => {
       {/* Top Bar */}
       <div className="flex items-center justify-between z-10 pt-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-extrabold shadow-lg shadow-brand-500/30 text-sm">
-            P
+          <div className="relative w-9 h-9 rounded-2xl bg-gradient-to-tr from-brand-600/90 to-indigo-500/90 border border-white/20 flex items-center justify-center text-white font-extrabold shadow-lg shadow-brand-500/20 backdrop-blur-md overflow-hidden text-sm">
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+            <span className="relative z-10">P</span>
           </div>
           <GradientText
             colors={["#5227FF", "#FF9FFC", "#B497CF"]}
             animationSpeed={8}
             showBorder={false}
-            className="text-lg font-black tracking-tight"
+            className="text-lg font-black tracking-tight landing-glass-brand"
           >
             MyExpManager
           </GradientText>
@@ -42,7 +43,7 @@ const MobileLoginView = ({ onSwitchToLanding }) => {
 
         <button 
           onClick={toggleTheme}
-          className="p-2.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+          className="p-2.5 rounded-2xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/15 text-slate-300 hover:text-white backdrop-blur-xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)] transition-colors cursor-pointer"
           aria-label="Toggle theme"
         >
           {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
@@ -53,27 +54,29 @@ const MobileLoginView = ({ onSwitchToLanding }) => {
       <div className="flex-1 flex flex-col justify-center py-8 z-10 max-w-sm mx-auto w-full">
         
         {/* Floating Tag */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-[11px] font-bold text-brand-400 w-fit mb-4 backdrop-blur-md">
+        <div className="relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.06] dark:bg-brand-950/40 border border-white/15 dark:border-brand-500/25 text-[11px] font-semibold w-fit mb-4 backdrop-blur-xl shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.35)] overflow-hidden">
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
           <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-          <span>Smart Personal Finance</span>
+          <span className="glass-text-badge">Smart Personal Finance</span>
         </div>
 
         {/* Headline */}
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight mb-3">
+        <h1 className="text-4xl sm:text-5xl font-normal tracking-[-0.015em] leading-[1.12] mb-3 glass-text-hero select-none">
           Take Control of Your{' '}
-          <span className="bg-gradient-to-r from-brand-400 to-indigo-300 bg-clip-text text-transparent">
+          <span className="glass-text-accent">
             Finances
           </span>
           .
         </h1>
-        <p className="text-xs text-slate-400 leading-relaxed mb-8 font-medium">
+        <p className="glass-text-sub text-xs sm:text-sm max-w-sm leading-relaxed mb-8 font-light">
           Sign in to access your expenses, cash flow analytics, budget alerts, and AI financial advisor.
         </p>
 
         {/* Action Buttons */}
         <div className="space-y-3 mb-6">
           <GoogleAuthButton
-            className="w-full py-3.5 text-sm font-bold rounded-2xl shadow-xl shadow-brand-500/20"
+            variant="glass"
+            className="w-full py-3.5 text-sm font-bold rounded-2xl"
             buttonText="Continue with Google"
             onSuccess={() => {
               window.location.href = '/dashboard';
@@ -83,9 +86,10 @@ const MobileLoginView = ({ onSwitchToLanding }) => {
           <button
             type="button"
             onClick={() => openAuth('LOGIN')}
-            className="w-full py-3.5 px-4 rounded-2xl bg-slate-900/90 border border-slate-800 hover:bg-slate-850 text-slate-200 font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+            className="group relative w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-white/[0.08] hover:bg-white/[0.16] text-slate-200 hover:text-white border border-white/10 hover:border-white/35 font-semibold text-sm transition-all duration-300 backdrop-blur-xl shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.35)] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer overflow-hidden"
           >
-            <Mail className="w-4 h-4 text-indigo-400" />
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
+            <Mail className="w-4 h-4 text-indigo-300 group-hover:text-indigo-200 transition-colors" />
             <span>Sign In with Email</span>
           </button>
         </div>
