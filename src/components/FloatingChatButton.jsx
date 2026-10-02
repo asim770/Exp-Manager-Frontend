@@ -19,7 +19,7 @@ const FloatingChatButton = () => {
       animate={{ scale: 1, opacity: 1 }}
       whileHover={{ scale: 1.1, y: -2 }}
       whileTap={{ scale: 0.95 }}
-      className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 hover:from-brand-500 hover:to-indigo-400 text-white flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.4)] border border-brand-400/20 focus:outline-none"
+      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 hover:from-brand-500 hover:to-indigo-400 text-white flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.4)] border border-brand-400/20 focus:outline-none"
       title="Ask AI Coach"
     >
       <Sparkles className="w-6 h-6 animate-pulse" />

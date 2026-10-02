@@ -179,7 +179,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed top-[15%] left-[50%] -translate-x-[50%] w-full max-w-2xl bg-white/80 dark:bg-dark-900/80 backdrop-blur-2xl rounded-3xl border border-slate-200/80 dark:border-dark-850 shadow-2xl z-[60] overflow-hidden"
+            className="fixed top-[12%] sm:top-[15%] left-[50%] -translate-x-[50%] w-[calc(100vw-2rem)] max-w-2xl max-h-[85dvh] flex flex-col bg-white/80 dark:bg-dark-900/80 backdrop-blur-2xl rounded-3xl border border-slate-200/80 dark:border-dark-850 shadow-2xl z-[60] overflow-hidden"
           >
             {/* Search Input */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200/50 dark:border-dark-800/80">

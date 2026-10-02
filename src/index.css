@@ -283,6 +283,48 @@ select:-webkit-autofill:focus {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
 }
 
+/* ============================================================
+   RESPONSIVE MOBILE GLASS PROFILE (High Performance on Phones)
+   Preserves macOS glass aesthetic while easing mobile GPU fill-rate
+   ============================================================ */
+@media (max-width: 768px) {
+  .glass-panel,
+  .glass-panel-primary {
+    backdrop-filter: blur(8px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
+  }
+
+  .dark .glass-panel,
+  .dark .glass-panel-primary {
+    background: rgba(13, 18, 30, 0.82) !important;
+    backdrop-filter: blur(8px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
+  }
+
+  .glass-panel-elevated,
+  .glass-modal,
+  .glass-header,
+  .glass-nav {
+    backdrop-filter: blur(10px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+  }
+
+  .dark .glass-panel-elevated,
+  .dark .glass-modal,
+  .dark .glass-header,
+  .dark .glass-nav {
+    background: rgba(15, 21, 35, 0.90) !important;
+    backdrop-filter: blur(10px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+  }
+
+  /* Simplify ambient background blurs on mobile to reduce fill-rate bottleneck */
+  .ambient-glow {
+    filter: blur(60px) !important;
+    opacity: 0.10 !important;
+  }
+}
+
 /* Ambient glow backgrounds */
 .ambient-glow {
   position: absolute;

@@ -12,16 +12,16 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const GoogleCallback = lazy(() => import('./pages/GoogleCallback'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 
-// Core authenticated pages imported statically for instant, flicker-free navigation
-import Dashboard from './pages/Dashboard';
-import Transactions from './pages/Transactions';
-import BorrowLend from './pages/BorrowLend';
-import BudgetsSavings from './pages/BudgetsSavings';
-import SplitGroups from './pages/SplitGroups';
-import Reports from './pages/Reports';
-import CalendarView from './pages/CalendarView';
-import ProfileSettings from './pages/ProfileSettings';
-import AiAssistant from './pages/AiAssistant';
+// Authenticated pages lazy-loaded on-demand to optimize bundle size and initial load speed
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Transactions = lazy(() => import('./pages/Transactions'));
+const BorrowLend = lazy(() => import('./pages/BorrowLend'));
+const BudgetsSavings = lazy(() => import('./pages/BudgetsSavings'));
+const SplitGroups = lazy(() => import('./pages/SplitGroups'));
+const Reports = lazy(() => import('./pages/Reports'));
+const CalendarView = lazy(() => import('./pages/CalendarView'));
+const ProfileSettings = lazy(() => import('./pages/ProfileSettings'));
+const AiAssistant = lazy(() => import('./pages/AiAssistant'));
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '666611753013-8dauik9chnkasm4268tml3ecc05mg0ns.apps.googleusercontent.com';
 

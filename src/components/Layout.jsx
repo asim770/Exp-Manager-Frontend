@@ -44,6 +44,22 @@ const Layout = ({ children }) => {
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = useState(false);
   const notificationsRef = useRef(null);
 
+  // Detect desktop device with fine pointer (mouse) for GPU-intensive effects
+  const [isDesktopWithMouse, setIsDesktopWithMouse] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024 && window.matchMedia('(pointer: fine)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleScreenCheck = () => {
+      setIsDesktopWithMouse(window.innerWidth >= 1024 && window.matchMedia('(pointer: fine)').matches);
+    };
+    window.addEventListener('resize', handleScreenCheck, { passive: true });
+    return () => window.removeEventListener('resize', handleScreenCheck);
+  }, []);
+
   // Close notifications on outside click
   useEffect(() => {
     if (!isNotificationsOpen) return;
@@ -76,8 +92,10 @@ const Layout = ({ children }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Global mousemove tracking for .glass-panel border glow effects (throttled with rAF & cached rects)
+  // Global mousemove tracking for .glass-panel border glow effects (only enabled on desktop with mouse)
   useEffect(() => {
+    if (!isDesktopWithMouse) return;
+
     let rafId = null;
     let panelsCache = [];
     let lastCacheTime = 0;
@@ -148,7 +166,7 @@ const Layout = ({ children }) => {
       window.removeEventListener('resize', handleResize);
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [location.pathname]);
+  }, [location.pathname, isDesktopWithMouse]);
 
   const navItems = React.useMemo(() => [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -170,38 +188,40 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden relative flex bg-slate-100 dark:bg-[#07090e] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,70,255,0.14),rgba(7,9,14,0.98)),radial-gradient(ellipse_60%_60%_at_100%_100%,rgba(59,130,246,0.06),transparent),#07090e] text-slate-800 dark:text-dark-100">
+    <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] overflow-hidden relative flex bg-slate-100 dark:bg-[#07090e] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,70,255,0.14),rgba(7,9,14,0.98)),radial-gradient(ellipse_60%_60%_at_100%_100%,rgba(59,130,246,0.06),transparent),#07090e] text-slate-800 dark:text-dark-100">
       
       {/* Background ambient glows */}
       <div className="absolute top-[-5%] left-[-5%] w-[550px] h-[550px] rounded-full bg-brand-500/20 dark:bg-brand-500/10 blur-[130px] pointer-events-none"></div>
       <div className="absolute bottom-[-5%] right-[-5%] w-[550px] h-[550px] rounded-full bg-indigo-500/20 dark:bg-indigo-500/10 blur-[140px] pointer-events-none"></div>
 
-      {/* Particles Background */}
+      {/* Particles Background - 120 on desktop, 25 on mobile to save GPU */}
       <div className="absolute inset-0 w-full h-full z-0 opacity-40 dark:opacity-30 pointer-events-none">
         <Particles
           particleColors={theme === 'dark' ? PARTICLE_COLORS_DARK : PARTICLE_COLORS_LIGHT}
-          particleCount={150}
+          particleCount={isDesktopWithMouse ? 120 : 25}
           particleSpread={12}
           speed={0.08}
-          particleBaseSize={80}
-          moveParticlesOnHover
+          particleBaseSize={isDesktopWithMouse ? 80 : 50}
+          moveParticlesOnHover={isDesktopWithMouse}
           alphaParticles={false}
           disableRotation={false}
           pixelRatio={1}
         />
       </div>
 
-      {/* Ribbons mouse cursor overlay for the entire project except landing page */}
-      <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-        <Ribbons
-          baseThickness={30}
-          colors={RIBBON_COLORS}
-          speedMultiplier={0.5}
-          maxAge={500}
-          enableFade={false}
-          enableShaderEffect={false}
-        />
-      </div>
+      {/* Ribbons mouse cursor overlay - only rendered on desktop with fine mouse pointer */}
+      {isDesktopWithMouse && (
+        <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+          <Ribbons
+            baseThickness={30}
+            colors={RIBBON_COLORS}
+            speedMultiplier={0.5}
+            maxAge={500}
+            enableFade={false}
+            enableShaderEffect={false}
+          />
+        </div>
+      )}
 
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-72 h-[calc(100vh-2rem)] glass-panel border border-slate-200/70 dark:border-white/10 m-4 mr-0 rounded-3xl z-30 relative overflow-hidden shrink-0 shadow-2xl">
@@ -281,10 +301,10 @@ const Layout = ({ children }) => {
       </aside>
 
       {/* Main content wrapper */}
-      <div className="flex-1 h-screen flex flex-col min-w-0 p-4 lg:p-6 overflow-hidden relative z-10">
+      <div className="flex-1 h-full min-h-0 flex flex-col min-w-0 p-3 sm:p-4 lg:p-6 overflow-hidden relative z-10">
         
         {/* Top Header */}
-        <header className="w-full glass-header border border-slate-200/70 dark:border-white/10 h-20 rounded-3xl px-6 flex items-center justify-between mb-6 shrink-0 relative z-40 shadow-lg">
+        <header className="w-full glass-header border border-slate-200/70 dark:border-white/10 h-16 sm:h-20 rounded-2xl sm:rounded-3xl px-4 sm:px-6 flex items-center justify-between mb-3 sm:mb-6 shrink-0 relative z-40 shadow-lg">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsMobileMenuOpen(true)}
@@ -341,7 +361,7 @@ const Layout = ({ children }) => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 15, scale: 0.96 }}
                       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                      className="absolute sm:right-0 -right-12 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-[380px] glass-modal border border-slate-200/70 dark:border-white/15 rounded-3xl shadow-2xl p-4.5 z-50 overflow-hidden"
+                      className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-96 max-w-[calc(100vw-2rem)] sm:max-w-[380px] glass-modal border border-slate-200/70 dark:border-white/15 rounded-3xl shadow-2xl p-4.5 z-50 overflow-hidden"
                     >
                       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-dark-900">
                         <h4 className="font-bold text-sm">Notifications</h4>
@@ -458,7 +478,7 @@ const Layout = ({ children }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] glass-modal border-r border-slate-200/70 dark:border-white/10 z-50 lg:hidden p-6 flex flex-col shadow-2xl"
+              className="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] glass-modal border-r border-slate-200/70 dark:border-white/10 z-50 lg:hidden p-6 flex flex-col shadow-2xl overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-2">

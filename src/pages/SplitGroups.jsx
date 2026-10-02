@@ -364,7 +364,7 @@ const SplitGroups = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative w-full max-w-md glass-modal rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              className="relative w-full max-w-md max-h-[90dvh] overflow-y-auto glass-modal rounded-3xl p-6 shadow-2xl z-10 space-y-4"
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
                 <h3 className="font-bold text-base flex items-center gap-2">
@@ -448,7 +448,7 @@ const SplitGroups = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative w-full max-w-md glass-modal rounded-3xl p-6 shadow-2xl z-10 space-y-4"
+              className="relative w-full max-w-md max-h-[90dvh] overflow-y-auto glass-modal rounded-3xl p-6 shadow-2xl z-10 space-y-4"
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/10">
                 <h3 className="font-bold text-base flex items-center gap-2">

@@ -330,7 +330,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
 
         {/* Frosted Glass Card Container */}
         <div
-          className="relative w-full p-6 sm:p-7 rounded-3xl bg-slate-900/50 backdrop-blur-2xl border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(0,0,0,0.4)] text-white overflow-hidden transition-all duration-300"
+          className="relative w-full max-h-[90dvh] overflow-y-auto p-6 sm:p-7 rounded-3xl bg-slate-900/50 backdrop-blur-2xl border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(0,0,0,0.4)] text-white transition-all duration-300"
           style={{ colorScheme: 'dark' }}
           onClick={(e) => e.stopPropagation()}
         >
