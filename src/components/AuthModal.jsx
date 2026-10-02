@@ -343,16 +343,18 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
 
         {/* Frosted Glass Card Container */}
         <div
-          className="relative w-full max-h-[90dvh] overflow-y-auto p-6 sm:p-7 rounded-3xl bg-slate-900/50 backdrop-blur-2xl border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(0,0,0,0.4)] text-white transition-all duration-300"
-          style={{ colorScheme: 'dark' }}
+          className="relative w-full max-h-[90dvh] overflow-y-auto overflow-x-hidden no-scrollbar p-6 sm:p-7 rounded-3xl bg-slate-900/50 backdrop-blur-2xl border border-white/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(0,0,0,0.4)] text-white transition-all duration-300"
+          style={{ colorScheme: 'dark', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top specular reflection / glare line */}
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
 
-          {/* Subtle internal glass sheens */}
-          <div className="absolute -top-20 -right-20 w-44 h-44 bg-gradient-to-br from-white/[0.12] to-transparent rounded-full blur-xl pointer-events-none" />
-          <div className="absolute -bottom-20 -left-20 w-44 h-44 bg-gradient-to-tr from-brand-500/15 to-transparent rounded-full blur-xl pointer-events-none" />
+          {/* Subtle internal glass sheens contained in an overflow-hidden wrapper to prevent horizontal scrollbars */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-3xl">
+            <div className="absolute -top-20 -right-20 w-44 h-44 bg-gradient-to-br from-white/[0.12] to-transparent rounded-full blur-xl" />
+            <div className="absolute -bottom-20 -left-20 w-44 h-44 bg-gradient-to-tr from-brand-500/15 to-transparent rounded-full blur-xl" />
+          </div>
 
           {/* Close Button */}
           <button

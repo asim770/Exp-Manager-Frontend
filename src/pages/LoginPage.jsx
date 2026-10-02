@@ -408,8 +408,8 @@ const LoginPage = () => {
 
           {/* Glassmorphic Card */}
           <div
-            className="relative w-full p-6 sm:p-8 rounded-3xl bg-slate-900/45 backdrop-blur-2xl border border-white/20 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(0,0,0,0.4)] overflow-hidden transition-all duration-300"
-            style={{ colorScheme: 'dark' }}
+            className="relative w-full overflow-x-hidden no-scrollbar p-6 sm:p-8 rounded-3xl bg-slate-900/45 backdrop-blur-2xl border border-white/20 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(0,0,0,0.4)] overflow-hidden transition-all duration-300"
+            style={{ colorScheme: 'dark', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {/* Top specular reflection / glare line */}
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent pointer-events-none" />
