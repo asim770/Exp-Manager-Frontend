@@ -72,13 +72,32 @@ const Layout = ({ children }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isNotificationsOpen]);
 
-  // Reset main container scroll when changing pages
+  // Reset main container scroll and close mobile drawer on route change
   useEffect(() => {
     const container = document.getElementById('snap-main-container');
     if (container) {
       container.scrollTop = 0;
     }
+    setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  // Lock body and background page scrolling when mobile menu drawer is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      const container = document.getElementById('snap-main-container');
+      if (container) container.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      const container = document.getElementById('snap-main-container');
+      if (container) container.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      const container = document.getElementById('snap-main-container');
+      if (container) container.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   // Keyboard shortcut for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -463,24 +482,26 @@ const Layout = ({ children }) => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            
+            {/* Backdrop: Full 100vw x 100dvh dark translucent overlay */}
             <motion.div 
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
-            ></motion.div>
+              className="fixed inset-0 w-full h-[100dvh] bg-black/60 z-[60] lg:hidden backdrop-blur-sm"
+              aria-hidden="true"
+            />
 
-            {/* Sidebar Drawer */}
+            {/* Full-width Mobile Sidebar Drawer */}
             <motion.aside 
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 bottom-0 left-0 w-80 max-w-[85vw] glass-modal border-r border-slate-200/70 dark:border-white/10 z-50 lg:hidden p-6 flex flex-col shadow-2xl overflow-y-auto"
+              transition={{ type: 'spring', damping: 28, stiffness: 240 }}
+              className="fixed inset-0 w-full min-w-full max-w-full h-[100dvh] glass-modal border-none z-[70] lg:hidden p-6 flex flex-col shadow-2xl overflow-y-auto"
             >
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-8 shrink-0">
                 <div className="flex items-center gap-2">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-brand-500/25">
                     <Wallet className="w-5 h-5" />
@@ -496,13 +517,14 @@ const Layout = ({ children }) => {
                 </div>
                 <button 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-1.5 rounded-lg glass-pill border border-slate-200/50 dark:border-white/10 text-slate-500 hover:text-slate-800 dark:hover:text-white"
+                  className="p-2 rounded-xl glass-pill border border-slate-200/50 dark:border-white/10 text-slate-500 hover:text-slate-800 dark:hover:text-white cursor-pointer"
+                  aria-label="Close navigation"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="p-3.5 rounded-2xl glass-pill border border-slate-200/50 dark:border-white/10 flex items-center gap-3 mb-6">
+              <div className="p-3.5 rounded-2xl glass-pill border border-slate-200/50 dark:border-white/10 flex items-center gap-3 mb-6 shrink-0">
                 {user?.avatar ? (
                   <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover border border-brand-500/30 shrink-0" />
                 ) : (
@@ -516,7 +538,7 @@ const Layout = ({ children }) => {
                 </div>
               </div>
 
-              <nav className="flex-1 space-y-1">
+              <nav className="flex-1 space-y-1 overflow-y-auto pr-1">
                 {navItems.map((item) => {
                   const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
                   const Icon = item.icon;
@@ -535,16 +557,27 @@ const Layout = ({ children }) => {
                 })}
               </nav>
 
-              <button 
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsCmdPaletteOpen(true);
-                }}
-                className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl glass-pill border border-slate-200 dark:border-white/10 text-xs text-slate-400 dark:text-dark-400 transition-all mt-4"
-              >
-                <span className="flex items-center gap-2"><Search className="w-3.5 h-3.5" /> Command Palette</span>
-                <kbd className="px-1 py-0.5 rounded border border-slate-200 dark:border-dark-700 bg-slate-100 dark:bg-dark-800 text-[10px]">⌘K</kbd>
-              </button>
+              <div className="pt-4 border-t border-slate-200/40 dark:border-white/10 space-y-2 shrink-0">
+                <button 
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsCmdPaletteOpen(true);
+                  }}
+                  className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl glass-pill border border-slate-200 dark:border-white/10 text-xs text-slate-400 dark:text-dark-400 transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Search className="w-3.5 h-3.5" /> Command Palette</span>
+                  <kbd className="px-1 py-0.5 rounded border border-slate-200 dark:border-dark-700 bg-slate-100 dark:bg-dark-800 text-[10px]">⌘K</kbd>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" /> Sign Out
+                </button>
+              </div>
             </motion.aside>
           </>
         )}
