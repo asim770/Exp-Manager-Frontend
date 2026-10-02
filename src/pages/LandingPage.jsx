@@ -92,7 +92,7 @@ const LandingPage = () => {
             colors={["#5227FF", "#FF9FFC", "#B497CF"]}
             animationSpeed={8}
             showBorder={false}
-            className="text-xl font-extrabold tracking-tight"
+            className="text-xl font-extrabold tracking-tight landing-glass-brand"
           >
             MyExpManager
           </GradientText>
@@ -166,7 +166,7 @@ const LandingPage = () => {
             ease="power3.out"
           >
             <div className="relative">
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.15] mb-6 glass-text-hero select-none">
+              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[5.5rem] font-normal tracking-[-0.02em] leading-[1.08] mb-6 glass-text-hero select-none">
                 Take Control of Your <br className="hidden sm:inline" />
                 Wealth, Securely.
               </h1>
@@ -181,7 +181,7 @@ const LandingPage = () => {
             duration={0.8}
             ease="power3.out"
           >
-            <p className="glass-text-sub text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium">
+            <p className="glass-text-sub text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-light">
               A modern, intelligent personal finance manager with individual Google accounts, bank-grade data isolation, interactive cash flow charts, budgeting, savings targets, and AI assistant.
             </p>
           </AnimatedContent>

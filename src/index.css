@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Outfit:wght@100;200;300;400;500;600;700;800&display=swap');
 
 /* Tailwind v4 CSS-based theme configuration */
 @theme {
@@ -355,66 +355,105 @@ select:-webkit-autofill:focus {
   }
 }
 
-/* Glassmorphism Typography Effects */
+/* Glassmorphism Typography Effects (Landing Page Specific) */
 .glass-text-hero {
-  background: linear-gradient(180deg,
-      #ffffff 0%,
-      rgba(255, 255, 255, 0.95) 8%,
-      rgba(255, 255, 255, 0.3) 28%,
-      rgba(255, 255, 255, 0.1) 56%,
-      rgba(255, 255, 255, 0.38) 85%,
-      rgba(255, 255, 255, 0.85) 100%);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    rgba(240, 245, 255, 0.65) 10%,
+    rgba(190, 205, 225, 0.22) 36%,
+    rgba(150, 168, 195, 0.12) 62%,
+    rgba(215, 228, 248, 0.45) 84%,
+    rgba(245, 240, 255, 0.72) 94%,
+    rgba(196, 181, 253, 0.6) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.7)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+  -webkit-text-stroke: 0.9px rgba(255, 255, 255, 0.42);
+  filter: 
+    drop-shadow(0 -1px 0px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 1px 1px rgba(255, 255, 255, 0.25))
+    drop-shadow(0 3px 8px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.5));
 }
 
+
 .glass-text-accent {
-  background: linear-gradient(180deg,
-      #ffffff 0%,
-      rgba(243, 232, 255, 0.95) 10%,
-      rgba(216, 180, 254, 0.4) 30%,
-      rgba(192, 132, 252, 0.12) 58%,
-      rgba(216, 180, 254, 0.45) 86%,
-      rgba(255, 255, 255, 0.88) 100%);
+  font-weight: 200;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(243, 232, 255, 0.65) 15%,
+    rgba(216, 180, 254, 0.2) 45%,
+    rgba(192, 132, 252, 0.15) 65%,
+    rgba(216, 180, 254, 0.42) 86%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.8)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 20px rgba(192, 132, 252, 0.35));
+  filter: 
+    drop-shadow(0 -1px 0.5px rgba(255, 255, 255, 0.7))
+    drop-shadow(0 3px 10px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 0 16px rgba(192, 132, 252, 0.25));
 }
 
 .glass-text-sub {
-  background: linear-gradient(180deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(226, 232, 240, 0.8) 50%,
-      rgba(203, 213, 225, 0.55) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(226, 232, 240, 0.7) 50%,
+    rgba(148, 163, 184, 0.48) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
 }
 
-/* Light mode adjustments for glass typography */
+.landing-glass-brand > div {
+  filter: 
+    drop-shadow(0 -0.5px 0.5px rgba(255, 255, 255, 0.7))
+    drop-shadow(0 1px 3px rgba(139, 92, 246, 0.35));
+}
+
+/* Light mode adjustments for landing page typography */
 :root:not(.dark) .glass-text-hero {
-  background: linear-gradient(180deg,
-      rgba(15, 23, 42, 0.95) 0%,
-      rgba(30, 41, 59, 0.75) 45%,
-      rgba(71, 85, 105, 0.4) 75%,
-      rgba(15, 23, 42, 0.7) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.88) 0%,
+    rgba(30, 41, 59, 0.55) 20%,
+    rgba(71, 85, 105, 0.18) 50%,
+    rgba(100, 116, 139, 0.15) 65%,
+    rgba(51, 65, 85, 0.45) 88%,
+    rgba(109, 40, 217, 0.4) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.12));
+  filter: 
+    drop-shadow(0 -0.5px 0.5px rgba(255, 255, 255, 0.9))
+    drop-shadow(0 2px 6px rgba(15, 23, 42, 0.12));
 }
 
 :root:not(.dark) .glass-text-sub {
-  background: linear-gradient(180deg,
-      rgba(51, 65, 85, 0.95) 0%,
-      rgba(71, 85, 105, 0.7) 60%,
-      rgba(100, 116, 139, 0.4) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(30, 41, 59, 0.92) 0%,
+    rgba(71, 85, 105, 0.7) 60%,
+    rgba(100, 116, 139, 0.45) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: none;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.6));
+}
+
+:root:not(.dark) .landing-glass-brand > div {
+  filter: 
+    drop-shadow(0 -0.5px 0.5px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 1px 3px rgba(109, 40, 217, 0.25));
 }
