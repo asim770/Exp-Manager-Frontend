@@ -489,7 +489,8 @@ const Layout = ({ children }) => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 w-full h-[100dvh] bg-black/60 z-[60] lg:hidden backdrop-blur-sm"
+              className="fixed inset-0 w-screen h-[100dvh] bg-black/60 z-[990] lg:hidden backdrop-blur-sm"
+              style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100dvh' }}
               aria-hidden="true"
             />
 
@@ -499,7 +500,8 @@ const Layout = ({ children }) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 240 }}
-              className="fixed inset-0 w-full min-w-full max-w-full h-[100dvh] glass-modal border-none z-[70] lg:hidden p-6 flex flex-col shadow-2xl overflow-y-auto"
+              className="fixed inset-0 w-screen h-[100dvh] glass-drawer-mobile border-none z-[999] lg:hidden p-6 flex flex-col shadow-2xl overflow-y-auto"
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100dvh' }}
             >
               <div className="flex items-center justify-between mb-8 shrink-0">
                 <div className="flex items-center gap-2">
