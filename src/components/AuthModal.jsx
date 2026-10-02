@@ -190,7 +190,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
     setLoading(true);
     try {
       const data = await forgotPassword(email.trim());
-      setSuccessMessage('Verification code sent! Please check your email.');
+      setSuccessMessage(data.message || (data.delivered ? 'Verification code sent! Please check your email.' : `Temporary verification code: ${data.devOtp}`));
       setCooldown(data.cooldownSeconds || 60);
       setOtpExpiresIn(600);
       setOtp(['', '', '', '', '', '']);
@@ -211,7 +211,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'LOGIN' }) => {
 
     try {
       const data = await forgotPassword(email.trim());
-      setSuccessMessage('A fresh verification code has been sent to your email.');
+      setSuccessMessage(data.message || (data.delivered ? 'A fresh verification code has been sent to your email.' : `Fresh temporary code: ${data.devOtp}`));
       setCooldown(data.cooldownSeconds || 60);
       setOtpExpiresIn(600);
       setOtp(['', '', '', '', '', '']);
